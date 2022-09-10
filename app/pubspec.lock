@@ -4,9 +4,11 @@ packages:
   agent_dart:
     dependency: "direct main"
     description:
-      path: "../../agent_dart"
-      relative: true
-    source: path
+      path: "."
+      ref: "1.0.1-dev"
+      resolved-ref: "392d422ab3c158648589e14d53f907ea68899332"
+      url: "https://github.com/AstroxNetwork/agent_dart"
+    source: git
     version: "0.1.24+1"
   archive:
     dependency: transitive

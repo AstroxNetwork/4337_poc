@@ -282,7 +282,7 @@ class Web3Client {
     ).then((logs) async {
       final res = <FilterEvent>[];
       for (final log in logs) {
-        res.add(await filter.parseChanges(log));
+        res.add(filter.parseChanges(log));
       }
       return res;
     });

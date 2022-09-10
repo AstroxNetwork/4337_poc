@@ -51,25 +51,20 @@ class MsgSignature {
 /// Signs the hashed data in [messageHash] using the given private key.
 Future<MsgSignature> sign(Uint8List messageHash, Uint8List privateKey) async {
   final digest = SHA256Digest();
-  ECSignature sig;
-  if (messageHash.length == 32) {
-    final signer = ECDSASigner(null, HMac(digest, 64));
-    final key = ECPrivateKey(bytesToUnsignedInt(privateKey), params);
-    signer.init(true, PrivateKeyParameter(key));
-    sig = signer.generateSignature(messageHash) as ECSignature;
-  } else {
-    final bytes = await agent.signAsync(messageHash, privateKey);
-    sig = ECSignature(
-        bytes.sublist(0, 32).toBn(), bytes.sublist(32, bytes.length).toBn());
-  }
+  final signer = ECDSASigner(null, HMac(digest, 64));
+  final key = ECPrivateKey(bytesToUnsignedInt(privateKey), params);
+
+  signer.init(true, PrivateKeyParameter(key));
+  var sig = signer.generateSignature(messageHash) as ECSignature;
 
   if (sig.s.compareTo(_halfCurveOrder) > 0) {
     final canonicalisedS = params.n - sig.s;
     sig = ECSignature(sig.r, canonicalisedS);
   }
 
-  //final messageHash = messageHashHash;
-  // final bytes = await agent.signAsync(messageHash, privateKey);
+  // final message =
+  //     messageHash.length == 32 ? messageHash : keccak256(messageHash);
+  // final bytes = await agent.signAsync(message, privateKey);
 
   // final sig = ECSignature(
   //     bytes.sublist(0, 32).toBn(), bytes.sublist(32, bytes.length).toBn());
@@ -78,11 +73,7 @@ Future<MsgSignature> sign(Uint8List messageHash, Uint8List privateKey) async {
 
   var recId = -1;
   for (var i = 0; i < 4; i++) {
-    final k = _recoverFromSignature(
-        i,
-        sig,
-        messageHash.length == 32 ? messageHash : keccak256(messageHash),
-        params);
+    final k = _recoverFromSignature(i, sig, messageHash, params);
     if (k == publicKey) {
       recId = i;
       break;
