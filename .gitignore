@@ -67,3 +67,6 @@ artifacts/**/
 **/pnpm-lock.yaml
 
 **/macos/cli/
+
+#hardhat
+cache/
