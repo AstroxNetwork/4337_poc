@@ -274,13 +274,17 @@ class Web3Client {
   /// See also:
   ///  - [events], which can be used to obtain a stream of log events
   ///  - https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_getlogs
-  Future<List<FilterEvent>> getLogs(FilterOptions options) {
+  Future<List<FilterEvent>> getLogs(FilterOptions options) async {
     final filter = _EventFilter(options);
     return _makeRPCCall<List<dynamic>>(
       'eth_getLogs',
       [filter._createParamsObject(true)],
-    ).then((logs) {
-      return logs.map(filter.parseChanges).toList();
+    ).then((logs) async {
+      final res = <FilterEvent>[];
+      for (final log in logs) {
+        res.add(await filter.parseChanges(log));
+      }
+      return res;
     });
   }
 

@@ -14,7 +14,7 @@ class Transaction {
   });
 
   /// Constructs a transaction that can be used to call a contract function.
-  static Future<Transaction> callContract({
+  static Transaction callContract({
     required DeployedContract contract,
     required ContractFunction function,
     required List<dynamic> parameters,
@@ -25,9 +25,9 @@ class Transaction {
     int? nonce,
     EtherAmount? maxPriorityFeePerGas,
     EtherAmount? maxFeePerGas,
-  }) async {
+  }) {
     final to = contract.address;
-    final data = await function.encodeCall(parameters);
+    final data = function.encodeCall(parameters);
     return Transaction(
         from: from,
         to: to,

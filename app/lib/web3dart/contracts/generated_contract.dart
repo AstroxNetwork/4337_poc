@@ -17,9 +17,8 @@ abstract class GeneratedContract {
   /// Returns whether the [function] has the [expected] selector.
   ///
   /// This is used in an assert in the generated code.
-  Future<bool> checkSignature(
-      ContractFunction function, String expected) async {
-    return bytesToHex(await function.selector) == expected;
+  bool checkSignature(ContractFunction function, String expected) {
+    return bytesToHex(function.selector) == expected;
   }
 
   Future<List<dynamic>> read(
@@ -40,12 +39,12 @@ abstract class GeneratedContract {
     Transaction? base,
     ContractFunction function,
     List<dynamic> parameters,
-  ) async {
+  ) {
     final transaction = base?.copyWith(
-          data: await function.encodeCall(parameters),
+          data: function.encodeCall(parameters),
           to: self.address,
         ) ??
-        await Transaction.callContract(
+        Transaction.callContract(
           contract: self,
           function: function,
           parameters: parameters,

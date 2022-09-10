@@ -1,10 +1,12 @@
 import 'dart:typed_data';
+import 'package:agent_dart/utils/extension.dart';
+import 'package:eip55/eip55.dart';
 import 'package:collection/collection.dart';
+import '../crypto/keccak.dart';
 import '../crypto/secp256k1.dart';
 import '../utils/formatting.dart';
 //import '../crypto/sha256.dart' as sha256;
 import 'package:crypto/crypto.dart';
-import 'package:agent_dart/agent_dart.dart' hide hexToBytes, bytesToHex;
 
 /// Represents an Ethereum address.
 class EthereumAddress {
@@ -14,8 +16,8 @@ class EthereumAddress {
 
   /// Constructs an Ethereum address from a public key. The address is formed by
   /// the last 20 bytes of the keccak hash of the public key.
-  static Future<EthereumAddress> fromPublicKey(Uint8List publicKey) async {
-    return EthereumAddress(await publicKeyToAddress(publicKey));
+  static EthereumAddress fromPublicKey(Uint8List publicKey) {
+    return EthereumAddress(publicKeyToAddress(publicKey));
   }
 
   /// Parses an Ethereum address from the hexadecimal representation. The
@@ -24,7 +26,7 @@ class EthereumAddress {
   ///
   /// If [enforceEip55] is true or the address has both uppercase and lowercase
   /// chars, the address must be valid according to [EIP 55](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md).
-  factory EthereumAddress.fromHex(String hex, {bool enforceEip55 = false}) {
+  static EthereumAddress fromHex(String hex, {bool enforceEip55 = false}) {
     if (!_basicAddress.hasMatch(hex)) {
       throw ArgumentError.value(
         hex,
@@ -40,7 +42,7 @@ class EthereumAddress {
 
     // Validates as of EIP 55, https://ethereum.stackexchange.com/a/1379
     final address = strip0x(hex);
-    final hash = bytesToHex(address.toLowerCase().plainToU8a());
+    final hash = bytesToHex(keccak256(address.toLowerCase().plainToU8a()));
     for (var i = 0; i < 40; i++) {
       // the nth letter should be uppercase if the nth digit of casemap is 1
       final hashedPos = int.parse(hash[i], radix: 16);
@@ -97,26 +99,4 @@ class EthereumAddress {
   int get hashCode {
     return hex.hashCode;
   }
-}
-
-String toChecksumAddress(String address) {
-  String stripAddress = strip0x(address.toLowerCase());
-
-  final hash = sha256.convert(stripAddress.toU8a()).toString();
-  String ret = '0x';
-
-  BigInt v = hash.hexToBn();
-
-  for (int i = 0; i < stripAddress.length; i++) {
-    if ('0123456789'.contains(stripAddress[i])) {
-      ret += stripAddress[i];
-    } else {
-      var checker = v & BigInt.from(2).pow(BigInt.from(255 - 6 * i).toInt());
-      ret += checker >= BigInt.from(1)
-          ? stripAddress[i].toUpperCase()
-          : stripAddress[i].toLowerCase();
-    }
-  }
-
-  return ret;
 }

@@ -16,7 +16,7 @@ abstract class _Filter<T> {
 
   _FilterCreationParams create();
   _PubSubCreationParams createPubSub();
-  T parseChanges(dynamic log);
+  FutureOr<T> parseChanges(dynamic log);
 }
 
 class _NewBlockFilter extends _Filter<String> {
@@ -65,13 +65,13 @@ class _PendingTransactionsFilter extends _Filter<String> {
 class FilterOptions {
   FilterOptions({this.fromBlock, this.toBlock, this.address, this.topics});
 
-  static Future<FilterOptions> events({
+  static FilterOptions events({
     required DeployedContract contract,
     required ContractEvent event,
     BlockNum? fromBlock,
     BlockNum? toBlock,
-  }) async {
-    final sig = await event.signature;
+  }) {
+    final sig = event.signature;
     return FilterOptions(
         address: contract.address,
         topics: [
@@ -137,25 +137,26 @@ class FilterEvent {
     this.topics,
   });
 
-  FilterEvent.fromMap(Map<String, dynamic> log)
-      : removed = log['removed'] as bool? ?? false,
-        logIndex = log['logIndex'] != null
+  static FilterEvent fromMap(Map<String, dynamic> log) {
+    return FilterEvent(
+        removed: log['removed'] as bool? ?? false,
+        logIndex: log['logIndex'] != null
             ? hexToInt(log['logIndex'] as String).toInt()
             : null,
-        transactionIndex = log['transactionIndex'] != null
+        transactionIndex: log['transactionIndex'] != null
             ? hexToInt(log['transactionIndex'] as String).toInt()
             : null,
-        transactionHash = log['transactionHash'] != null
+        transactionHash: log['transactionHash'] != null
             ? log['transactionHash'] as String
             : null,
-        blockHash =
-            log['blockHash'] != null ? log['blockHash'] as String : null,
-        blockNum = log['blockNumber'] != null
+        blockHash: log['blockHash'] != null ? log['blockHash'] as String : null,
+        blockNum: log['blockNumber'] != null
             ? hexToInt(log['blockNumber'] as String).toInt()
             : null,
-        address = EthereumAddress.fromHex(log['address'] as String),
-        data = log['data'] as String?,
-        topics = (log['topics'] as List?)?.cast<String>();
+        address: EthereumAddress.fromHex(log['address'] as String),
+        data: log['data'] as String?,
+        topics: (log['topics'] as List?)?.cast<String>());
+  }
 
   /// Whether the log was removed, due to a chain reorganization. False if it's
   /// a valid log.

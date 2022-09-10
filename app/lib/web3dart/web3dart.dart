@@ -27,6 +27,10 @@ import 'utils/length_tracking_byte_sink.dart';
 import 'utils/rlp.dart' as rlp;
 import 'utils/typed_data.dart';
 
+export 'utils/formatting.dart';
+export 'utils/length_tracking_byte_sink.dart';
+export 'utils/typed_data.dart';
+
 part 'core/client.dart';
 part 'core/filters.dart';
 part 'core/transaction.dart';

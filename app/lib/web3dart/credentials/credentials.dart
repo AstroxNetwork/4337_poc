@@ -1,11 +1,10 @@
 import 'dart:typed_data';
 import 'dart:convert';
 import 'package:collection/collection.dart';
-import 'package:agent_dart/agent_dart.dart' hide hexToBytes;
+import 'package:agent_dart/agent_dart.dart' hide hexToBytes, keccak256;
 import 'package:agent_dart/identity/secp256k1.dart' as secp256k1;
-import 'package:agent_dart/utils/keccak.dart';
 import 'package:pointycastle/ecc/api.dart' show ECPoint;
-
+import '../crypto/keccak.dart';
 import '../crypto/secp256k1.dart';
 import '../utils/formatting.dart';
 import '../utils/typed_data.dart';
@@ -70,7 +69,7 @@ abstract class Credentials {
 /// Credentials where the [address] is known synchronously.
 abstract class CredentialsWithKnownAddress extends Credentials {
   /// The ethereum address belonging to this credential.
-  Future<EthereumAddress> get address;
+  EthereumAddress get address;
 
   @override
   Future<EthereumAddress> extractAddress() async {
@@ -119,9 +118,9 @@ class EthPrivateKey extends CredentialsWithKnownAddress {
   final bool isolateSafe = true;
 
   @override
-  Future<EthereumAddress> get address async {
-    _cachedAddress ??= EthereumAddress(
-        await publicKeyToAddress(privateKeyToPublic(privateKeyInt)));
+  EthereumAddress get address {
+    _cachedAddress ??=
+        EthereumAddress(publicKeyToAddress(privateKeyToPublic(privateKeyInt)));
 
     return _cachedAddress!;
   }
@@ -138,7 +137,7 @@ class EthPrivateKey extends CredentialsWithKnownAddress {
     int? chainId,
     bool isEIP1559 = false,
   }) async {
-    final signature = await sign(await keccak256(payload), privateKey);
+    final signature = await sign(keccak256(payload), privateKey);
 
     // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
     // be aware that signature.v already is recovery + 27

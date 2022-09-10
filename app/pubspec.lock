@@ -4,11 +4,9 @@ packages:
   agent_dart:
     dependency: "direct main"
     description:
-      path: "."
-      ref: "1.0.1-dev"
-      resolved-ref: "20fa758efd49fd3303c9c52150ab1fe3efab5330"
-      url: "https://github.com/AstroxNetwork/agent_dart"
-    source: git
+      path: "../../agent_dart"
+      relative: true
+    source: path
     version: "0.1.24+1"
   archive:
     dependency: transitive
@@ -129,6 +127,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.5"
+  eip55:
+    dependency: "direct main"
+    description:
+      name: eip55
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.2"
   fake_async:
     dependency: transitive
     description:

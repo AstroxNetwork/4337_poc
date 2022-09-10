@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'dart:typed_data';
 
-import 'package:agent_dart/utils/keccak.dart';
+// import 'package:agent_dart/utils/keccak.dart';
 
+import '../../crypto/keccak.dart';
 import '../../utils/formatting.dart';
 import '../../utils/length_tracking_byte_sink.dart';
 import 'arrays.dart';
@@ -240,7 +241,7 @@ class ContractFunction {
   /// * uint<x> and int<x> will accept a dart int
   ///
   /// Other types are not supported at the moment.
-  Future<Uint8List> encodeCall(List<dynamic> params) async {
+  Uint8List encodeCall(List<dynamic> params) {
     if (params.length != parameters.length) {
       throw ArgumentError.value(
         params.length,
@@ -251,7 +252,7 @@ class ContractFunction {
 
     final sink = LengthTrackingByteSink()
       //First four bytes to identify the function with its parameters
-      ..add(await selector);
+      ..add(selector);
 
     TupleType(parameters.map((param) => param.type).toList())
         .encode(params, sink);
@@ -272,8 +273,8 @@ class ContractFunction {
   /// The selector of this function, as described [by solidity].
   ///
   /// [by solidity]: https://solidity.readthedocs.io/en/develop/abi-spec.html#function-selector
-  Future<Uint8List> get selector async {
-    return (await keccak256(encodeName().plainToU8a())).sublist(0, 4);
+  Uint8List get selector {
+    return (keccak256(encodeName().plainToU8a())).sublist(0, 4);
   }
 
   /// Uses the known types of the function output to decode the value returned
@@ -312,8 +313,7 @@ class ContractEvent {
 
   /// The signature of this event, which is the keccak hash of the event's name
   /// followed by it's components.
-  late final Future<Uint8List> signature =
-      keccak256(stringSignature.plainToU8a());
+  late final Uint8List signature = keccak256(stringSignature.plainToU8a());
 
   /// Decodes the fields of this event from the event's [topics] and its [data]
   /// payload.

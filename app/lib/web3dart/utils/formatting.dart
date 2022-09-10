@@ -1,6 +1,7 @@
 import 'dart:typed_data';
 import 'package:convert/convert.dart';
-import 'package:agent_dart/agent_dart.dart';
+// ignore: implementation_imports
+import 'package:pointycastle/src/utils.dart' as p_utils;
 
 /// If present, removes the 0x from the start of a hex-string.
 String strip0x(String hex) {
@@ -50,20 +51,18 @@ Uint8List hexToBytes(String hexStr) {
 
 Uint8List unsignedIntToBytes(BigInt number) {
   assert(!number.isNegative);
-
-  return number.toU8a();
+  return p_utils.encodeBigIntAsUnsigned(number);
 }
 
 BigInt bytesToUnsignedInt(Uint8List bytes) {
-  return bytes.toBn().toUnsigned(1);
+  return p_utils.decodeBigIntWithSign(1, bytes);
 }
 
 ///Converts the bytes from that list (big endian) to a (potentially signed)
 /// BigInt.
-BigInt bytesToInt(List<int> bytes) =>
-    Uint8List.fromList(bytes).toBn(endian: Endian.big);
+BigInt bytesToInt(List<int> bytes) => p_utils.decodeBigInt(bytes);
 
-Uint8List intToBytes(BigInt number) => number.toU8a();
+Uint8List intToBytes(BigInt number) => p_utils.encodeBigInt(number);
 
 ///Takes the hexadecimal input and creates a [BigInt].
 BigInt hexToInt(String hex) {
