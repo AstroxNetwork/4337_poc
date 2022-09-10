@@ -34,7 +34,7 @@ void main() {
   addressTest.main();
   privateKeyTest.main();
   publickKeyTest.main();
-  // walletTest.main();
+  walletTest.main();
   clientTest.main();
   eventFilterTest.main();
   signTransactionTest.main();

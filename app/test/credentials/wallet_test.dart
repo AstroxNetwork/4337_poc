@@ -1,33 +1,41 @@
-// import 'dart:convert';
+import 'dart:convert';
 
-// import 'package:test/test.dart';
-// import 'package:web3dart/credentials.dart';
-// import 'package:web3dart/crypto.dart';
+import 'package:app/web3dart/credentials/wallet.dart';
+import 'package:app/web3dart/utils/formatting.dart';
+import 'package:flutter_test/flutter_test.dart';
+import 'package:app/web3dart/credentials.dart';
+import 'package:app/web3dart/crypto.dart';
+import 'package:agent_dart/utils/extension.dart';
 
-// import 'example_keystores.dart' as data;
+import 'example_keystores.dart' as data;
 
-// void main() {
-//   final wallets = json.decode(data.content) as Map;
+void main() {
+  final wallets = json.decode(data.content) as Map;
 
-//   wallets.forEach((dynamic testName, dynamic content) {
-//     test(
-//       'unlocks wallet $testName',
-//       () {
-//         final password = content['password'] as String;
-//         final privateKey = content['priv'] as String;
-//         final walletData = content['json'] as Map;
+  wallets.forEach((dynamic testName, dynamic content) {
+    test(
+      'unlocks wallet $testName',
+      () async {
+        final password = content['password'] as String;
+        final privateKey = content['priv'] as String;
+        // final wallet = Wallet.create(privateKey.toU8a());
+        // final str = await wallet.toJson(password);
 
-//         final wallet = Wallet.fromJson(json.encode(walletData), password);
-//         expect(bytesToHex(wallet.privateKey.privateKey), privateKey);
+        // print(str);
 
-//         final encodedWallet = json.decode(wallet.toJson()) as Map;
+        final walletData = content['json'] as Map;
 
-//         expect(
-//           encodedWallet['crypto']['ciphertext'],
-//           walletData['crypto']['ciphertext'],
-//         );
-//       },
-//       tags: 'expensive',
-//     );
-//   });
-// }
+        final wallet = await Wallet.fromJson(json.encode(walletData), password);
+        expect(bytesToHex(wallet.privateKey.privateKey), privateKey);
+
+        final encodedWallet = json.decode(await wallet.toJson(password)) as Map;
+
+        // expect(
+        //   encodedWallet['crypto']['ciphertext'],
+        //   walletData['crypto']['ciphertext'],
+        // );
+      },
+      tags: 'expensive',
+    );
+  });
+}

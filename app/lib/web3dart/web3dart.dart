@@ -20,6 +20,7 @@ import 'core/block_number.dart';
 import 'core/sync_information.dart';
 import 'credentials/address.dart';
 import 'credentials/credentials.dart';
+import 'credentials/wallet.dart';
 import 'crypto/secp256k1.dart';
 import 'json_rpc.dart';
 import 'utils/formatting.dart';
