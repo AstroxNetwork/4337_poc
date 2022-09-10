@@ -70,3 +70,4 @@ artifacts/**/
 
 #hardhat
 cache/
+.env

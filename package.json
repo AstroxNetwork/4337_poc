@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "contract:compile": "hardhat compile",
+    "hardhat:run": "npx hardhat --config hardhat.config.js node --network hardhat",
     "script:fixtures": "swc ./clients/fixtures -d dist",
     "script:bootstrap": "swc ./scripts -d dist",
     "project:pre": "pnpm run script:bootstrap && node ./dist/ic_deployer.js --clean",
