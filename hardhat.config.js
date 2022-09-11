@@ -1,3 +1,4 @@
+require('@nomiclabs/hardhat-ethers');
 const fs = require('fs');
 const ethers = require('ethers');
 
@@ -19,6 +20,7 @@ function getAccounts(count) {
 // write account.json file to local configs
 function writeAccountConfigs(num) {
   fs.writeFileSync(`${process.cwd()}/configs/accounts.json`, JSON.stringify(getAccounts(num)));
+  fs.writeFileSync(`${process.cwd()}/app/test/fixtures/accounts.json`, JSON.stringify(getAccounts(num)));
 }
 
 writeAccountConfigs(counts);

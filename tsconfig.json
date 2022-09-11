@@ -30,10 +30,12 @@
     "noImplicitAny": false,
     "downlevelIteration": true
   },
+  "files": ["./hardhat.config.js"],
   "include": [
     "clients/**/*", 
     "clients/context/**/*", 
     "scripts/**/*",
+    "test/**/*.ts"
   ],
   "exclude": [
     "node_modules",
