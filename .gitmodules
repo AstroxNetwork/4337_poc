@@ -1,0 +1,6 @@
+[submodule "servers/security-center"]
+	path = servers/security-center
+	url = https://github.com/proofofsoulprotocol/soulwallet-backend
+[submodule "servers/paymaster-server"]
+	path = servers/paymaster-server
+	url = https://github.com/proofofsoulprotocol/paymaster-server
