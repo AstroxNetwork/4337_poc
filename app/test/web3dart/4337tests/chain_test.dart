@@ -1,6 +1,6 @@
 import 'package:agent_dart/utils/extension.dart';
 import 'package:http/http.dart';
-import 'package:web3dart/web3dart.dart';
+import 'package:app/web3dart/web3dart.dart';
 // import 'package:flutter_test/flutter_test.dart';
 // import 'package:app/web3dart/json_rpc.dart';
 

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app/web3dart/utils/formatting.dart';
+import 'package:app/web3dart/crypto/formatting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/utils/rlp.dart';

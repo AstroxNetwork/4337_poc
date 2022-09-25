@@ -1,14 +1,16 @@
-import 'dart:typed_data';
 import 'dart:convert';
+import 'dart:math';
+import 'dart:typed_data';
+
 import 'package:collection/collection.dart';
-import 'package:agent_dart/agent_dart.dart' hide hexToBytes, keccak256;
-import 'package:agent_dart/identity/secp256k1.dart' as secp256k1;
 import 'package:pointycastle/ecc/api.dart' show ECPoint;
+
+import '../web3dart.dart' show Transaction;
+import '../crypto/formatting.dart';
 import '../crypto/keccak.dart';
 import '../crypto/secp256k1.dart';
-import '../utils/formatting.dart';
+import '../crypto/secp256k1.dart' as secp256k1;
 import '../utils/typed_data.dart';
-import '../web3dart.dart';
 import 'address.dart';
 
 /// Anything that can sign payloads with a private key.
@@ -24,15 +26,12 @@ abstract class Credentials {
   /// Loads the ethereum address specified by these credentials.
   Future<EthereumAddress> extractAddress();
 
-  // /// Signs the [payload] with a private key. The output will be like the
-  // /// bytes representation of the [eth_sign RPC method](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign),
-  // /// but without the "Ethereum signed message" prefix.
-  // /// The [payload] parameter contains the raw data, not a hash.
-  Future<Uint8List> sign(
-    Uint8List payload, {
-    int? chainId,
-    bool isEIP1559 = false,
-  }) async {
+  /// Signs the [payload] with a private key. The output will be like the
+  /// bytes representation of the [eth_sign RPC method](https://github.com/ethereum/wiki/wiki/JSON-RPC#eth_sign),
+  /// but without the "Ethereum signed message" prefix.
+  /// The [payload] parameter contains the raw data, not a hash.
+  Future<Uint8List> sign(Uint8List payload,
+      {int? chainId, bool isEIP1559 = false}) async {
     final signature =
         await signToSignature(payload, chainId: chainId, isEIP1559: isEIP1559);
 
@@ -46,11 +45,8 @@ abstract class Credentials {
 
   /// Signs the [payload] with a private key and returns the obtained
   /// signature.
-  Future<MsgSignature> signToSignature(
-    Uint8List payload, {
-    int? chainId,
-    bool isEIP1559 = false,
-  });
+  Future<MsgSignature> signToSignature(Uint8List payload,
+      {int? chainId, bool isEIP1559 = false});
 
   /// Signs an Ethereum specific signature. This method is equivalent to
   /// [sign], but with a special prefix so that this method can't be used to
@@ -85,6 +81,11 @@ abstract class CustomTransactionSender extends Credentials {
 
 /// Credentials that can sign payloads with an Ethereum private key.
 class EthPrivateKey extends CredentialsWithKnownAddress {
+  /// ECC's d private parameter.
+  final BigInt privateKeyInt;
+  final Uint8List privateKey;
+  EthereumAddress? _cachedAddress;
+
   /// Creates a private key from a byte array representation.
   ///
   /// The bytes are interpreted as an unsigned integer forming the private key.
@@ -104,25 +105,18 @@ class EthPrivateKey extends CredentialsWithKnownAddress {
   /// is cryptographically secure. The private key could be reconstructed by
   /// someone else otherwise. Just using [Random()] is a very bad idea! At least
   /// use [Random.secure()].
-  // factory EthPrivateKey.createRandom(Random random) {
-  //   final key = generateNewPrivateKey(random);
-  //   return EthPrivateKey(intToBytes(key));
-  // }
-
-  /// ECC's d private parameter.
-  final BigInt privateKeyInt;
-  final Uint8List privateKey;
-  EthereumAddress? _cachedAddress;
+  factory EthPrivateKey.createRandom(Random random) {
+    final key = generateNewPrivateKey(random);
+    return EthPrivateKey(intToBytes(key));
+  }
 
   @override
   final bool isolateSafe = true;
 
   @override
   EthereumAddress get address {
-    _cachedAddress ??=
+    return _cachedAddress ??=
         EthereumAddress(publicKeyToAddress(privateKeyToPublic(privateKeyInt)));
-
-    return _cachedAddress!;
   }
 
   /// Get the encoded public key in an (uncompressed) byte representation.
@@ -132,12 +126,9 @@ class EthPrivateKey extends CredentialsWithKnownAddress {
   ECPoint get publicKey => (params.G * privateKeyInt)!;
 
   @override
-  Future<MsgSignature> signToSignature(
-    Uint8List payload, {
-    int? chainId,
-    bool isEIP1559 = false,
-  }) async {
-    final signature = await sign(keccak256(payload), privateKey);
+  Future<MsgSignature> signToSignature(Uint8List payload,
+      {int? chainId, bool isEIP1559 = false}) async {
+    final signature = secp256k1.sign(keccak256(payload), privateKey);
 
     // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L26
     // be aware that signature.v already is recovery + 27

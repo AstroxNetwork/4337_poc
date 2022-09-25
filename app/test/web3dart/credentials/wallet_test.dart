@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/web3dart/credentials/wallet.dart';
-import 'package:app/web3dart/utils/formatting.dart';
+import 'package:app/web3dart/crypto/formatting.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:app/web3dart/credentials.dart';
 import 'package:app/web3dart/crypto.dart';

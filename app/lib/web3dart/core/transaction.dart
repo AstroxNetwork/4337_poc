@@ -1,45 +1,6 @@
 part of '../web3dart.dart';
 
 class Transaction {
-  Transaction({
-    this.from,
-    this.to,
-    this.maxGas,
-    this.gasPrice,
-    this.value,
-    this.data,
-    this.nonce,
-    this.maxFeePerGas,
-    this.maxPriorityFeePerGas,
-  });
-
-  /// Constructs a transaction that can be used to call a contract function.
-  static Transaction callContract({
-    required DeployedContract contract,
-    required ContractFunction function,
-    required List<dynamic> parameters,
-    EthereumAddress? from,
-    int? maxGas,
-    EtherAmount? gasPrice,
-    EtherAmount? value,
-    int? nonce,
-    EtherAmount? maxPriorityFeePerGas,
-    EtherAmount? maxFeePerGas,
-  }) {
-    final to = contract.address;
-    final data = function.encodeCall(parameters);
-    return Transaction(
-        from: from,
-        to: to,
-        maxGas: maxGas,
-        gasPrice: gasPrice,
-        value: value,
-        data: data,
-        nonce: nonce,
-        maxFeePerGas: maxFeePerGas,
-        maxPriorityFeePerGas: maxPriorityFeePerGas);
-  }
-
   /// The address of the sender of this transaction.
   ///
   /// This can be set to null, in which case the client will use the address
@@ -82,17 +43,42 @@ class Transaction {
   final EtherAmount? maxPriorityFeePerGas;
   final EtherAmount? maxFeePerGas;
 
-  Transaction copyWith({
-    EthereumAddress? from,
-    EthereumAddress? to,
-    int? maxGas,
-    EtherAmount? gasPrice,
-    EtherAmount? value,
-    Uint8List? data,
-    int? nonce,
-    EtherAmount? maxPriorityFeePerGas,
-    EtherAmount? maxFeePerGas,
-  }) {
+  Transaction(
+      {this.from,
+      this.to,
+      this.maxGas,
+      this.gasPrice,
+      this.value,
+      this.data,
+      this.nonce,
+      this.maxFeePerGas,
+      this.maxPriorityFeePerGas});
+
+  /// Constructs a transaction that can be used to call a contract function.
+  Transaction.callContract(
+      {required DeployedContract contract,
+      required ContractFunction function,
+      required List<dynamic> parameters,
+      this.from,
+      this.maxGas,
+      this.gasPrice,
+      this.value,
+      this.nonce,
+      this.maxFeePerGas,
+      this.maxPriorityFeePerGas})
+      : to = contract.address,
+        data = function.encodeCall(parameters);
+
+  Transaction copyWith(
+      {EthereumAddress? from,
+      EthereumAddress? to,
+      int? maxGas,
+      EtherAmount? gasPrice,
+      EtherAmount? value,
+      Uint8List? data,
+      int? nonce,
+      EtherAmount? maxPriorityFeePerGas,
+      EtherAmount? maxFeePerGas}) {
     return Transaction(
       from: from ?? this.from,
       to: to ?? this.to,

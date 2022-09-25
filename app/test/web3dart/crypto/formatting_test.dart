@@ -1,4 +1,4 @@
-import 'package:app/web3dart/utils/formatting.dart';
+import 'package:app/web3dart/crypto/formatting.dart';
 import 'package:flutter_test/flutter_test.dart';
 
 void main() {

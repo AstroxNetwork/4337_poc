@@ -1,5 +1,7 @@
 import 'dart:typed_data';
 
+import 'package:meta/meta.dart';
+
 import '../../utils/length_tracking_byte_sink.dart';
 import 'arrays.dart';
 import 'integers.dart';
@@ -30,10 +32,8 @@ abstract class AbiType<T> {
 /// Information about whether the length of an encoding depends on the data
 /// (dynamic) or is fixed (static). If it's static, also contains information
 /// about the length of the encoding.
+@immutable
 class EncodingLengthInfo {
-  const EncodingLengthInfo(this.length);
-  const EncodingLengthInfo.dynamic() : length = null;
-
   /// When this encoding length is not [isDynamic], the length (in bytes) of
   /// an encoded payload. Otherwise null.
   final int? length;
@@ -44,6 +44,9 @@ class EncodingLengthInfo {
   /// abi encoding and are treated differently when being a part of a tuple or
   /// an array.
   bool get isDynamic => length == null;
+
+  const EncodingLengthInfo(this.length);
+  const EncodingLengthInfo.dynamic() : length = null;
 }
 
 /// Calculates the amount of padding bytes needed so that the length of the
@@ -61,9 +64,10 @@ int calculatePadLength(int bodyLength, {bool allowEmpty = false}) {
 }
 
 class DecodingResult<T> {
-  DecodingResult(this.data, this.bytesRead);
   final T data;
   final int bytesRead;
+
+  DecodingResult(this.data, this.bytesRead);
 
   @override
   String toString() {
@@ -94,6 +98,7 @@ const Map<String, AbiType> _easyTypes = {
 };
 
 final RegExp _trailingDigits = RegExp(r'^(?:\D|\d)*\D(\d*)$');
+@internal
 final RegExp array = RegExp(r'^(.*)\[(\d*)\]$');
 final RegExp _tuple = RegExp(r'^\((.*)\)$');
 
@@ -151,8 +156,7 @@ AbiType parseAbiType(String name) {
     if (typeBuffer.isNotEmpty) {
       if (openParenthesises != 0) {
         throw ArgumentError(
-          'Could not parse abi type because of mismatched brackets: $name',
-        );
+            'Could not parse abi type because of mismatched brackets: $name');
       }
       types.add(parseAbiType(typeBuffer.toString()));
     }

@@ -1,14 +1,16 @@
 part of '../web3dart.dart';
 
 class _FilterCreationParams {
-  _FilterCreationParams(this.method, this.params);
   final String method;
   final List<dynamic> params;
+
+  _FilterCreationParams(this.method, this.params);
 }
 
 class _PubSubCreationParams {
-  _PubSubCreationParams(this.params);
   final List<dynamic> params;
+
+  _PubSubCreationParams(this.params);
 }
 
 abstract class _Filter<T> {
@@ -16,7 +18,7 @@ abstract class _Filter<T> {
 
   _FilterCreationParams create();
   _PubSubCreationParams createPubSub();
-  FutureOr<T> parseChanges(dynamic log);
+  T parseChanges(dynamic log);
 }
 
 class _NewBlockFilter extends _Filter<String> {
@@ -51,7 +53,7 @@ class _PendingTransactionsFilter extends _Filter<String> {
   }
 
   @override
-  String parseChanges(dynamic log) {
+  String parseChanges(log) {
     return log as String;
   }
 
@@ -65,21 +67,15 @@ class _PendingTransactionsFilter extends _Filter<String> {
 class FilterOptions {
   FilterOptions({this.fromBlock, this.toBlock, this.address, this.topics});
 
-  static FilterOptions events({
-    required DeployedContract contract,
-    required ContractEvent event,
-    BlockNum? fromBlock,
-    BlockNum? toBlock,
-  }) {
-    final sig = event.signature;
-    return FilterOptions(
-        address: contract.address,
-        topics: [
-          [bytesToHex(sig, padToEvenLength: true, include0x: true)]
-        ],
-        fromBlock: fromBlock,
-        toBlock: toBlock);
-  }
+  FilterOptions.events(
+      {required DeployedContract contract,
+      required ContractEvent event,
+      this.fromBlock,
+      this.toBlock})
+      : address = contract.address,
+        topics = [
+          [bytesToHex(event.signature, padToEvenLength: true, include0x: true)]
+        ];
 
   /// The earliest block which should be considered for this filter. Optional,
   /// the default value is [BlockNum.current].
@@ -125,38 +121,36 @@ class FilterOptions {
 
 /// A log event emitted in a transaction.
 class FilterEvent {
-  FilterEvent({
-    this.removed,
-    this.logIndex,
-    this.transactionIndex,
-    this.transactionHash,
-    this.blockHash,
-    this.blockNum,
-    this.address,
-    this.data,
-    this.topics,
-  });
+  FilterEvent(
+      {this.removed,
+      this.logIndex,
+      this.transactionIndex,
+      this.transactionHash,
+      this.blockHash,
+      this.blockNum,
+      this.address,
+      this.data,
+      this.topics});
 
-  static FilterEvent fromMap(Map<String, dynamic> log) {
-    return FilterEvent(
-        removed: log['removed'] as bool? ?? false,
-        logIndex: log['logIndex'] != null
+  FilterEvent.fromMap(Map<String, dynamic> log)
+      : removed = log['removed'] as bool? ?? false,
+        logIndex = log['logIndex'] != null
             ? hexToInt(log['logIndex'] as String).toInt()
             : null,
-        transactionIndex: log['transactionIndex'] != null
+        transactionIndex = log['transactionIndex'] != null
             ? hexToInt(log['transactionIndex'] as String).toInt()
             : null,
-        transactionHash: log['transactionHash'] != null
+        transactionHash = log['transactionHash'] != null
             ? log['transactionHash'] as String
             : null,
-        blockHash: log['blockHash'] != null ? log['blockHash'] as String : null,
-        blockNum: log['blockNumber'] != null
+        blockHash =
+            log['blockHash'] != null ? log['blockHash'] as String : null,
+        blockNum = log['blockNumber'] != null
             ? hexToInt(log['blockNumber'] as String).toInt()
             : null,
-        address: EthereumAddress.fromHex(log['address'] as String),
-        data: log['data'] as String?,
-        topics: (log['topics'] as List?)?.cast<String>());
-  }
+        address = EthereumAddress.fromHex(log['address'] as String),
+        data = log['data'] as String?,
+        topics = (log['topics'] as List?)?.cast<String>();
 
   /// Whether the log was removed, due to a chain reorganization. False if it's
   /// a valid log.
@@ -240,8 +234,9 @@ class FilterEvent {
 }
 
 class _EventFilter extends _Filter<FilterEvent> {
-  _EventFilter(this.options);
   final FilterOptions options;
+
+  _EventFilter(this.options);
 
   @override
   _FilterCreationParams create() {
@@ -277,7 +272,7 @@ class _EventFilter extends _Filter<FilterEvent> {
   }
 
   @override
-  FilterEvent parseChanges(dynamic log) {
+  FilterEvent parseChanges(log) {
     return FilterEvent.fromMap(log as Map<String, dynamic>);
   }
 }
@@ -335,9 +330,7 @@ class _FilterEngine {
   }
 
   Future<void> _registerToPubSub(
-    _InstantiatedFilter filter,
-    _PubSubCreationParams params,
-  ) async {
+      _InstantiatedFilter filter, _PubSubCreationParams params) async {
     final peer = _client._connectWithPeer();
 
     try {
@@ -425,9 +418,6 @@ class _FilterEngine {
 }
 
 class _InstantiatedFilter<T> {
-  _InstantiatedFilter(this.filter, this.isPubSub, Function() onCancel)
-      : _controller = StreamController(onCancel: onCancel);
-
   /// The id of this filter. This value will be obtained from the API after the
   /// filter has been set up and is `null` before that.
   String? id;
@@ -437,4 +427,7 @@ class _InstantiatedFilter<T> {
   final bool isPubSub;
 
   final StreamController<T> _controller;
+
+  _InstantiatedFilter(this.filter, this.isPubSub, Function() onCancel)
+      : _controller = StreamController(onCancel: onCancel);
 }

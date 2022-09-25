@@ -1,11 +1,8 @@
 part of '../web3dart.dart';
 
 class _SigningInput {
-  _SigningInput({
-    required this.transaction,
-    required this.credentials,
-    this.chainId,
-  });
+  _SigningInput(
+      {required this.transaction, required this.credentials, this.chainId});
 
   final Transaction transaction;
   final Credentials credentials;
@@ -21,8 +18,7 @@ Future<_SigningInput> _fillMissingData({
 }) async {
   if (loadChainIdFromNetwork && chainId != null) {
     throw ArgumentError(
-      "You can't specify loadChainIdFromNetwork and specify a custom chain id!",
-    );
+        "You can't specify loadChainIdFromNetwork and specify a custom chain id!");
   }
 
   final sender = transaction.from ?? await credentials.extractAddress();
@@ -88,29 +84,19 @@ Uint8List prependTransactionType(int type, Uint8List transaction) {
 }
 
 Future<Uint8List> _signTransaction(
-  Transaction transaction,
-  Credentials c,
-  int? chainId,
-) async {
+    Transaction transaction, Credentials c, int? chainId) async {
   if (transaction.isEIP1559 && chainId != null) {
     final encodedTx = LengthTrackingByteSink();
     encodedTx.addByte(0x02);
-    encodedTx.add(
-      rlp.encode(_encodeEIP1559ToRlp(transaction, null, BigInt.from(chainId))),
-    );
+    encodedTx.add(rlp
+        .encode(_encodeEIP1559ToRlp(transaction, null, BigInt.from(chainId))));
 
     encodedTx.close();
-    final signature = await c.signToSignature(
-      encodedTx.asBytes(),
-      chainId: chainId,
-      isEIP1559: transaction.isEIP1559,
-    );
+    final signature = await c.signToSignature(encodedTx.asBytes(),
+        chainId: chainId, isEIP1559: transaction.isEIP1559);
 
-    return uint8ListFromList(
-      rlp.encode(
-        _encodeEIP1559ToRlp(transaction, signature, BigInt.from(chainId)),
-      ),
-    );
+    return uint8ListFromList(rlp.encode(
+        _encodeEIP1559ToRlp(transaction, signature, BigInt.from(chainId))));
   }
   final innerSignature =
       chainId == null ? null : MsgSignature(BigInt.zero, BigInt.zero, chainId);
@@ -123,10 +109,7 @@ Future<Uint8List> _signTransaction(
 }
 
 List<dynamic> _encodeEIP1559ToRlp(
-  Transaction transaction,
-  MsgSignature? signature,
-  BigInt chainId,
-) {
+    Transaction transaction, MsgSignature? signature, BigInt chainId) {
   final list = [
     chainId,
     transaction.nonce,
