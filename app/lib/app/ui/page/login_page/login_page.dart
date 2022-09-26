@@ -48,12 +48,15 @@ class LoginPage extends GetCommonView<LoginController> {
           const SizedBox(
             height: 40,
           ),
-          const Text(
-            'Recover A Wallet',
-            style: TextStyle(
-              color: ColorStyle.color_FF3940FF,
-              fontSize: 20,
-              letterSpacing: -0.48,
+          GestureDetector(
+            onTap: () => onRecover(),
+            child: const Text(
+              'Recover A Wallet',
+              style: TextStyle(
+                color: ColorStyle.color_FF3940FF,
+                fontSize: 20,
+                letterSpacing: -0.48,
+              ),
             ),
           ),
           const SizedBox(height: 63),
@@ -89,8 +92,9 @@ class LoginPage extends GetCommonView<LoginController> {
             ),
             const Spacer(),
             Padding(
-              padding: const EdgeInsets.only(left: 56, bottom: 30),
+              padding: const EdgeInsets.only(bottom: 30),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   GestureDetector(
                     child: const Text(
@@ -118,5 +122,9 @@ class LoginPage extends GetCommonView<LoginController> {
         ),
       ),
     );
+  }
+
+  onRecover() {
+    Get.toNamed(Routes.recoverPage);
   }
 }

@@ -1,17 +1,17 @@
 import 'package:app/app/base/get/get_common_view.dart';
-import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
-import 'package:app/app/ui/page/guardians_page/guardians_controller.dart';
-import 'package:app/app/ui/page/guardians_page/widget/add_guardian_bottom_sheet.dart';
 import 'package:app/app/ui/page/guardians_page/widget/guardians_item.dart';
+import 'package:app/app/ui/page/recover_page/recover_controller.dart';
+import 'package:app/app/ui/page/recover_page/widget/recover_item.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class GuardiansPage extends GetCommonView<GuardiansController> {
-  GuardiansPage({super.key});
+class RecoverPage extends GetCommonView<RecoverController> {
+  RecoverPage({super.key});
+
+  List<GuardianModel?> seleted = [];
 
   List<GuardianModel> datas = [
     GuardianModel(
@@ -77,7 +77,7 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: TopBar(
-                    isInfo: true,
+                    isInfo: false,
                   ),
                 ),
                 Expanded(
@@ -88,7 +88,7 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                         const Padding(
                           padding: EdgeInsets.only(top: 25),
                           child: Text(
-                            'My Guardians',
+                            'Request more than 50% of the Guardians to Sign Transaction',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w500,
@@ -98,47 +98,78 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                         const Padding(
                           padding: EdgeInsets.only(top: 9),
                           child: Text(
-                            'The guardians help to secue the wallet and can sign to recover the wallet when it’s lost.',
+                            'Once the guardian signs the transaction, the wallet will recover immediately.',
                             style: TextStyle(
                               fontSize: 18,
                               color: ColorStyle.color_black_60,
                             ),
                           ),
                         ),
-                        ListView.builder(
+                        ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (_, index) {
-                            return GuardiansItem(
+                            return RecoverItem(
                               model: datas[index],
                             );
                           },
                           itemCount: datas.length,
-                        ),
-                        const Divider(
-                          height: 1,
-                          color: ColorStyle.color_80979797,
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.only(top: 49, bottom: 49),
-                          child: Align(
-                            alignment: Alignment.bottomCenter,
-                            child: Button(
-                              width: 200,
-                              height: 60,
-                              onPressed: () => onAddGuardian(),
-                              data: '+ Add Guardians',
-                              color: appThemeData.scaffoldBackgroundColor,
-                              borderWidth: 2,
-                              borderColor: ColorStyle.color_FF3940FF,
-                              fontColor: ColorStyle.color_FF3940FF,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
+                          separatorBuilder: (_, index) {
+                            return index != datas.length
+                                ? const Divider(
+                                    height: 1,
+                                    color: ColorStyle.color_80979797,
+                                  )
+                                : Container();
+                          },
                         ),
                       ],
                     ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(top: 30, bottom: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text.rich(
+                        TextSpan(
+                          children: [
+                            const TextSpan(
+                              text: 'Select',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: ColorStyle.color_black_60,
+                              ),
+                            ),
+                            TextSpan(
+                              text: ' ${datas.length} ',
+                              style: const TextStyle(
+                                fontSize: 18,
+                                color: ColorStyle.color_3940FF_80,
+                                fontWeight: FontWeight.w700,
+                              ),
+                            ),
+                            const TextSpan(
+                              text: 'guardian to send request',
+                              style: TextStyle(
+                                fontSize: 18,
+                                color: ColorStyle.color_black_60,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
+                        child: Button(
+                          width: double.infinity,
+                          height: 61,
+                          onPressed: () {},
+                          data: 'Send Request',
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -146,13 +177,6 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
           ),
         ),
       ),
-    );
-  }
-
-  onAddGuardian() {
-    Get.bottomSheet(
-      const AddGuardianBottomSheet(),
-      isScrollControlled: true,
     );
   }
 }
