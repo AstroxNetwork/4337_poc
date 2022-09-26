@@ -12,8 +12,8 @@ class HomePage extends GetCommonView<HomeController> {
 
   final List<Widget> _pageList = [
     const AssetsPage(),
-    const ActivitiesPage(),
-    const GuardiansPage(),
+    ActivitiesPage(),
+    GuardiansPage(),
   ];
 
   @override
@@ -23,19 +23,31 @@ class HomePage extends GetCommonView<HomeController> {
         index: controller.tabIndex,
         children: _pageList,
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        type: BottomNavigationBarType.fixed,
-        currentIndex: controller.tabIndex,
-        selectedFontSize: 12,
-        selectedItemColor: Colors.black,
-        unselectedFontSize: 12,
-        unselectedItemColor: ColorStyle.color_80000000,
-        onTap: (index) => controller.changeTab(index),
-        items: [
-          tab('Assets'),
-          tab('Activities'),
-          tab('Guardians'),
-        ],
+      bottomNavigationBar: Container(
+        decoration: const BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              width: 1,
+              color: ColorStyle.color_80979797,
+            ),
+          ),
+        ),
+        child: BottomNavigationBar(
+          elevation: 0,
+          backgroundColor: Colors.white,
+          type: BottomNavigationBarType.fixed,
+          currentIndex: controller.tabIndex,
+          selectedFontSize: 12,
+          selectedItemColor: Colors.black,
+          unselectedFontSize: 12,
+          unselectedItemColor: ColorStyle.color_80000000,
+          onTap: (index) => controller.changeTab(index),
+          items: [
+            tab('Assets'),
+            tab('Activities'),
+            tab('Guardians'),
+          ],
+        ),
       ),
     );
   }
