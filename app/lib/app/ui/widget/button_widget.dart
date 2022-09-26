@@ -1,5 +1,6 @@
 import 'package:app/app/res/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class Button extends StatelessWidget {
   double width;
@@ -16,19 +17,25 @@ class Button extends StatelessWidget {
   Color fontColor;
   FontWeight fontWeight;
 
-  Button(
-      {super.key,
-      required this.width,
-      required this.height,
-      required this.onPressed,
-      required this.data,
-      this.radius = 31,
-      this.color = ColorStyle.color_FF3940FF,
-      this.borderColor = ColorStyle.color_FF3940FF,
-      this.borderWidth = 0,
-      this.fontSize = 20,
-      this.fontColor = Colors.white,
-      this.fontWeight = FontWeight.w700});
+  Widget? image;
+  double space;
+
+  Button({
+    super.key,
+    required this.width,
+    required this.height,
+    required this.onPressed,
+    required this.data,
+    this.radius = 31,
+    this.color = ColorStyle.color_FF3940FF,
+    this.borderColor = ColorStyle.color_FF3940FF,
+    this.borderWidth = 0,
+    this.fontSize = 20,
+    this.fontColor = Colors.white,
+    this.fontWeight = FontWeight.w700,
+    this.image,
+    this.space = 8,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -46,19 +53,25 @@ class Button extends StatelessWidget {
             : null,
       ),
       child: TextButton(
-        // style: ButtonStyle(
-        //   padding: MaterialStateProperty.all(
-        //       const EdgeInsets.fromLTRB(27, 19, 26, 18)),
-        // ),
         onPressed: onPressed,
-        child: Text(
-          data,
-          style: TextStyle(
-            fontSize: fontSize,
-            fontWeight: fontWeight,
-            color: fontColor,
-            letterSpacing: -0.48,
-          ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (image != null)
+              Padding(
+                padding: EdgeInsets.only(right: space),
+                child: image!,
+              ),
+            Text(
+              data,
+              style: TextStyle(
+                fontSize: fontSize,
+                fontWeight: fontWeight,
+                color: fontColor,
+                letterSpacing: -0.48,
+              ),
+            ),
+          ],
         ),
       ),
     );

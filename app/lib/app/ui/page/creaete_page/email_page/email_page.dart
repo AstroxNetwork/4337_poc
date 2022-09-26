@@ -18,111 +18,124 @@ class EmailPage extends GetCommonView<EmailController> {
         child: SizedBox(
           width: double.infinity,
           height: double.infinity,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Align(
-                alignment: Alignment.topCenter,
-                child: TopBar(),
-              ),
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 34, top: 25),
-                      child: Text(
-                        'Email Verification',
-                        style: TextStyle(
-                          fontSize: 28,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 34, top: 39),
-                      child: Opacity(
-                        opacity: 0.4,
-                        child: Text(
-                          'Email Address',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 34, top: 9),
-                      child: Edit(
-                        width: 322,
-                        height: 55,
-                        hintText: 'info@xxx.com',
-                      ),
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 34, top: 40),
-                      child: Opacity(
-                        opacity: 0.4,
-                        child: Text(
-                          'Verification Code',
-                          style: TextStyle(
-                            fontSize: 20,
-                          ),
-                        ),
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 34, top: 9),
-                      child: Edit(
-                        width: 322,
-                        height: 55,
-                        hintText: 'code',
-                      ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 34, top: 19),
-                      child: RichText(
-                          text: TextSpan(
-                              text: 'You can resend after ',
-                              style: const TextStyle(
-                                fontSize: 16,
-                                color: Colors.black,
-                              ),
-                              children: [
-                            TextSpan(
-                                text: controller.countdown.toString(),
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  color: ColorStyle.color_FF3940FF,
-                                )),
-                            const TextSpan(
-                                text: ' seconds.',
-                                style: TextStyle(
-                                  fontSize: 16,
-                                  color: Colors.black,
-                                ))
-                          ])),
-                    ),
-                  ],
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30, right: 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Align(
+                  alignment: Alignment.topCenter,
+                  child: TopBar(),
                 ),
-              ),
-              Align(
-                alignment: Alignment.bottomCenter,
-                child: Padding(
-                  padding: const EdgeInsets.only(bottom: 50),
-                  child: Button(
-                    width: 322,
-                    height: 61,
-                    onPressed: () => controller.isVerification
-                        ? controller.verification()
-                        : controller.sendVerification(),
-                    data: controller.isVerification
-                        ? 'Confirm'
-                        : 'Send Verification Code',
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4, top: 25),
+                        child: Text(
+                          'Email Verification',
+                          style: TextStyle(
+                            fontSize: 28,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+                      const Padding(
+                        padding: EdgeInsets.only(left: 4, top: 39),
+                        child: Opacity(
+                          opacity: 0.4,
+                          child: Text(
+                            'Email Address',
+                            style: TextStyle(
+                              fontSize: 20,
+                            ),
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 4, top: 9),
+                        child: Edit(
+                          width: 322,
+                          height: 55,
+                          hintText: 'info@xxx.com',
+                        ),
+                      ),
+                      controller.isVerification
+                          ? Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Padding(
+                                  padding: EdgeInsets.only(left: 4, top: 40),
+                                  child: Opacity(
+                                    opacity: 0.4,
+                                    child: Text(
+                                      'Verification Code',
+                                      style: TextStyle(
+                                        fontSize: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 4, top: 9),
+                                  child: Edit(
+                                    width: 322,
+                                    height: 55,
+                                    hintText: 'code',
+                                  ),
+                                ),
+                                Padding(
+                                  padding:
+                                      const EdgeInsets.only(left: 4, top: 19),
+                                  child: RichText(
+                                      text: TextSpan(
+                                          text: 'You can resend after ',
+                                          style: const TextStyle(
+                                            fontSize: 16,
+                                            color: Colors.black,
+                                          ),
+                                          children: [
+                                        TextSpan(
+                                            text:
+                                                controller.countdown.toString(),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              color: ColorStyle.color_FF3940FF,
+                                            )),
+                                        const TextSpan(
+                                            text: ' seconds.',
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Colors.black,
+                                            ))
+                                      ])),
+                                ),
+                              ],
+                            )
+                          : Container(),
+                    ],
                   ),
                 ),
-              ),
-            ],
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Padding(
+                    padding: const EdgeInsets.only(bottom: 50),
+                    child: Button(
+                      width: double.infinity,
+                      height: 61,
+                      onPressed: () => controller.isVerification
+                          ? controller.verification()
+                          : controller.sendVerification(),
+                      data: controller.isVerification
+                          ? 'Confirm'
+                          : 'Send Verification Code',
+                    ),
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
