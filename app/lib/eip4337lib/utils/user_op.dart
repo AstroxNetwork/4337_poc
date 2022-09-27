@@ -36,7 +36,7 @@ String packUserOp(UserOperation op, [bool forSignature = true]) {
 }
 
 String getRequestId(UserOperation op, String entryPoint, BigInt chainId) {
-  final userOpHash = keccak256(toUint8List(packUserOp(op)));
+  final userOpHash = keccak256(hexToBytes(packUserOp(op)));
   final entryPointAddress = EthereumAddress.fromHex(entryPoint);
   const tuple = TupleType([
     FixedBytes(32),
@@ -44,12 +44,12 @@ String getRequestId(UserOperation op, String entryPoint, BigInt chainId) {
     UintType(),
   ]);
   var enc = tupleEncode(tuple, [userOpHash, entryPointAddress, chainId]);
-  return String.fromCharCodes(toUint8List(enc));
+  return enc;
 }
 
-Uint8List toUint8List(String st) {
-  return Uint8List.fromList(st.codeUnits);
-}
+// Uint8List toUint8List(String st) {
+//   return Uint8List.fromList(st.codeUnits);
+// }
 
 String tupleEncode(AbiType<List<dynamic>> tuple, List data) {
   final buffer = LengthTrackingByteSink();
@@ -66,7 +66,7 @@ enum SignatureMode {
 Future<String> _signRequestId(String message, String privateKey) async {
   Credentials cred = Web3Helper.recoverKeys(privateKey);
   // _messagePrefix = '\u0019Ethereum Signed Message:\n'
-  var signed =  await cred.signPersonalMessage(toUint8List(message));
+  var signed =  await cred.signPersonalMessage(hexToBytes(message));
   return String.fromCharCodes(signed);
 }
 

@@ -1,65 +1,73 @@
+import 'package:app/eip4337lib/contracts/IContract.dart';
+import 'package:app/eip4337lib/contracts/simpleWallet.dart';
+import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/credentials.dart';
+import 'package:app/web3dart/crypto.dart';
 
+import 'dart:typed_data';
 import 'define/address.dart';
 import 'entity/user_operation.dart';
 
-class IContract {
-  AbiType<List<dynamic>> ABI;
-  String bytecode;
-  IContract(this.ABI, this.bytecode);
-}
+final Create2Factory = EthereumAddress.fromHex('0xce0042B868300000d44A59004Da54A005ffdcf9f');
 
 class EIP4337Lib {
-  static String getWalletCode(String entryPoint, String payMaster, String owner, String token) {
-    // deploy wallet bytecode
-    var simpleWalletBytecode = "";
-    // const simpleWalletBytecode = new (Web3Helper.new().web3).eth.Contract(SimpleWalletContract.ABI).deploy({
-    //   data: SimpleWalletContract.bytecode,
-    //   arguments: [
-    //     entryPointAddress,
-    //     ownerAddress,
-    //     tokenAddress,
-    //     payMasterAddress
-    //   ]
-    // }).encodeABI();
-    return simpleWalletBytecode;
+
+  static String calculateWalletAddress(
+      EthereumAddress entryPointAddress,
+      EthereumAddress ownerAddress,
+      EthereumAddress tokenAddress,
+      EthereumAddress payMasterAddress,
+      BigInt salt) {
+    return EIP4337Lib.calculateWalletAddressByCode(
+        SoulWallet(),
+        [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],
+        salt
+    );
   }
 
-  static String calculateWalletAddressByCode(IContract initContract,
-      List<AbiType> initArgs, BigInt salt,
-      {String create2Factory = create2Factory}) {
-    return '';
+  static String getWalletCodeWithArgs(IContract contract, List<dynamic> initArgs) {
+    var initCodeWithArgs = contract.bytecode;
+    final walletConstructor = contract.ABI.functions.singleWhere((f) => f.isConstructor);
+    final initParamsEncoded = bytesToHex(walletConstructor.encodeCall(initArgs), include0x: false);
+    initCodeWithArgs += initParamsEncoded;
+    // print('initCodeWithArgs: $initCodeWithArgs');
+    return initCodeWithArgs;
   }
 
-  static String calculateWalletAddress(String entryPoint, String owner,
-      String token, String payMaster,
-      BigInt salt, {String create2Factory = create2Factory}) {
-    return '';
-    // return EIP4337Lib.calculateWalletAddressByCode(
-    //     SimpleWalletContract,
-    //     [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],
-    //     salt,
-    //     create2Factory
-    // );
+  static String calculateWalletAddressByCode(IContract contract, List<dynamic> initArgs, BigInt salt) {
+    final initCodeWithArgs = getWalletCodeWithArgs(contract, initArgs);
+    final initCodeHash = keccak256(hexToBytes(initCodeWithArgs));
+    // print('initCodeHash: ${bytesToHex(initCodeHash, include0x: true)}');
+    return calculateWalletAddressByCodeHash(initCodeHash, salt);
   }
 
-  static String calculateWalletAddressByCodeHash(String initCodeHash, [int salt = 0, String create2Factory = create2Factory]) {
-    return '';
-    // const saltBytes32 = hexZeroPad(hexlify(salt), 32);
-    // return getCreate2Address(create2Factory, saltBytes32, initCodeHash);
+  static String calculateWalletAddressByCodeHash(Uint8List initCodeHash, BigInt salt) {
+    final saltBytes32 = bytesToHex(unsignedIntToBytes(salt), forcePadLength: 64, include0x: true, padToEvenLength: true);
+    // print('saltBytes32: $saltBytes32');
+    return getCreate2Address(Create2Factory, saltBytes32, initCodeHash);
   }
 
-  static UserOperation activateWalletOp(String entryPoint, String payMaster, String owner, String token,
-      BigInt maxFeePerGas, BigInt maxPriorityFeePerGas, [int salt = 0, String create2Factory = create2Factory]) {
-    final initCodeWithArgs = getWalletCode(entryPoint, payMaster, owner, token);
-    // const initCodeHash = keccak256(initCodeWithArgs);
-    const initCodeHash = '';
-    final walletAddress = calculateWalletAddressByCodeHash(initCodeHash, salt, create2Factory);
+  // create2
+  static String getCreate2Address(EthereumAddress factory, String saltBytes32, Uint8List initCodeHash) {
+    final salt = hexToBytes(saltBytes32);
+    // print('getCreate2Address: len ${salt.length}, ${initCodeHash.length}');
+    final input = '0xff' + factory.hexNo0x + bytesToHex(salt, include0x: false) + bytesToHex(initCodeHash, include0x: false);
+    return bytesToHex(keccak256(hexToBytes(input)).sublist(12), include0x: true);
+  }
+
+  static UserOperation activateWalletOp(
+      EthereumAddress entryPointAddress, EthereumAddress payMasterAddress,
+      EthereumAddress ownerAddress, EthereumAddress tokenAddress,
+      BigInt maxFeePerGas, BigInt maxPriorityFeePerGas, BigInt salt) {
+    final initCodeWithArgs = getWalletCodeWithArgs(SoulWallet(),
+      [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],);
+    final initCodeHash = keccak256(hexToBytes(initCodeWithArgs));
+    final walletAddress = calculateWalletAddressByCodeHash(initCodeHash, salt);
     final userOperation = UserOperation();
-    userOperation.nonce = BigInt.from(salt);//0;
+    userOperation.nonce = salt;//0;
     userOperation.sender = walletAddress;
-    userOperation.paymaster = payMaster;
+    userOperation.paymaster = payMasterAddress.hex;
     userOperation.maxFeePerGas = maxFeePerGas;
     userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
     userOperation.initCode = initCodeWithArgs;
@@ -68,6 +76,8 @@ class EIP4337Lib {
     userOperation.callData = "0x";
     return userOperation;
   }
+
+
 
   static BigInt getNonce(String walletAddress, String defaultBlock) {
     return BigInt.zero;
