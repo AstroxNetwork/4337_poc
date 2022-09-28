@@ -1,4 +1,11 @@
 
+import 'dart:typed_data';
+
+import 'package:app/web3dart/credentials.dart';
+import 'package:app/web3dart/crypto.dart';
+
+import '../utils/user_op.dart';
+
 class TransactionInfo {
   String? from;
   String? to;
@@ -6,22 +13,24 @@ class TransactionInfo {
   TransactionInfo([this.from, this.to, this.data]);
 }
 
+const zero = '0x0000000000000000000000000000000000000000';
+
 class UserOperation {
-  String sender = '';
+  EthereumAddress sender = EthereumAddress.fromHex(zero);
   BigInt nonce = BigInt.from(0);
-  String initCode = '0x';
-  String callData = '0x';
+  Uint8List initCode = Uint8List(0);
+  Uint8List callData = Uint8List(0);
   BigInt callGas = BigInt.from(0);
   BigInt verificationGas = BigInt.from(0);
-  BigInt preVerificationGas = BigInt.from(0);
+  BigInt preVerificationGas = BigInt.from(21000);
   BigInt maxFeePerGas = BigInt.from(0);
   BigInt maxPriorityFeePerGas = BigInt.from(0);
-  String paymaster = '0x';
-  String paymasterData = '0x';
-  String signature = '0x';
+  EthereumAddress paymaster = EthereumAddress.fromHex(zero);
+  Uint8List paymasterData = Uint8List(0);
+  Uint8List signature = Uint8List(0);
 
   UserOperation clone() {
-    UserOperation clone = new UserOperation();
+    UserOperation clone = UserOperation();
     clone.sender = sender;
     clone.nonce = nonce;
     clone.initCode = initCode;
@@ -37,28 +46,50 @@ class UserOperation {
     return clone;
   }
 
-  List toTuple() {
+  List<dynamic> toTuple() {
     return [sender,nonce,initCode,callData,callGas,
       verificationGas,preVerificationGas,maxFeePerGas,maxPriorityFeePerGas,
       paymaster,paymasterData,signature];
   }
 
-  Future<bool> estimateGas(String entryPointAddress, Function(TransactionInfo) estimateGasFunc) async {
+  @override
+  String toString() {
+    return '''{
+    sender: $sender,
+    nonce: $nonce,
+    iniCode: ${bytesToHex(initCode, include0x: true)},
+    callData: ${bytesToHex(callData, include0x: true)},
+    verificationGas: $verificationGas,
+    preVerificationGas: $preVerificationGas,
+    maxFeePerGas: $maxFeePerGas,
+    maxPriorityFeePerGas: $maxPriorityFeePerGas,
+    paymaster: $paymaster,
+    paymasterData: ${bytesToHex(paymasterData, include0x: true)},
+    signature: ${bytesToHex(signature, include0x: true)}
+    }''';
+  }
+
+  Future<bool> estimateGas(EthereumAddress entryPointAddress,
+      Function(EthereumAddress, EthereumAddress, Uint8List) estimateGasFunc) async {
     try {
       verificationGas = BigInt.from(150000);
       if (initCode.isNotEmpty) {
         verificationGas += BigInt.from(3200 + 200 * initCode.length);
       }
-      callGas = await estimateGasFunc(TransactionInfo(
-        entryPointAddress, sender, callData
-      ));
+      callGas = await estimateGasFunc(entryPointAddress, sender, callData);
       return true;
     } catch (e) {
       return false;
     }
   }
 
+  Uint8List requestId(EthereumAddress entryPointAddress, BigInt chainId) {
+    return getRequestId(this, entryPointAddress, chainId);
+  }
 
+  void signWithSignature(EthereumAddress signAddress, Uint8List signature) {
+    this.signature = signUserOpWithPersonalSign(signAddress, signature);
+  }
 
 
 }

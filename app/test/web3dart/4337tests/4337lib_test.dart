@@ -1,3 +1,4 @@
+import 'package:app/web3dart/crypto.dart';
 import 'package:http/http.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:app/web3dart/contracts.dart';
@@ -21,6 +22,8 @@ const wethContract = '0xec2a384Fa762C96140c817079768a1cfd0e908EA';
 final wethContractAddress = EthereumAddress.fromHex(wethContract);
 const wethPaymaster = '0xc299849c75a38fC9c91A7254d0F51A1a385EEb7a';
 final wethPaymasterAddress = EthereumAddress.fromHex(wethPaymaster);
+const zeroAccount = '0x0000000000000000000000000000000000000000';
+final zeroAddress = EthereumAddress.fromHex(zeroAccount);
 
 final apiUrl = "https://ropsten.infura.io/v3/754cdf1de04349e1b5687b8a592cb536";
 
@@ -42,14 +45,16 @@ class Deposits {
 void main() async {
   // var httpClient = Client();
   // var ethClient = Web3Client(apiUrl, httpClient);
-  var ethClient = Web3Helper.web3();
+  final ethClient = Web3Helper.web3();
+  final chainId = await ethClient.getChainId();
+  // print(chainId);
 
   final sponser = Web3Helper.recoverKeys(SPONSER_KEY);
   final address = await sponser.extractAddress();
   final balance = await ethClient.getBalance(address);
   print('$address : ${balance.getValueInUnit(EtherUnit.ether)}');
 
-  /// ###########
+  /// ########### getDepositInfo
   // final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
   // final getDepositInfo = entryPointContract.function("getDepositInfo");
   // final response = await ethClient.call(contract: entryPointContract, function: getDepositInfo, params: [
@@ -58,7 +63,7 @@ void main() async {
   // final depositInfo = Deposits(response[0]);
   // print('getDepositInfo: ${depositInfo.amount} ${depositInfo.unstakeDelaySec} ${depositInfo.withdrawTime}');
 
-  /// ###########
+  /// ########### calculateWalletAddress
   final user = Web3Helper.recoverKeys(USER_PRIVATE_KEY);
   final userAddress = await user.extractAddress();
   final simpleWalletCreateSalt = BigInt.zero;
@@ -71,16 +76,39 @@ void main() async {
   print('simpleWalletAddress: $simpleWallet');
   final simpleWalletAddress = EthereumAddress.fromHex(simpleWallet);
 
-  /// ###########
-  final wethContract = DeployedContract(WETH().ABI, wethContractAddress);
-  final balanceOf = wethContract.function("balanceOf");
-  final response = await ethClient.call(contract: wethContract, function: balanceOf, params: [
-    simpleWalletAddress
-  ]);
-  print(response);
+  /// ########### weth balance
+  // final wethContract = DeployedContract(WETH().ABI, wethContractAddress);
+  // final balanceOf = wethContract.function("balanceOf");
+  // final response = await ethClient.call(contract: wethContract, function: balanceOf, params: [
+  //   simpleWalletAddress
+  // ]);
+  // print(response);
   // signAndSendTransaction
 
-  /// ###########
+  /// ########### op
   // getGasPrice
-  EIP4337Lib.activateWalletOp()
+  final gasMax = BigInt.from(3000000000);
+  final gasPriority = BigInt.from(2000000000);
+  var activateOp = EIP4337Lib.activateWalletOp(entryPointAddress, wethPaymasterAddress, userAddress, wethContractAddress,
+      gasMax, gasPriority, simpleWalletCreateSalt);
+  // print(op);
+
+  final requestId = activateOp.requestId(entryPointAddress, chainId);
+  // print('requestId: ${bytesToHex(requestId)}, user: $userAddress');
+  final signature = await user.signPersonalMessage(requestId);
+  // print('signature ${bytesToHex(signature)}');
+  activateOp.signWithSignature(user.address, signature);
+  // print(activateOp);
+
+  /// ########### simulate
+  final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
+  final simulateValidation = entryPointContract.function("simulateValidation");
+
+  final response = await ethClient.call(sender: zeroAddress, contract: entryPointContract, function: simulateValidation, params: [
+    activateOp
+  ]);
+  print(response);
+
+
+  // print(requestId);
 }

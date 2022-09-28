@@ -66,14 +66,14 @@ class EIP4337Lib {
     final walletAddress = calculateWalletAddressByCodeHash(initCodeHash, salt);
     final userOperation = UserOperation();
     userOperation.nonce = salt;//0;
-    userOperation.sender = walletAddress;
-    userOperation.paymaster = payMasterAddress.hex;
+    userOperation.sender = EthereumAddress.fromHex(walletAddress);
+    userOperation.paymaster = payMasterAddress;
     userOperation.maxFeePerGas = maxFeePerGas;
     userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
-    userOperation.initCode = initCodeWithArgs;
-    userOperation.verificationGas = BigInt.from(100000 + 3200 + 200 * userOperation.initCode.length);
+    userOperation.initCode = hexToBytes(initCodeWithArgs);
+    userOperation.verificationGas = BigInt.from(100000 + 3200 + 400 * userOperation.initCode.length + 400);
     userOperation.callGas = BigInt.zero;
-    userOperation.callData = "0x";
+    userOperation.callData = Uint8List(0);
     return userOperation;
   }
 
