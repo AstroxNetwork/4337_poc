@@ -101,14 +101,29 @@ void main() async {
   // print(activateOp);
 
   /// ########### simulate
-  final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
-  final simulateValidation = entryPointContract.function("simulateValidation");
+  final code = await ethClient.getCode(simpleWalletAddress);
+  if (code.isEmpty) {
+    final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
+    final simulateValidation = entryPointContract.function("simulateValidation");
 
-  final response = await ethClient.call(sender: zeroAddress, contract: entryPointContract, function: simulateValidation, params: [
-    activateOp
-  ]);
-  print(response);
+    final response = await ethClient.call(sender: zeroAddress, contract: entryPointContract, function: simulateValidation, params: [
+      activateOp.toTuple()
+    ]);
+    print(response);
 
+    // sendOp();
+  }
+
+  /// ########### guardian
+  final guardian1 = Web3Helper.recoverKeys("0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80");
+  final guardian1Address = await guardian1.extractAddress();
+  final guardian2 = Web3Helper.recoverKeys("0x233bfc84b62f7abe72ba68f83849204c146a90fa675855644d6d5b9639e9f270");
+  final guardian2Address = await guardian2.extractAddress();
+  final guardian3 = Web3Helper.recoverKeys("0x2ff7b5feddca0d5dfe64e75ee9ceb666daf2d94cbada23c78be1bec857d0b376");
+  final guardian3Address = await guardian3.extractAddress();
+
+  final nonce = await EIP4337Lib.getNonce(simpleWalletAddress, ethClient);
+  print(nonce);
 
   // print(requestId);
 }

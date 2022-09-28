@@ -4,6 +4,7 @@ import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/credentials.dart';
 import 'package:app/web3dart/crypto.dart';
+import 'package:app/web3dart/web3dart.dart';
 
 import 'dart:typed_data';
 import 'define/address.dart';
@@ -79,22 +80,17 @@ class EIP4337Lib {
 
 
 
-  static BigInt getNonce(String walletAddress, String defaultBlock) {
-    return BigInt.zero;
-    // const code = await web3.eth.getCode(walletAddress, defaultBlock);
-    // // check contract is exist
-    // if (code === '0x') {
-    //   return 0;
-    // } else {
-    //   const contract = new web3.eth.Contract([{ "inputs": [], "name": "nonce", "outputs": [{ "internalType": "uint256", "name": "", "type": "uint256" }], "stateMutability": "view", "type": "function" }], walletAddress);
-    //   const nonce = await contract.methods.nonce().call();
-    //   // try parse to number
-    //   const nextNonce = parseInt(nonce, 10);
-    //   if (isNaN(nextNonce)) {
-    //     throw new Error('nonce is not a number');
-    //   }
-    //   return nextNonce;
-    // }
+  static Future<BigInt> getNonce(EthereumAddress walletAddress, Web3Client web3) async{
+    final code = await web3.getCode(walletAddress);
+    var nonce = BigInt.zero;
+    if (code.isNotEmpty) {
+      final SoulWalletContract = DeployedContract(SoulWallet().ABI, walletAddress);
+      final getNonce = SoulWalletContract.function("nonce");
+      final response = await web3.call(contract: SoulWalletContract, function: getNonce, params: []);
+      print(response);
+      nonce = response[0] as BigInt;
+    }
+    return nonce;
   }
 }
 
