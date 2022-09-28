@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:app/web3dart/credentials.dart';
 import 'package:app/web3dart/crypto.dart';
+import 'package:app/web3dart/web3dart.dart';
 
 import '../utils/user_op.dart';
 
@@ -69,14 +70,14 @@ class UserOperation {
     }''';
   }
 
-  Future<bool> estimateGas(EthereumAddress entryPointAddress,
-      Function(EthereumAddress, EthereumAddress, Uint8List) estimateGasFunc) async {
+  Future<bool> estimateGas(Web3Client web3, EthereumAddress entryPointAddress) async {
     try {
       verificationGas = BigInt.from(150000);
       if (initCode.isNotEmpty) {
         verificationGas += BigInt.from(3200 + 200 * initCode.length);
       }
-      callGas = await estimateGasFunc(entryPointAddress, sender, callData);
+      callGas = await web3.estimateGas(sender: entryPointAddress, to: sender, data: callData);
+      print('estimateGas: $callGas');
       return true;
     } catch (e) {
       return false;
