@@ -91,6 +91,4 @@ class UserOperation {
   void signWithSignature(EthereumAddress signAddress, Uint8List signature) {
     this.signature = signUserOpWithPersonalSign(signAddress, signature);
   }
-
-
 }

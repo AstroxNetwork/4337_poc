@@ -5,7 +5,6 @@ import 'package:app/web3dart/contracts.dart';
 
 import 'package:app/eip4337lib/EIP4337Lib.dart';
 import 'package:app/eip4337lib/contracts/entryPoint.dart';
-import 'package:app/eip4337lib/contracts/weth.dart';
 import 'package:app/eip4337lib/utils/helper.dart';
 
 import 'abi.dart';

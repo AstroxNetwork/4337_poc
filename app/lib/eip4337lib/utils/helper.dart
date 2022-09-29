@@ -8,7 +8,6 @@ const apiUrl = "https://ropsten.infura.io/v3/754cdf1de04349e1b5687b8a592cb536";
 
 class Web3Helper {
   static Web3Client? _web3;
-  static EthPrivateKey? _cred;
 
   static Web3Client web3() {
     if (_web3 == null) {
@@ -18,26 +17,22 @@ class Web3Helper {
     return _web3!;
   }
 
-  static EthPrivateKey credentials() {
-    if (_cred == null) {
-      throw Exception("credentials empty");
-    }
-    return _cred!;
+  static Wallet createWallet(EthPrivateKey credentials, String password) {
+    final rng = Random.secure();
+    return Wallet.createNew(credentials, password, rng);
   }
 
-  static String createWallet(String password) {
-    var rng = Random.secure();
-    EthPrivateKey credentials = EthPrivateKey.createRandom(rng);
-    Wallet wallet = Wallet.createNew(credentials, password, rng);
-    return wallet.toJson();
-  }
-
-  static void recoverWallet(String json, String password) {
+  static EthPrivateKey recoverWallet(String json, String password) {
     Wallet wallet = Wallet.fromJson(json, password);
-    _cred = wallet.privateKey;
+    return wallet.privateKey;
   }
 
   // tmp
+  static EthPrivateKey generateKey() {
+    final rng = Random.secure();
+    return EthPrivateKey.createRandom(rng);
+  }
+
   static EthPrivateKey recoverKeys(String privateKey) {
     return EthPrivateKey.fromHex(privateKey);
   }

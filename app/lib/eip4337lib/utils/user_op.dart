@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 
+import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/credentials.dart';
@@ -94,7 +95,7 @@ Future<Uint8List> signUserOp(UserOperation op, EthereumAddress entryPoint, BigIn
       DynamicBytes(),
     ]))
   ]);
-  return tupleEncode(tuple, [BigInt.zero, [Web3Helper.credentials().extractAddress(), sign]]);
+  return tupleEncode(tuple, [BigInt.zero, [WalletContext.getInstance().account, sign]]);
 }
 
 

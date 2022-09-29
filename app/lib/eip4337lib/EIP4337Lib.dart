@@ -58,17 +58,17 @@ class EIP4337Lib {
   }
 
   static UserOperation activateWalletOp(
-      EthereumAddress entryPointAddress, EthereumAddress payMasterAddress,
+      EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       EthereumAddress ownerAddress, EthereumAddress tokenAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas, BigInt salt) {
     final initCodeWithArgs = getWalletCodeWithArgs(SoulWallet(),
-      [entryPointAddress, ownerAddress, tokenAddress, payMasterAddress],);
+      [entryPointAddress, ownerAddress, tokenAddress, paymasterAddress],);
     final initCodeHash = keccak256(hexToBytes(initCodeWithArgs));
     final walletAddress = calculateWalletAddressByCodeHash(initCodeHash, salt);
     final userOperation = UserOperation();
     userOperation.nonce = salt;//0;
     userOperation.sender = EthereumAddress.fromHex(walletAddress);
-    userOperation.paymaster = payMasterAddress;
+    userOperation.paymaster = paymasterAddress;
     userOperation.maxFeePerGas = maxFeePerGas;
     userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
     userOperation.initCode = hexToBytes(initCodeWithArgs);
