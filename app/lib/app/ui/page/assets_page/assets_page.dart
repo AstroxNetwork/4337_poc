@@ -74,6 +74,10 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
+                            /// Skyh
+                            // wallet = WalletContext.getInstance()
+                            // Eip4337Lib.calculateWalletAddress()
+                            // await wallet.getEthBalance()..
                             const Text(
                               '0x75…CbEF',
                               style: TextStyle(
@@ -98,6 +102,8 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           width: 323,
                           height: 54,
                           onPressed: () => onActivateMyWallet(),
+                          /// SKyh
+                          // wallet.activateWallet()
                           data: 'Activate My Wallet',
                           borderWidth: 2,
                           color: ColorStyle.color_FFF5F5FF,
@@ -118,6 +124,8 @@ class AssetsPage extends GetCommonView<AssetsController> {
                             Padding(
                               padding: const EdgeInsets.only(left: 22),
                               child: AssetsButton(
+                                /// Skyh
+                                // await wallet.sendETH() wallet.sendERC20() // weth放资产。。
                                 data: 'Send',
                                 image: R.assetsImagesSendIcon,
                                 onTap: () {},

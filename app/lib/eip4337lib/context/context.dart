@@ -24,28 +24,28 @@ class WalletContext {
     return _instance!;
   }
 
-  static void createWallet(Web3Client web3) {
-      final account = Web3Helper.generateKey();
-      _instance = WalletContext(web3, account);
+  static void createAccount(Web3Client web3) {
+      final privateKey = Web3Helper.generateKey();
+      _instance = WalletContext(web3, privateKey);
   }
 
-  static void replaceWallet(Web3Client web3) {
-    final account = Web3Helper.generateKey();
-    _instance = WalletContext(web3, account);
+  static void replaceAccount(Web3Client web3) {
+    final privateKey = Web3Helper.generateKey();
+    _instance = WalletContext(web3, privateKey);
   }
 
-  static void deleteWallet() {
+  static void deleteAccount() {
     _instance = null;
   }
 
-  static void recoverPrivateKey(Web3Client web3, String privateKey) {
-    final account = Web3Helper.recoverKeys(privateKey);
-    _instance = WalletContext(web3, account);
+  static void recoverPrivateKey(Web3Client web3, String priKey) {
+    final privateKey = Web3Helper.recoverKeys(priKey);
+    _instance = WalletContext(web3, privateKey);
   }
 
   static void recoverKeystore(Web3Client web3, String json, String password) {
-    final account = Web3Helper.recoverWallet(json, password);
-    _instance = WalletContext(web3, account);
+    final privateKey = Web3Helper.recoverWallet(json, password);
+    _instance = WalletContext(web3, privateKey);
   }
 
   String generateWalletAddress(EthereumAddress ownerAddress, BigInt salt) {

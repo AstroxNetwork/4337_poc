@@ -95,6 +95,10 @@ class PasswordPage extends GetCommonView<PasswordController> {
                       height: 61,
                       onPressed: () => Get.offAllNamed(Routes.homePage),
                       data: 'Confirm',
+                      /// restore keystore to local file Skyh
+                      // WalletContext.createAccount()  // generate random account
+                      // Web3Helper.createWallet(WalletContext.getInstance().account.address, password)
+                      // WalletContext.recoverKeystore(json, passeword)
                     ),
                   ),
                 )
