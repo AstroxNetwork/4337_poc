@@ -38,6 +38,7 @@ abstract class Credentials {
     final r = padUint8ListTo32(unsignedIntToBytes(signature.r));
     final s = padUint8ListTo32(unsignedIntToBytes(signature.s));
     final v = unsignedIntToBytes(BigInt.from(signature.v));
+    // print('r: ${bytesToHex(r)}, s: ${bytesToHex(s)}, v: ${bytesToHex(v)}');
 
     // https://github.com/ethereumjs/ethereumjs-util/blob/8ffe697fafb33cefc7b7ec01c11e3a7da787fe0e/src/signature.ts#L63
     return uint8ListFromList(r + s + v);

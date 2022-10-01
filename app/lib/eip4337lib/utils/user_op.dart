@@ -3,6 +3,7 @@ import 'dart:ffi';
 import 'dart:typed_data';
 
 
+import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/credentials.dart';
@@ -28,54 +29,64 @@ String packUserOp(UserOperation op, [bool forSignature = true]) {
       DynamicBytes(),
       DynamicBytes(),
     ]);
-    var encoded = tupleEncode(userOpType, op.toTuple());
-    encoded = '0x${encoded.substring(66, encoded.length - 64)}';
+    var encoded = bytesToHex(tupleEncode(userOpType, op.toTuple()));
+    encoded = '0x${encoded.substring(0, encoded.length - 64)}';
     return encoded;
   }
   return '';
 }
 
-String getRequestId(UserOperation op, String entryPoint, BigInt chainId) {
-  final userOpHash = keccak256(toUint8List(packUserOp(op)));
-  final entryPointAddress = EthereumAddress.fromHex(entryPoint);
+Uint8List getRequestId(UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) {
+  final userOpHash = keccak256(hexToBytes(packUserOp(op)));
+  // print('userOpHash ${bytesToHex(userOpHash, include0x: true)}');
   const tuple = TupleType([
     FixedBytes(32),
     AddressType(),
     UintType(),
   ]);
-  var enc = tupleEncode(tuple, [userOpHash, entryPointAddress, chainId]);
-  return String.fromCharCodes(toUint8List(enc));
+  return keccak256(tupleEncode(tuple, [userOpHash, entryPointAddress, chainId]));
 }
 
-Uint8List toUint8List(String st) {
-  return Uint8List.fromList(st.codeUnits);
-}
+// Uint8List toUint8List(String st) {
+//   return Uint8List.fromList(st.codeUnits);
+// }
 
-String tupleEncode(AbiType<List<dynamic>> tuple, List data) {
+Uint8List tupleEncode(AbiType<List<dynamic>> tuple, List data) {
   final buffer = LengthTrackingByteSink();
   tuple.encode(data, buffer);
-  return bytesToHex(buffer.asBytes(), include0x: false);
+  return buffer.asBytes();
 }
 
-enum SignatureMode {
-  owner,
-  guardians,
+// enum SignatureMode {
+//   owner, // 0
+//   guardians, // 1
+// }
+
+Uint8List signUserOpWithPersonalSign(EthereumAddress signAddress, Uint8List signature) {
+  const tuple = TupleType([
+    UintType(length: 8),
+    DynamicLengthArray(type: TupleType([
+      AddressType(),
+      DynamicBytes(),
+    ]))
+  ]);
+  return tupleEncode(tuple, [BigInt.zero, [[signAddress, signature]]]);
 }
 
 /// TODO
-Future<String> _signRequestId(String message, String privateKey) async {
+Future<String> _signRequestId(Uint8List message, String privateKey) async {
   Credentials cred = Web3Helper.recoverKeys(privateKey);
   // _messagePrefix = '\u0019Ethereum Signed Message:\n'
-  var signed =  await cred.signPersonalMessage(toUint8List(message));
+  var signed =  await cred.signPersonalMessage(message);
   return String.fromCharCodes(signed);
 }
 
-Future<String> _signUserOp(UserOperation op, String entryPoint, BigInt chainId, String privateKey) async {
+Future<String> _signUserOp(UserOperation op, EthereumAddress entryPoint, BigInt chainId, String privateKey) async {
   final message = getRequestId(op, entryPoint, chainId);
   return await _signRequestId(message, privateKey);
 }
 
-Future<String> signUserOp(UserOperation op, String entryPoint, BigInt chainId, String privateKey) async {
+Future<Uint8List> signUserOp(UserOperation op, EthereumAddress entryPoint, BigInt chainId, String privateKey) async {
   final sign = await _signUserOp(op, entryPoint, chainId, privateKey);
   const tuple = TupleType([
     UintType(length: 8),
@@ -84,20 +95,10 @@ Future<String> signUserOp(UserOperation op, String entryPoint, BigInt chainId, S
       DynamicBytes(),
     ]))
   ]);
-  return tupleEncode(tuple, [SignatureMode.owner, [Web3Helper.credentials().extractAddress(), sign]]);
+  return tupleEncode(tuple, [BigInt.zero, [WalletContext.getInstance().account, sign]]);
 }
 
-Future<String> signUserOpWithPersonalSign(String signer, String signature) async {
-  final signAddress = EthereumAddress.fromHex(signer);
-  const tuple = TupleType([
-    UintType(length: 8),
-    DynamicLengthArray(type: TupleType([
-      AddressType(),
-      DynamicBytes(),
-    ]))
-  ]);
-  return tupleEncode(tuple, [SignatureMode.owner, [signAddress, signature]]);
-}
+
 
 Future<String> packGuardiansSignByRequestId(String requestId, List<String> signatures, [String? walletAddress]) async{
   ///

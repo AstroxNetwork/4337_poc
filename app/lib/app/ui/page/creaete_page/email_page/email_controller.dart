@@ -16,6 +16,14 @@ class EmailController extends BaseGetController {
   TextEditingController verfCodeController = TextEditingController(text: '');
 
   sendVerification() {
+    /// Skyh
+    // var params = Map();
+    // params['email'] = 'skyhighfeng@gmail.com';
+    // params['code'] = '198GFG';
+    // final response = await Request.addAccount(params);
+    // {"code":400,"msg":"Code is not valid.","data":{}}
+    // {"code":200,"msg":"Add record successfully.","data":{"jwtToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNreWhpZ2hmZW5nQGdtYWlsLmNvbSIsImlhdCI6MTY2NDQ1ODgzOSwiZXhwIjoxNjY1NzU0ODM5fQ.QssiBtGElqIwuzSIaZJyRW8Jyw_iNQmDFQaEOdm2Bmg"}}
+
     if (emailController.text.isEmpty) {
       // todo: 输入为空
       ToastUtil.show('input is empty');
@@ -37,6 +45,10 @@ class EmailController extends BaseGetController {
   }
 
   verification() {
+    /// Skyh
+    // var params = Map();
+    // params['email'] = 'skyhighfeng@gmail.com';
+    // final response = await Request.verifyEmail(params);
     if (verfCodeController.text.isEmpty) {
       // todo: 输入为空
       ToastUtil.show('input is empty');

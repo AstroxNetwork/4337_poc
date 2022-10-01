@@ -52,6 +52,11 @@ Uint8List unsignedIntToBytes(BigInt number) {
   return p_utils.encodeBigIntAsUnsigned(number);
 }
 
+String unsignedIntToHex(BigInt number) {
+  assert(!number.isNegative);
+  return bytesToHex(p_utils.encodeBigIntAsUnsigned(number), include0x: true);
+}
+
 BigInt bytesToUnsignedInt(Uint8List bytes) {
   return p_utils.decodeBigIntWithSign(1, bytes);
 }
