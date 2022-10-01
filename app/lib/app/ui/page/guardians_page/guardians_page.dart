@@ -1,6 +1,5 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/info/app_theme.dart';
-import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/guardians_page/guardians_controller.dart';
 import 'package:app/app/ui/page/guardians_page/widget/add_guardian_bottom_sheet.dart';
@@ -12,53 +11,6 @@ import 'package:get/get.dart';
 
 class GuardiansPage extends GetCommonView<GuardiansController> {
   GuardiansPage({super.key});
-
-  List<GuardianModel> datas = [
-    GuardianModel(
-      name: 'Bob',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Sean',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Yin',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'King',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +29,7 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: TopBar(
-                    isInfo: true,
+                    needInfo: true,
                   ),
                 ),
                 Expanded(
@@ -105,15 +57,17 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                             ),
                           ),
                         ),
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (_, index) {
-                            return GuardiansItem(
-                              model: datas[index],
-                            );
-                          },
-                          itemCount: datas.length,
+                        Obx(
+                          () => ListView.builder(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (_, index) {
+                              return GuardiansItem(
+                                model: controller.datas[index],
+                              );
+                            },
+                            itemCount: controller.datas.length,
+                          ),
                         ),
                         const Divider(
                           height: 1,

@@ -27,7 +27,9 @@ class PasswordPage extends GetCommonView<PasswordController> {
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: TopBar(),
+                  child: TopBar(
+                    needBack: true,
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -58,6 +60,7 @@ class PasswordPage extends GetCommonView<PasswordController> {
                       Padding(
                         padding: const EdgeInsets.only(left: 4, top: 9),
                         child: Edit(
+                          controller: controller.passwordController,
                           width: 322,
                           height: 55,
                           hintText: 'password',
@@ -78,6 +81,7 @@ class PasswordPage extends GetCommonView<PasswordController> {
                       Padding(
                         padding: const EdgeInsets.only(left: 4, top: 9),
                         child: Edit(
+                          controller: controller.replacePasswordController,
                           width: 322,
                           height: 55,
                           hintText: 'password',
@@ -93,7 +97,7 @@ class PasswordPage extends GetCommonView<PasswordController> {
                     child: Button(
                       width: double.infinity,
                       height: 61,
-                      onPressed: () => Get.offAllNamed(Routes.homePage),
+                      onPressed: () => controller.onConfirm(),
                       data: 'Confirm',
                       /// restore keystore to local file Skyh
                       // WalletContext.createAccount()  // generate random account

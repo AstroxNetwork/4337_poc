@@ -3,6 +3,7 @@ import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/login_page/login_controller.dart';
+import 'package:app/app/ui/page/login_page/widget/password_bottom_sheet.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/edit_widget.dart';
@@ -30,7 +31,7 @@ class LoginPage extends GetCommonView<LoginController> {
               Button(
                 width: 110,
                 height: 61,
-                onPressed: () => showPasswordBottomSheet(),
+                onPressed: () => onLogIn(),
                 data: 'Log in',
                 color: Colors.white,
                 borderWidth: 1,
@@ -40,7 +41,7 @@ class LoginPage extends GetCommonView<LoginController> {
               Button(
                 width: 210,
                 height: 61,
-                onPressed: () => Get.toNamed(Routes.emailPage),
+                onPressed: () => onCreate(),
                 data: 'Create New Wallet',
               ),
             ],
@@ -65,66 +66,17 @@ class LoginPage extends GetCommonView<LoginController> {
     );
   }
 
-  showPasswordBottomSheet() {
+  onLogIn() {
     Get.bottomSheet(
-      Container(
-        width: double.infinity,
-        height: 390,
-        decoration: BoxDecoration(
-          color: appThemeData.scaffoldBackgroundColor,
-          borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            const Padding(
-              padding: EdgeInsets.only(top: 40),
-              child: Text(
-                'Enter Password to log in',
-                style: TextStyle(
-                  fontSize: 24,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 59),
-              child: Edit(width: 322, height: 55),
-            ),
-            const Spacer(),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 30),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  GestureDetector(
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: ColorStyle.color_FF3940FF,
-                      ),
-                    ),
-                    onTap: () => Get.back(),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40),
-                    child: Button(
-                      width: 200,
-                      height: 60,
-                      onPressed: () {},
-                      data: 'Confirm',
-                    ),
-                  )
-                ],
-              ),
-            )
-          ],
-        ),
-      ),
+      const PasswordBottomSheet(),
     );
   }
 
   onRecover() {
     Get.toNamed(Routes.recoverPage);
+  }
+
+  onCreate() {
+    Get.toNamed(Routes.emailPage);
   }
 }

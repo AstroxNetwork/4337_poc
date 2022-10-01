@@ -112,7 +112,7 @@ class ActivitiesPage extends GetCommonView<ActivitiesController> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: TopBar(
-                    isInfo: true,
+                    needInfo: true,
                   ),
                 ),
                 Expanded(

@@ -8,8 +8,12 @@ import 'package:app/app/ui/page/home_page/home_binding.dart';
 import 'package:app/app/ui/page/home_page/home_page.dart';
 import 'package:app/app/ui/page/login_page/login_binding.dart';
 import 'package:app/app/ui/page/login_page/login_page.dart';
-import 'package:app/app/ui/page/recover_page/recover_binding.dart';
-import 'package:app/app/ui/page/recover_page/recover_page.dart';
+import 'package:app/app/ui/page/recover_page/recover_page/recover_binding.dart';
+import 'package:app/app/ui/page/recover_page/recover_page/recover_page.dart';
+import 'package:app/app/ui/page/recover_page/signed_page/signed_binding.dart';
+import 'package:app/app/ui/page/recover_page/signed_page/signed_page.dart';
+import 'package:app/app/ui/page/recover_page/transaction_page/transaction_binding.dart';
+import 'package:app/app/ui/page/recover_page/transaction_page/transaction_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
 abstract class Routes {
@@ -19,6 +23,8 @@ abstract class Routes {
   static const String homePage = '/home';
   static const String guardianPage = '/guardian';
   static const String recoverPage = '/recover';
+  static const String transactionPage = '/transaction';
+  static const String signedPage = '/signed';
 
   static final routePage = [
     GetPage(
@@ -49,6 +55,16 @@ abstract class Routes {
       name: recoverPage,
       page: () => RecoverPage(),
       binding: RecoverBinding(),
+    ),
+    GetPage(
+      name: transactionPage,
+      page: () => TransactionPage(),
+      binding: TransactionBinding(),
+    ),
+    GetPage(
+      name: signedPage,
+      page: () => SignedPage(),
+      binding: SignedBinding(),
     ),
   ];
 }

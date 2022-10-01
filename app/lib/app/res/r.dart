@@ -23,4 +23,9 @@ class R {
       'assets/images/congratulations.png';
   static const String assetsImagesArrowRight = 'assets/images/arrow_right.png';
   static const String assetsImagesScan = 'assets/images/scan.png';
+  static const String assetsTransactionSigned =
+      'assets/images/transaction_signed.png';
+  static const String assetsImagesDownload = 'assets/images/download.png';
+  static const String assetsImagesTransactionLoading =
+      'assets/images/transaction_loading.png';
 }

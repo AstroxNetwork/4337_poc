@@ -1,18 +1,21 @@
 import 'package:app/app/base/get/get_common_view.dart';
-import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/assets_page/assets_controller.dart';
 import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/assets_button.dart';
-import 'package:app/app/ui/page/assets_page/widget/assets_item.dart';
+import 'package:app/app/ui/page/assets_page/widget/asset_item.dart';
+import 'package:app/app/ui/page/assets_page/widget/receivingt_tokens_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/wallet_account_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
+import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
+// todo: assets页面如何实现刷新？
 class AssetsPage extends GetCommonView<AssetsController> {
   const AssetsPage({super.key});
 
@@ -32,7 +35,8 @@ class AssetsPage extends GetCommonView<AssetsController> {
                 child: Align(
                   alignment: Alignment.topCenter,
                   child: TopBar(
-                    isInfo: true,
+                    needInfo: true,
+                    needScan: true,
                   ),
                 ),
               ),
@@ -45,7 +49,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                         child: GestureDetector(
                           onTap: () => onAvatarClick(),
                           child: Image.network(
-                            '',
+                            controller.userModel.avatar,
                             errorBuilder: (_, __, ___) => CircleAvatar(
                               radius: 30,
                               child: Image.asset(
@@ -58,11 +62,11 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           ),
                         ),
                       ),
-                      const Padding(
-                        padding: EdgeInsets.only(top: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(top: 10),
                         child: Text(
-                          'Account 1',
-                          style: TextStyle(
+                          controller.userModel.name,
+                          style: const TextStyle(
                             fontSize: 20,
                             fontWeight: FontWeight.w700,
                           ),
@@ -78,19 +82,22 @@ class AssetsPage extends GetCommonView<AssetsController> {
                             // wallet = WalletContext.getInstance()
                             // Eip4337Lib.calculateWalletAddress()
                             // await wallet.getEthBalance()..
-                            const Text(
-                              '0x75…CbEF',
-                              style: TextStyle(
+                            AddressText(
+                              controller.userModel.address,
+                              style: const TextStyle(
                                 fontSize: 14,
-                                color: ColorStyle.color_80000000,
+                                color: ColorStyle.color_000000_50,
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 10),
-                              child: Image.asset(
-                                R.assetsImagesCopy,
-                                width: 16,
-                                height: 16,
+                            GestureDetector(
+                              onTap: () => onCopy(),
+                              child: Padding(
+                                padding: const EdgeInsets.only(left: 10),
+                                child: Image.asset(
+                                  R.assetsImagesCopy,
+                                  width: 16,
+                                  height: 16,
+                                ),
                               ),
                             )
                           ],
@@ -119,7 +126,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                             AssetsButton(
                               data: 'Receive',
                               image: R.assetsImagesReceiveIcon,
-                              onTap: () {},
+                              onTap: () => onReceiveClick(),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 22),
@@ -141,10 +148,15 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           color: ColorStyle.color_4D979797,
                         ),
                       ),
-                      ListView(
+                      ListView.builder(
                         shrinkWrap: true,
                         physics: const NeverScrollableScrollPhysics(),
-                        children: getViews(),
+                        itemBuilder: (_, index) {
+                          return AssetItem(
+                            model: controller.userModel.assets[index],
+                          );
+                        },
+                        itemCount: controller.userModel.assets.length,
                       ),
                     ],
                   ),
@@ -157,28 +169,26 @@ class AssetsPage extends GetCommonView<AssetsController> {
     );
   }
 
-  List<Widget> getViews() {
-    List<Widget> list = [];
-    for (int i = 0; i < 30; i++) {
-      list.add(
-        const AssetsItem(),
-      );
-    }
-    return list;
-  }
-
   onAvatarClick() {
-    Get.bottomSheet(
-      const WalletAccountBottomSheet(),
-    );
+    Get.bottomSheet(const WalletAccountBottomSheet());
   }
 
   onActivateMyWallet() {
-    // Get.dialog(
-    //   const WithoutWalletDialog(),
-    // );
-    Get.bottomSheet(
-      const ActivateWalletBottomSheet(),
-    );
+    // todo: 不确定这里的条件
+    if (controller.userModel.assets.isEmpty) {
+      Get.dialog(const WithoutWalletDialog());
+    } else {
+      Get.bottomSheet(const ActivateWalletBottomSheet());
+    }
+  }
+
+  onReceiveClick() {
+    Get.bottomSheet(const ReceivingTokensBottomSheet());
+  }
+
+  onCopy() {
+    Clipboard.setData(ClipboardData(
+      text: controller.userModel.address,
+    ));
   }
 }
