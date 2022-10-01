@@ -10,16 +10,22 @@ class PasswordController extends BaseGetController {
       TextEditingController(text: '');
 
   onConfirm() {
-    if (passwordController.text.isEmpty ||
-        replacePasswordController.text.isEmpty) {
-      // todo: 输入为空
-      ToastUtil.show('input is empty');
-    } else if (passwordController.text != replacePasswordController.text) {
-      // todo: 输入错误
-      ToastUtil.show('input is error');
-    } else {
-      // todo: 注册账号 success回调为跳转到home页面
-      Get.offAllNamed(Routes.homePage);
+    if (passwordController.text.isEmpty) {
+      ToastUtil.show('Please enter new password');
+      return;
     }
+
+    if (replacePasswordController.text.isEmpty) {
+      ToastUtil.show('Please confirm the password');
+      return;
+    }
+
+    if (passwordController.text != replacePasswordController.text) {
+      ToastUtil.show('Password not match');
+    }
+
+    // todo: createNewAddress
+    Get.offAllNamed(Routes.homePage);
+    // todo: cache
   }
 }
