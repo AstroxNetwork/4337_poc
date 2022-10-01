@@ -5,12 +5,15 @@ class Edit extends StatefulWidget {
   double width;
   double height;
   String hintText;
+  TextEditingController controller;
 
-  Edit(
-      {super.key,
-      required this.width,
-      required this.height,
-      this.hintText = ""});
+  Edit({
+    super.key,
+    required this.width,
+    required this.height,
+    this.hintText = "",
+    required this.controller,
+  });
 
   @override
   State<Edit> createState() => _EditState();
@@ -37,6 +40,7 @@ class _EditState extends State<Edit> {
               )
             ]),
         child: TextField(
+          controller: widget.controller,
           cursorColor: Colors.black,
           keyboardType: TextInputType.text,
           textAlign: TextAlign.left,
@@ -73,5 +77,11 @@ class _EditState extends State<Edit> {
         width: 1,
       ),
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    widget.controller.clear();
   }
 }

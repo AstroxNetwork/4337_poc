@@ -1,11 +1,12 @@
-import 'package:app/app/base/get/get_common_view.dart';
+import 'package:app/app/model/asset_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
-import 'package:app/app/ui/page/assets_page/assets_controller.dart';
 import 'package:flutter/material.dart';
 
-class AssetsItem extends GetCommonView<AssetsController> {
-  const AssetsItem({Key? key}) : super(key: key);
+class AssetItem extends StatelessWidget {
+  AssetModel model;
+
+  AssetItem({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -26,20 +27,21 @@ class AssetsItem extends GetCommonView<AssetsController> {
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 15),
+            Padding(
+              padding: const EdgeInsets.only(left: 15),
               child: Text(
-                '0.00',
+                // todo: 保留两位？
+                model.count.toStringAsFixed(2),
                 style: const TextStyle(
                   fontSize: 18,
                   color: ColorStyle.color_000000_50,
                 ),
               ),
             ),
-            const Padding(
-              padding: EdgeInsets.only(left: 5),
+            Padding(
+              padding: const EdgeInsets.only(left: 5),
               child: Text(
-                'ETF',
+                model.currency,
                 style: const TextStyle(
                   fontSize: 18,
                   color: ColorStyle.color_000000_50,

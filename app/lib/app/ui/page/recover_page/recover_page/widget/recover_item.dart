@@ -1,21 +1,21 @@
+import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
-import 'package:app/app/res/r.dart';
+import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';
 import 'package:app/app/ui/widget/address_text.dart';
-import 'package:app/app/ui/routes/routes.dart';
+import 'package:app/app/ui/widget/costom_checkbox.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-class GuardiansItem extends StatelessWidget {
+class RecoverItem extends GetCommonView<RecoverController> {
   GuardianModel model;
 
-  GuardiansItem({super.key, required this.model});
+  RecoverItem({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () => onItemClick(),
+      onTap: () => onClick(),
       child: Container(
         decoration: const BoxDecoration(),
         child: Row(
@@ -51,45 +51,26 @@ class GuardiansItem extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: const [
-                Text(
-                  'Added',
-                  style: TextStyle(
-                    fontSize: 12,
-                    fontWeight: FontWeight.w700,
-                    color: ColorStyle.color_8F8F8F,
-                  ),
-                ),
-                Padding(
-                  padding: EdgeInsets.only(top: 8),
-                  child: Text(
-                    'Effective in 24 hours',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: ColorStyle.color_DA8700_80,
-                    ),
-                  ),
-                ),
-              ],
+            CostomCheckBox(
+              size: 25,
+              isChecked: controller.selectedData.contains(model),
+              checkedColor: ColorStyle.color_FF3940FF,
+              animationDuration: const Duration(milliseconds: 200),
+              widgetPadding: 0,
+              borderColor: controller.selectedData.contains(model)
+                  ? ColorStyle.color_FF3940FF
+                  : ColorStyle.color_4D979797,
+              onTap: (_) {
+                controller.toggleCheck(model);
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.only(left: 10, right: 3),
-              child: Image.asset(
-                R.assetsImagesArrowRight,
-                width: 14,
-                height: 24,
-              ),
-            )
           ],
         ),
       ),
     );
   }
 
-  onItemClick() {
-    Get.toNamed(Routes.guardianPage, arguments: model);
+  onClick() {
+    controller.toggleCheck(model);
   }
 }

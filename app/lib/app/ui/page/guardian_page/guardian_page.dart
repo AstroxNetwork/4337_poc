@@ -25,7 +25,7 @@ class GuardianPage extends GetCommonView<GuardianController> {
                 Align(
                   alignment: Alignment.topCenter,
                   child: TopBar(
-                    isInfo: false,
+                    needBack: true,
                   ),
                 ),
                 const Padding(

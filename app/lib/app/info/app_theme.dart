@@ -6,10 +6,4 @@ ThemeData get appThemeData => ThemeData(
         color: Colors.white,
       ),
       textTheme: const TextTheme(),
-      checkboxTheme: CheckboxThemeData(
-        visualDensity: VisualDensity(
-          horizontal: 1,
-          vertical: -1,
-        ),
-      ),
     );

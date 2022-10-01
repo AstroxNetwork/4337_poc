@@ -5,6 +5,7 @@ import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/edit_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class EmailPage extends GetCommonView<EmailController> {
   const EmailPage({super.key});
@@ -25,7 +26,9 @@ class EmailPage extends GetCommonView<EmailController> {
               children: [
                 Align(
                   alignment: Alignment.topCenter,
-                  child: TopBar(),
+                  child: TopBar(
+                    needBack: true,
+                  ),
                 ),
                 Expanded(
                   child: Column(
@@ -56,65 +59,70 @@ class EmailPage extends GetCommonView<EmailController> {
                       Padding(
                         padding: const EdgeInsets.only(left: 4, top: 9),
                         child: Edit(
+                          controller: controller.emailController,
                           width: 322,
                           height: 55,
                           hintText: 'info@xxx.com',
                         ),
                       ),
-                      controller.isVerification
-                          ? Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                const Padding(
-                                  padding: EdgeInsets.only(left: 4, top: 40),
-                                  child: Opacity(
-                                    opacity: 0.4,
-                                    child: Text(
-                                      'Verification Code',
-                                      style: TextStyle(
-                                        fontSize: 20,
+                      Obx(
+                        () => controller.isVerification.value
+                            ? Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 4, top: 40),
+                                    child: Opacity(
+                                      opacity: 0.4,
+                                      child: Text(
+                                        'Verification Code',
+                                        style: TextStyle(
+                                          fontSize: 20,
+                                        ),
                                       ),
                                     ),
                                   ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 4, top: 9),
-                                  child: Edit(
-                                    width: 322,
-                                    height: 55,
-                                    hintText: 'code',
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 4, top: 9),
+                                    child: Edit(
+                                      controller: controller.verfCodeController,
+                                      width: 322,
+                                      height: 55,
+                                      hintText: 'code',
+                                    ),
                                   ),
-                                ),
-                                Padding(
-                                  padding:
-                                      const EdgeInsets.only(left: 4, top: 19),
-                                  child: RichText(
-                                      text: TextSpan(
-                                          text: 'You can resend after ',
-                                          style: const TextStyle(
-                                            fontSize: 16,
-                                            color: Colors.black,
-                                          ),
-                                          children: [
-                                        TextSpan(
-                                            text:
-                                                controller.countdown.toString(),
+                                  Padding(
+                                    padding:
+                                        const EdgeInsets.only(left: 4, top: 19),
+                                    child: RichText(
+                                        text: TextSpan(
+                                            text: 'You can resend after ',
                                             style: const TextStyle(
                                               fontSize: 16,
-                                              color: ColorStyle.color_FF3940FF,
-                                            )),
-                                        const TextSpan(
-                                            text: ' seconds.',
-                                            style: TextStyle(
-                                              fontSize: 16,
                                               color: Colors.black,
-                                            ))
-                                      ])),
-                                ),
-                              ],
-                            )
-                          : Container(),
+                                            ),
+                                            children: [
+                                          TextSpan(
+                                              text: controller.countdown.value
+                                                  .toString(),
+                                              style: const TextStyle(
+                                                fontSize: 16,
+                                                color:
+                                                    ColorStyle.color_FF3940FF,
+                                              )),
+                                          const TextSpan(
+                                              text: ' seconds.',
+                                              style: TextStyle(
+                                                fontSize: 16,
+                                                color: Colors.black,
+                                              ))
+                                        ])),
+                                  ),
+                                ],
+                              )
+                            : Container(),
+                      )
                     ],
                   ),
                 ),
@@ -122,15 +130,17 @@ class EmailPage extends GetCommonView<EmailController> {
                   alignment: Alignment.bottomCenter,
                   child: Padding(
                     padding: const EdgeInsets.only(bottom: 50),
-                    child: Button(
-                      width: double.infinity,
-                      height: 61,
-                      onPressed: () => controller.isVerification
-                          ? controller.verification()
-                          : controller.sendVerification(),
-                      data: controller.isVerification
-                          ? 'Confirm'
-                          : 'Send Verification Code',
+                    child: Obx(
+                      () => Button(
+                        width: double.infinity,
+                        height: 61,
+                        onPressed: () => controller.isVerification.value
+                            ? controller.verification()
+                            : controller.sendVerification(),
+                        data: controller.isVerification.value
+                            ? 'Confirm'
+                            : 'Send Verification Code',
+                      ),
                     ),
                   ),
                 ),

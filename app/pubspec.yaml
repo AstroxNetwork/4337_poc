@@ -45,6 +45,8 @@ dependencies:
   web3dart: 2.3.5
   get: ^4.6.5
   shared_preferences: ^2.0.15
+  pull_to_refresh: ^2.0.0
+  flutter_spinkit: ^5.1.0
 
 dev_dependencies:
   flutter_test:

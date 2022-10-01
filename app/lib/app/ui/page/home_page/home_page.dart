@@ -40,7 +40,7 @@ class HomePage extends GetCommonView<HomeController> {
           selectedFontSize: 12,
           selectedItemColor: Colors.black,
           unselectedFontSize: 12,
-          unselectedItemColor: ColorStyle.color_80000000,
+          unselectedItemColor: ColorStyle.color_000000_50,
           onTap: (index) => controller.changeTab(index),
           items: [
             tab('Assets'),

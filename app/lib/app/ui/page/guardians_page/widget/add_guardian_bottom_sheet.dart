@@ -1,5 +1,6 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/info/app_theme.dart';
+import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/guardians_page/guardians_controller.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
@@ -53,6 +54,7 @@ class AddGuardianBottomSheet extends GetCommonView<GuardiansController> {
             Padding(
               padding: const EdgeInsets.only(left: 4, top: 9, right: 4),
               child: Edit(
+                controller: controller.nameController,
                 width: 322,
                 height: 55,
                 hintText: 'name…',
@@ -76,6 +78,7 @@ class AddGuardianBottomSheet extends GetCommonView<GuardiansController> {
             Padding(
               padding: const EdgeInsets.only(left: 4, top: 9, right: 4),
               child: Edit(
+                controller: controller.addressController,
                 width: 322,
                 height: 55,
                 hintText: '0x….',
@@ -138,10 +141,7 @@ class AddGuardianBottomSheet extends GetCommonView<GuardiansController> {
                     child: Button(
                       width: 200,
                       height: 60,
-                      onPressed: () {
-                        Get.back();
-                        ToastUtil.show('Guardian Added');
-                      },
+                      onPressed: () => onContinue(),
                       data: 'Continue',
                     ),
                   )
@@ -152,5 +152,10 @@ class AddGuardianBottomSheet extends GetCommonView<GuardiansController> {
         ),
       ),
     );
+  }
+
+  onContinue() {
+    controller.addGuardian();
+    Get.back();
   }
 }

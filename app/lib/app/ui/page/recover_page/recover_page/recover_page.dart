@@ -1,64 +1,16 @@
 import 'package:app/app/base/get/get_common_view.dart';
-import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
-import 'package:app/app/ui/page/guardians_page/widget/guardians_item.dart';
-import 'package:app/app/ui/page/recover_page/recover_controller.dart';
-import 'package:app/app/ui/page/recover_page/widget/recover_item.dart';
+import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';
+import 'package:app/app/ui/page/recover_page/recover_page/widget/recover_item.dart';
+import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:get/get_core/src/get_main.dart';
 
 class RecoverPage extends GetCommonView<RecoverController> {
   RecoverPage({super.key});
-
-  List<GuardianModel?> seleted = [];
-
-  List<GuardianModel> datas = [
-    GuardianModel(
-      name: 'Bob',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Sean',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Yin',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'King',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-    GuardianModel(
-      name: 'Tony',
-      address: '0x6b5cf860506c6291711478F54123312066946b0',
-    ),
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -110,12 +62,12 @@ class RecoverPage extends GetCommonView<RecoverController> {
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (_, index) {
                             return RecoverItem(
-                              model: datas[index],
+                              model: controller.allData[index],
                             );
                           },
-                          itemCount: datas.length,
+                          itemCount: controller.allData.length,
                           separatorBuilder: (_, index) {
-                            return index != datas.length
+                            return index != controller.allData.length
                                 ? const Divider(
                                     height: 1,
                                     color: ColorStyle.color_80979797,
@@ -143,10 +95,10 @@ class RecoverPage extends GetCommonView<RecoverController> {
                               ),
                             ),
                             TextSpan(
-                              text: ' ${datas.length} ',
+                              text: ' ${controller.selectedData.length} ',
                               style: const TextStyle(
                                 fontSize: 18,
-                                color: ColorStyle.color_3940FF_80,
+                                color: ColorStyle.color_black_60,
                                 fontWeight: FontWeight.w700,
                               ),
                             ),
@@ -165,7 +117,10 @@ class RecoverPage extends GetCommonView<RecoverController> {
                         child: Button(
                           width: double.infinity,
                           height: 61,
-                          onPressed: () {},
+                          onPressed: () => Get.toNamed(
+                            Routes.transactionPage,
+                            arguments: controller.selectedData,
+                          ),
                           data: 'Send Request',
                         ),
                       ),
