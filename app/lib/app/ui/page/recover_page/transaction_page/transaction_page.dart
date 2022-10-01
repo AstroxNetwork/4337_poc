@@ -1,11 +1,11 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/recover_page/transaction_page/transaction_controller.dart';
+import 'package:app/app/ui/page/recover_page/transaction_page/widget/PouringHourGlass.dart';
 import 'package:app/app/ui/page/recover_page/transaction_page/widget/transaction_item.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 
 class TransactionPage extends GetCommonView<TransactionController> {
   @override
@@ -33,7 +33,7 @@ class TransactionPage extends GetCommonView<TransactionController> {
                       children: [
                         const Padding(
                           padding: EdgeInsets.only(top: 89),
-                          child: SpinKitPouringHourGlass(
+                          child: PouringHourGlass(
                             size: 60,
                             color: Colors.black,
                           ),
