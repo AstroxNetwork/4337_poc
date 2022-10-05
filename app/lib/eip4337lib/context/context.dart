@@ -67,6 +67,12 @@ class WalletContext {
     walletAddress = EthereumAddress.fromHex(wallet);
   }
 
+  // 生成钱包地址，记录在context
+  void setWalletAddressAutomatic() {
+    final wallet = generateWalletAddress(account.address, BigInt.zero);
+    walletAddress = EthereumAddress.fromHex(wallet);
+  }
+
   String generateWalletAddress(EthereumAddress ownerAddress, BigInt salt) {
     final walletAddress = EIP4337Lib.calculateWalletAddress(Goerli.entryPointAddress,
         ownerAddress, Goerli.wethAddress, Goerli.paymasterAddress, salt);
@@ -107,12 +113,11 @@ class WalletContext {
   }
 
   // 激活钱包
-  void activateWallet() async {
+  Future activateWallet() async {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
     final activateOp = EIP4337Lib.activateWalletOp(Goerli.entryPointAddress,
         Goerli.paymasterAddress, account.address, Goerli.wethAddress,
         currentFee, BigInt.from(10).pow(10), BigInt.zero);
-
     _executeOperation(activateOp);
   }
 
@@ -143,4 +148,7 @@ class WalletContext {
     _executeOperation(op!);
   }
 
+  String getEoaAddress() {
+    return account.address.hex;
+  }
 }

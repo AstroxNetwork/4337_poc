@@ -1,7 +1,9 @@
+import 'package:app/app/base/get/getx_controller_inject.dart';
+import 'package:app/app/util/toast_util.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 
-abstract class GetCommonView<T extends GetxController> extends StatefulWidget {
+abstract class GetCommonView<T extends BaseGetController> extends StatefulWidget {
   const GetCommonView({Key? key}) : super(key: key);
 
   final String? tag = null;
@@ -19,6 +21,8 @@ abstract class GetCommonView<T extends GetxController> extends StatefulWidget {
 
 class AutoDisposeState<S extends GetxController> extends State<GetCommonView> {
   AutoDisposeState();
+  
+  OverlayEntry? loadingEntry;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +37,19 @@ class AutoDisposeState<S extends GetxController> extends State<GetCommonView> {
   @override
   void initState() {
     super.initState();
+    widget.controller.isLoading.listen((isLoading) {
+      if (isLoading) {
+        loadingEntry = ToastUtil.loading();
+      } else {
+        ToastUtil.endLoading(loadingEntry);
+      }
+    });
   }
 
   @override
   void dispose() {
     // Get.delete<S>();
     super.dispose();
+    widget.controller.isLoading.close();
   }
 }

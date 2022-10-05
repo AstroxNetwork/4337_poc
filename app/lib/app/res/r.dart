@@ -28,4 +28,9 @@ class R {
   static const String assetsImagesDownload = 'assets/images/download.png';
   static const String assetsImagesTransactionLoading =
       'assets/images/transaction_loading.png';
+
+  static const String assetsImagesTokenETH =
+      'assets/images/tokens/eth.svg';
+  static const String assetsImagesTokenWETH =
+      'assets/images/tokens/weth.png';
 }

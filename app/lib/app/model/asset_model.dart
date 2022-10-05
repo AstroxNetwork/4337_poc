@@ -1,10 +1,12 @@
 class AssetModel {
-  double count;
-  String currency;
+  String icon;
+  String symbol;
+  String address;
 
   AssetModel({
-    required this.count,
-    required this.currency,
+    required this.icon,
+    required this.symbol,
+    required this.address,
   });
 
 // todo: toJson
