@@ -87,7 +87,7 @@ class EIP4337Lib {
       final SoulWalletContract = DeployedContract(SoulWallet().ABI, walletAddress);
       final getNonce = SoulWalletContract.function("nonce");
       final response = await web3.call(contract: SoulWalletContract, function: getNonce, params: []);
-      print(response);
+      // print(response);
       nonce = response[0] as BigInt;
     }
     return nonce;
