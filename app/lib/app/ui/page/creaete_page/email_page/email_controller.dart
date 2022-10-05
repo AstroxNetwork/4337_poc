@@ -58,7 +58,7 @@ class EmailController extends BaseGetController {
 
     params['email'] = emailStr;
     params['code'] = verfCodeController.text;
-    requestNetwork<Map<String, dynamic>>(
+    requestNetwork<Map>(
       Method.post,
       url: HttpApi.addAccount,
       params: params,

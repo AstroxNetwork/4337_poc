@@ -6,6 +6,7 @@ class Edit extends StatefulWidget {
   double height;
   String hintText;
   TextEditingController controller;
+  bool obscureText;
 
   Edit({
     super.key,
@@ -13,6 +14,7 @@ class Edit extends StatefulWidget {
     required this.height,
     this.hintText = "",
     required this.controller,
+    this.obscureText = false
   });
 
   @override
@@ -49,6 +51,7 @@ class _EditState extends State<Edit> {
             fontSize: 20,
           ),
           onChanged: (text) {},
+          obscureText: widget.obscureText,
           decoration: InputDecoration(
               fillColor: Colors.white12,
               filled: true,

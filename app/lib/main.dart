@@ -27,7 +27,7 @@ class MyApp extends StatelessWidget {
     final List<Interceptor> interceptors = <Interceptor>[];
 
     /// 统一添加身份验证请求头
-    // interceptors.add(AuthInterceptor());
+    interceptors.add(AuthInterceptor());
     configDio(
       connectTimeout: 15000,
       baseUrl: 'https://securecenter-poc.soulwallets.me',
