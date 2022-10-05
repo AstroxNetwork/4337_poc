@@ -62,7 +62,7 @@ class EmailController extends BaseGetController {
       Method.post,
       url: HttpApi.addAccount,
       params: params,
-      onSuccess: (Map<String, dynamic>? res) {
+      onSuccess: (Map? res) {
         if (res != null) {
           // cache authorization
           if (res[Constant.jwtToken] != null) {
