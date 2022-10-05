@@ -64,6 +64,7 @@ class PasswordPage extends GetCommonView<PasswordController> {
                           width: 322,
                           height: 55,
                           hintText: 'password',
+                          obscureText: true,
                         ),
                       ),
                       const Padding(
@@ -85,6 +86,7 @@ class PasswordPage extends GetCommonView<PasswordController> {
                           width: 322,
                           height: 55,
                           hintText: 'password',
+                          obscureText: true,
                         ),
                       ),
                     ],
