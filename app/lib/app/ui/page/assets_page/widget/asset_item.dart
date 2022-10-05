@@ -1,12 +1,15 @@
-import 'package:app/app/model/asset_model.dart';
 import 'package:app/app/res/colors.dart';
-import 'package:app/app/res/r.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class AssetItem extends StatelessWidget {
-  AssetModel model;
+  String icon;
+  String count;
+  String symbol;
 
-  AssetItem({Key? key, required this.model}) : super(key: key);
+  AssetItem(
+      {Key? key, required this.icon, required this.count, required this.symbol})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,20 +21,18 @@ class AssetItem extends StatelessWidget {
           children: [
             Padding(
               padding: const EdgeInsets.only(left: 30, top: 25, bottom: 25),
-              child: Image.network(
-                '',
-                errorBuilder: (_, __, ___) => Image.asset(
-                  R.assetsImagesDefaultAssetsItemIcon,
-                  width: 30,
-                  height: 30,
-                ),
-              ),
+              child: icon.endsWith('.svg')
+                  ? SvgPicture.asset(icon, semanticsLabel: 'Acme Logo')
+                  : Image.asset(
+                      icon,
+                      width: 30,
+                      height: 30,
+                    ),
             ),
             Padding(
               padding: const EdgeInsets.only(left: 15),
               child: Text(
-                // todo: 保留两位？
-                model.count.toStringAsFixed(2),
+                count,
                 style: const TextStyle(
                   fontSize: 18,
                   color: ColorStyle.color_000000_50,
@@ -41,7 +42,7 @@ class AssetItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 5),
               child: Text(
-                model.currency,
+                symbol,
                 style: const TextStyle(
                   fontSize: 18,
                   color: ColorStyle.color_000000_50,

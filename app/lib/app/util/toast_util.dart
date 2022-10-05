@@ -36,4 +36,38 @@ class ToastUtil {
       entry.remove();
     });
   }
+
+  static void endLoading(OverlayEntry? entry) {
+    entry?.remove();
+  }
+
+  static OverlayEntry loading() {
+    OverlayEntry entry = OverlayEntry(builder: (context) {
+      return Material(
+        type: MaterialType.transparency,
+        child: Center(
+          child: Container(
+            decoration: const BoxDecoration(
+              color: ColorStyle.color_black_70,
+              borderRadius: BorderRadius.all(Radius.circular(10)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.only(
+                  left: 42, top: 28, right: 42, bottom: 28),
+              child: Text(
+                'Loading...',
+                style: const TextStyle(
+                  fontSize: 20,
+                  fontWeight: FontWeight.w700,
+                  color: Colors.white,
+                ),
+              ),
+            ),
+          ),
+        ),
+      );
+    });
+    Overlay.of(Get.overlayContext!)!.insert(entry);
+    return entry;
+  }
 }
