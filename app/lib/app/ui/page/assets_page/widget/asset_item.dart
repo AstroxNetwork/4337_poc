@@ -22,7 +22,11 @@ class AssetItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 30, top: 25, bottom: 25),
               child: icon.endsWith('.svg')
-                  ? SvgPicture.asset(icon, semanticsLabel: 'Acme Logo')
+                  ? SvgPicture.asset(
+                      icon,
+                      width: 30,
+                      height: 30,
+                    )
                   : Image.asset(
                       icon,
                       width: 30,

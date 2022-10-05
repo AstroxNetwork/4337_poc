@@ -3,6 +3,7 @@ import 'package:app/app/ui/page/login_page/login_binding.dart';
 import 'package:app/app/ui/page/login_page/login_page.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/injection.dart';
+import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/intercept.dart';
 import 'package:dio/dio.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
       baseUrl: 'https://securecenter-poc.soulwallets.me',
       interceptors: interceptors,
     );
+    Log.init();
   }
 
   @override

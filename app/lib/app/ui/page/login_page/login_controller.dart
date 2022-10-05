@@ -24,6 +24,7 @@ class LoginController extends BaseGetController {
       isLoading.value = true;
       Future(() {
         WalletContext.recoverKeystore(Web3Helper.web3(), walletJson, password);
+        WalletContext.getInstance().setWalletAddressAutomatic();
       }).then((_) {
         Get.offAllNamed(Routes.homePage);
         isLoading.value = false;

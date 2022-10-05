@@ -52,13 +52,13 @@ class AssetsController extends BaseGetController {
   void fetchBalance() {
     Future(() {
       assets.forEach((element) async {
-        var balance = '0';
+        double balance = 0.0;
         if (element.symbol == 'ETH') {
-          balance = await WalletContext.getInstance().getEthBalance().toString();
+          balance = (await WalletContext.getInstance().getEthBalance());
         } else {
-          balance = await WalletContext.getInstance().getWEthBalance().toString();
+          balance = await WalletContext.getInstance().getWEthBalance();
         }
-        balanceMap[element.address] = balance;
+        balanceMap[element.address] = balance.toString();
       });
     });
   }
