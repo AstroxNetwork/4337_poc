@@ -146,6 +146,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (_, index) {
+                            print('yjk assets');
                             return AssetItem(
                               icon: controller.assets[index].icon,
                               count: controller.balanceMap[controller.assets[index].address] ?? '0',
