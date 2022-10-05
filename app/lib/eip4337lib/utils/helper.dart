@@ -4,7 +4,7 @@ import 'package:http/http.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:app/web3dart/credentials.dart';
 
-const apiUrl = "https://ropsten.infura.io/v3/754cdf1de04349e1b5687b8a592cb536";
+const apiUrl = "https://goerli.infura.io/v3/754cdf1de04349e1b5687b8a592cb536";
 
 class Web3Helper {
   static Web3Client? _web3;
@@ -27,7 +27,6 @@ class Web3Helper {
     return wallet.privateKey;
   }
 
-  // tmp
   static EthPrivateKey generateKey() {
     final rng = Random.secure();
     return EthPrivateKey.createRandom(rng);
