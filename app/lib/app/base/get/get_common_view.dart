@@ -1,5 +1,6 @@
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/util/toast_util.dart';
+import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:get/get.dart';
 import 'package:flutter/cupertino.dart';
 
@@ -34,22 +35,15 @@ class AutoDisposeState<S extends GetxController> extends State<GetCommonView> {
     );
   }
 
+
   @override
   void initState() {
     super.initState();
-    widget.controller.isLoading.listen((isLoading) {
-      if (isLoading) {
-        loadingEntry = ToastUtil.loading();
-      } else {
-        ToastUtil.endLoading(loadingEntry);
-      }
-    });
   }
 
   @override
   void dispose() {
     // Get.delete<S>();
     super.dispose();
-    widget.controller.isLoading.close();
   }
 }

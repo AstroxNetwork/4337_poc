@@ -3,6 +3,7 @@ import 'package:app/app/util/toast_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 /// 基类 Controller
@@ -12,12 +13,21 @@ class BaseGetController extends GetxController {
 
   late CancelToken _cancelToken;
 
+  OverlayEntry? loadingEntry;
+
   /// 初始化 Controller，例如一些成员属性的初始化
   @override
   void onInit() {
     super.onInit();
     request = Get.find<RequestRepository>();
     _cancelToken = CancelToken();
+    isLoading.listen((isLoading) {
+      if (isLoading) {
+        loadingEntry = ToastUtil.loading();
+      } else {
+        ToastUtil.endLoading(loadingEntry);
+      }
+    });
   }
 
   /// 返回Future 适用于刷新，加载更多
@@ -97,6 +107,10 @@ class BaseGetController extends GetxController {
     /// 销毁时，将请求取消
     if (!_cancelToken.isCancelled) {
       _cancelToken.cancel();
+    }
+    var isClosed = isLoading.subject.isClosed;
+    if (!isClosed) {
+      isLoading.close();
     }
   }
 }

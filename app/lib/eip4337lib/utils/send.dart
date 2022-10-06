@@ -2,6 +2,7 @@ import 'dart:io';
 import 'dart:convert';
 
 import 'package:agent_dart/utils/number.dart';
+import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:http/http.dart' as http;
 import 'package:app/eip4337lib/entity/user_operation.dart';
@@ -11,7 +12,8 @@ const bundlerUrl = 'https://bundler-poc.soulwallets.me/';
 class Send {
   static final httpClient = http.Client();
   static Future<dynamic> sendOp(UserOperation op) async {
-    final response =  await httpClient.post(Uri.parse(bundlerUrl), body: op,
+    Log.d('${op.toString()}');
+    final response =  await httpClient.post(Uri.parse(bundlerUrl), body: json.decode(op.toString()) as Map,
     headers: {'Content-Type': 'application/json'});
     return json.decode(response.body);
   }
@@ -28,7 +30,9 @@ class Send {
   }
 
   static void sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
+    Log.d('sendOpWait');
     final res0 = await sendOp(op);
+    Log.d('sendOp');
     if (res0['code'] == 0) {
       for (var i = 0; i < 60; i++) {
         sleep(Duration(seconds: 1));

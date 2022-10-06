@@ -11,6 +11,7 @@ import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
 import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
+import 'package:app/jazzicon/jazzicon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -20,6 +21,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
 
   @override
   Widget build(BuildContext context) {
+    print('AssetsPage build');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -47,20 +49,15 @@ class AssetsPage extends GetCommonView<AssetsController> {
                         padding: const EdgeInsets.only(top: 28.86),
                         child: GestureDetector(
                           onTap: () => onAvatarClick(),
-                          child: Image.network(
-                            controller.userModel.avatar,
-                            errorBuilder: (_, __, ___) => CircleAvatar(
-                              radius: 30,
-                              child: Image.asset(
-                                R.assetsImagesDefaultAvatar,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                          child: Obx(() {
+                            print('yjk jazziconData');
+                            return controller.jazziconData.value == null ? Container(width: 60, height: 60) : Jazzicon.getIconWidget(controller.jazziconData.value!);
+                          }),
                         ),
                       ),
+                      // Obx(() {
+                      //   return Jazzicon.getIconWidget(controller.jazziconData.value);
+                      // }),
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(

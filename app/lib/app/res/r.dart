@@ -30,7 +30,7 @@ class R {
       'assets/images/transaction_loading.png';
 
   static const String assetsImagesTokenETH =
-      'assets/images/tokens/eth.svg';
+      'assets/images/tokens/eth.png';
   static const String assetsImagesTokenWETH =
       'assets/images/tokens/weth.png';
 }

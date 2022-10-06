@@ -20,18 +20,22 @@ class LoginController extends BaseGetController {
       return;
     }
     Get.bottomSheet(PasswordBottomSheet(onLogin: () {
-      var password = passwordController.text;
-      isLoading.value = true;
-      Future(() {
-        WalletContext.recoverKeystore(Web3Helper.web3(), walletJson, password);
-        WalletContext.getInstance().setWalletAddressAutomatic();
-      }).then((_) {
-        Get.offAllNamed(Routes.homePage);
-        isLoading.value = false;
-      }).catchError((err) {
-        isLoading.value = false;
-        ToastUtil.show(err);
-      });
+      confrim(email, passwordController.text, walletJson);
     }));
+  }
+
+  confrim(String email, String password, String walletJson) {
+    isLoading.value = true;
+    Future(() {
+      WalletContext.recoverKeystore(Web3Helper.web3(), walletJson, password);
+      WalletContext.getInstance().setWalletAddressAutomatic();
+    }).then((_) {
+      Get.offAllNamed(Routes.homePage);
+      isLoading.value = false;
+    }).catchError((err) {
+      isLoading.value = false;
+      print('err = $err');
+      ToastUtil.show(err.toString());
+    });
   }
 }
