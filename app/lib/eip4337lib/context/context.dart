@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:core';
 
 import 'package:app/eip4337lib/EIP4337Lib.dart';
 import 'package:app/eip4337lib/define/abi.dart';
@@ -6,10 +7,9 @@ import 'package:app/eip4337lib/define/address.dart';
 import 'package:app/eip4337lib/entity/user_operation.dart';
 import 'package:app/eip4337lib/utils/helper.dart';
 import 'package:app/eip4337lib/utils/send.dart';
+import 'package:app/eip4337lib/utils/tokens.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:app/web3dart/crypto.dart';
-
-import '../utils/tokens.dart';
 
 // WalletContext.getInstance()
 class WalletContext {
@@ -67,6 +67,12 @@ class WalletContext {
     walletAddress = EthereumAddress.fromHex(wallet);
   }
 
+  // 生成钱包地址，记录在context
+  void setWalletAddressAutomatic() {
+    final wallet = generateWalletAddress(account.address, BigInt.zero);
+    walletAddress = EthereumAddress.fromHex(wallet);
+  }
+
   String generateWalletAddress(EthereumAddress ownerAddress, BigInt salt) {
     final walletAddress = EIP4337Lib.calculateWalletAddress(Goerli.entryPointAddress,
         ownerAddress, Goerli.wethAddress, Goerli.paymasterAddress, salt);
@@ -107,21 +113,20 @@ class WalletContext {
   }
 
   // 激活钱包
-  void activateWallet() async {
+  Future activateWallet() async {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
     final activateOp = EIP4337Lib.activateWalletOp(Goerli.entryPointAddress,
         Goerli.paymasterAddress, account.address, Goerli.wethAddress,
         currentFee, BigInt.from(10).pow(10), BigInt.zero);
-
-    _executeOperation(activateOp);
+    await _executeOperation(activateOp);
   }
 
   // 执行和sendOp
-  void _executeOperation(UserOperation op) async {
+  Future _executeOperation(UserOperation op) async {
     final requestId = op.requestId(Goerli.entryPointAddress, Goerli.chainId);
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
-    Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+    await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
   }
 
   // 发送eth
@@ -143,4 +148,7 @@ class WalletContext {
     _executeOperation(op!);
   }
 
+  String getEoaAddress() {
+    return account.address.hex;
+  }
 }

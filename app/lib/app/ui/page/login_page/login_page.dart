@@ -31,7 +31,7 @@ class LoginPage extends GetCommonView<LoginController> {
               Button(
                 width: 110,
                 height: 61,
-                onPressed: () => onLogIn(),
+                onPressed: () => controller.onLogin(),
                 data: 'Log in',
                 color: Colors.white,
                 borderWidth: 1,
@@ -63,12 +63,6 @@ class LoginPage extends GetCommonView<LoginController> {
           const SizedBox(height: 63),
         ],
       ),
-    );
-  }
-
-  onLogIn() {
-    Get.bottomSheet(
-      const PasswordBottomSheet(),
     );
   }
 

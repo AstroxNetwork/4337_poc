@@ -11,16 +11,17 @@ import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
 import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
+import 'package:app/jazzicon/jazzicon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 
-// todo: assets页面如何实现刷新？
 class AssetsPage extends GetCommonView<AssetsController> {
   const AssetsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    print('AssetsPage build');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -48,20 +49,15 @@ class AssetsPage extends GetCommonView<AssetsController> {
                         padding: const EdgeInsets.only(top: 28.86),
                         child: GestureDetector(
                           onTap: () => onAvatarClick(),
-                          child: Image.network(
-                            controller.userModel.avatar,
-                            errorBuilder: (_, __, ___) => CircleAvatar(
-                              radius: 30,
-                              child: Image.asset(
-                                R.assetsImagesDefaultAvatar,
-                                width: 60,
-                                height: 60,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
-                          ),
+                          child: Obx(() {
+                            print('yjk jazziconData');
+                            return controller.jazziconData.value == null ? Container(width: 60, height: 60) : Jazzicon.getIconWidget(controller.jazziconData.value!);
+                          }),
                         ),
                       ),
+                      // Obx(() {
+                      //   return Jazzicon.getIconWidget(controller.jazziconData.value);
+                      // }),
                       Padding(
                         padding: const EdgeInsets.only(top: 10),
                         child: Text(
@@ -78,10 +74,6 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
-                            /// Skyh
-                            // wallet = WalletContext.getInstance()
-                            // Eip4337Lib.calculateWalletAddress()
-                            // await wallet.getEthBalance()..
                             AddressText(
                               controller.userModel.address,
                               style: const TextStyle(
@@ -90,7 +82,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => onCopy(),
+                              onTap: () => controller.onCopy(),
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 10),
                                 child: Image.asset(
@@ -108,9 +100,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                         child: Button(
                           width: 323,
                           height: 54,
-                          onPressed: () => onActivateMyWallet(),
-                          /// SKyh
-                          // wallet.activateWallet()
+                          onPressed: () => controller.onActivateMyWallet(),
                           data: 'Activate My Wallet',
                           borderWidth: 2,
                           color: ColorStyle.color_FFF5F5FF,
@@ -148,16 +138,21 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           color: ColorStyle.color_4D979797,
                         ),
                       ),
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics: const NeverScrollableScrollPhysics(),
-                        itemBuilder: (_, index) {
-                          return AssetItem(
-                            model: controller.userModel.assets[index],
-                          );
-                        },
-                        itemCount: controller.userModel.assets.length,
-                      ),
+                      Obx(() {
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (_, index) {
+                            print('yjk assets');
+                            return AssetItem(
+                              icon: controller.assets[index].icon,
+                              count: controller.balanceMap[controller.assets[index].address] ?? '0',
+                              symbol: controller.assets[index].symbol,
+                            );
+                          },
+                          itemCount: controller.assets.length,
+                        );
+                      }),
                     ],
                   ),
                 ),
@@ -173,22 +168,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
     Get.bottomSheet(const WalletAccountBottomSheet());
   }
 
-  onActivateMyWallet() {
-    // todo: 不确定这里的条件
-    if (controller.userModel.assets.isEmpty) {
-      Get.dialog(const WithoutWalletDialog());
-    } else {
-      Get.bottomSheet(const ActivateWalletBottomSheet());
-    }
-  }
-
   onReceiveClick() {
     Get.bottomSheet(const ReceivingTokensBottomSheet());
-  }
-
-  onCopy() {
-    Clipboard.setData(ClipboardData(
-      text: controller.userModel.address,
-    ));
   }
 }

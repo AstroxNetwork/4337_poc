@@ -9,7 +9,7 @@ import '../define/abi.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/credentials.dart';
 
-Future<UserOperation?> createOp(Web3Client web3,
+Future<UserOperation> createOp(Web3Client web3,
     EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
     EthereumAddress walletAddress, BigInt nonce,
     BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
@@ -25,7 +25,7 @@ Future<UserOperation?> createOp(Web3Client web3,
   ]);
   final gasEstmated = await userOperation.estimateGas(web3, entryPointAddress);
   if (!gasEstmated) {
-    return null;
+    throw(Exception("gasEstmated null"));
   }
   return userOperation;
 }
@@ -34,7 +34,7 @@ class ETH {
   final Web3Client web3;
   ETH(this.web3);
 
-  Future<UserOperation?> transfer(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> transfer(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress to, BigInt value) async {
@@ -54,7 +54,7 @@ class ERC20 {
     return ERC20(web3, contract);
   }
 
-  Future<UserOperation?> approve(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> approve(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress spender, BigInt value) async {
@@ -64,7 +64,7 @@ class ERC20 {
           maxFeePerGas, maxPriorityFeePerGas, contract.address, callData, BigInt.zero);
   }
 
-  Future<UserOperation?> transfer(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> transfer(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress to, BigInt value) async {
@@ -74,7 +74,7 @@ class ERC20 {
         maxFeePerGas, maxPriorityFeePerGas, contract.address, callData, BigInt.zero);
   }
 
-  Future<UserOperation?> transferFrom(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> transferFrom(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress from, EthereumAddress to, BigInt value) async {
@@ -96,7 +96,7 @@ class ERC721 {
     return ERC721(web3, contract);
   }
 
-  Future<UserOperation?> approve(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> approve(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress spender, BigInt tokenId) async {
@@ -106,7 +106,7 @@ class ERC721 {
         maxFeePerGas, maxPriorityFeePerGas, contract.address, callData, BigInt.zero);
   }
 
-  Future<UserOperation?> transfer(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> transfer(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress to, BigInt tokenId) async {
@@ -116,7 +116,7 @@ class ERC721 {
         maxFeePerGas, maxPriorityFeePerGas, contract.address, callData, BigInt.zero);
   }
 
-  Future<UserOperation?> transferFrom(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> transferFrom(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress from, EthereumAddress to, BigInt tokenId) async {
@@ -126,7 +126,7 @@ class ERC721 {
         maxFeePerGas, maxPriorityFeePerGas, contract.address, callData, BigInt.zero);
   }
 
-  Future<UserOperation?> safeTransferFrom(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> safeTransferFrom(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress from, EthereumAddress to, BigInt tokenId) async {
@@ -136,7 +136,7 @@ class ERC721 {
         maxFeePerGas, maxPriorityFeePerGas, contract.address, callData, BigInt.zero);
   }
 
-  Future<UserOperation?> setApprovalForAll(EthereumAddress walletAddress, BigInt nonce,
+  Future<UserOperation> setApprovalForAll(EthereumAddress walletAddress, BigInt nonce,
       EthereumAddress entryPointAddress, EthereumAddress paymasterAddress,
       BigInt maxFeePerGas, BigInt maxPriorityFeePerGas,
       EthereumAddress operator, bool approved) async {

@@ -9,7 +9,8 @@ import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 class PasswordBottomSheet extends GetCommonView<LoginController> {
-  const PasswordBottomSheet({super.key});
+  final VoidCallback onLogin;
+  PasswordBottomSheet({super.key, required this.onLogin});
 
   @override
   Widget build(BuildContext context) {
@@ -61,7 +62,7 @@ class PasswordBottomSheet extends GetCommonView<LoginController> {
                   child: Button(
                     width: 200,
                     height: 60,
-                    onPressed: () {},
+                    onPressed: onLogin,
                     data: 'Confirm',
                   ),
                 )

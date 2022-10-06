@@ -116,7 +116,7 @@ class EmailPage extends GetCommonView<EmailController> {
                                               style: TextStyle(
                                                 fontSize: 16,
                                                 color: Colors.black,
-                                              ))
+                                              ),)
                                         ])),
                                   ),
                                 ],
