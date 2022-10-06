@@ -14,7 +14,7 @@ void main() async {
   // print('${a.a}, ${a.b}');
   // test();
   final contract = EthereumAddress.fromHex("0xeef5ad6553c72a7812cc522bddcc628503092127");
-  final code = await Web3Helper.web3().getCode(contract);
+  final code = await Web3Helper.client.getCode(contract);
   print(code.isNotEmpty);
 }
 

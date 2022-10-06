@@ -7,15 +7,7 @@ import 'package:app/web3dart/credentials.dart';
 const apiUrl = "https://goerli.infura.io/v3/754cdf1de04349e1b5687b8a592cb536";
 
 class Web3Helper {
-  static Web3Client? _web3;
-
-  static Web3Client web3() {
-    if (_web3 == null) {
-      var httpClient = Client();
-      _web3 = Web3Client(apiUrl, httpClient);
-    }
-    return _web3!;
-  }
+  static final Web3Client client = Web3Client(apiUrl, Client());
 
   static Wallet createWallet(EthPrivateKey credentials, String password) {
     final rng = Random.secure();

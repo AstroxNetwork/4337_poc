@@ -44,7 +44,7 @@ class Deposits {
 void main() async {
   // var httpClient = Client();
   // var ethClient = Web3Client(apiUrl, httpClient);
-  final ethClient = Web3Helper.web3();
+  final ethClient = Web3Helper.client;
   final chainId = await ethClient.getChainId();
   // print(chainId);
 

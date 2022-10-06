@@ -14,51 +14,54 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class PasswordController extends BaseGetController {
-  TextEditingController passwordController = TextEditingController(text: '');
-  TextEditingController replacePasswordController =
-      TextEditingController(text: '');
+  final passwordController = TextEditingController();
+  final replacePasswordController = TextEditingController();
 
-  onConfirm() {
+  void onConfirm() {
     if (passwordController.text.isEmpty) {
       ToastUtil.show('Please enter new password');
       return;
     }
-
     if (replacePasswordController.text.isEmpty) {
-      ToastUtil.show('Please confirm the password');
+      ToastUtil.show('Please enter the confirm password');
       return;
     }
-
     if (passwordController.text != replacePasswordController.text) {
-      ToastUtil.show('Password not match');
+      ToastUtil.show('Passwords not match');
     }
     createAccount(passwordController.text);
   }
 
-  Future createAccount(String password) async {
+  Future<void> createAccount(String password) async {
     isLoading.value = true;
-    Future(() {
-      WalletContext.createAccount(Web3Helper.web3());
-      var walletJson = WalletContext.getInstance().toKeystore(password);
-      Get.find<SharedPreferences>().setString(WalletSp.WALLET_JSON, walletJson);
-      Log.d("walletJson = $walletJson");
-      WalletContext.getInstance().setWalletAddressAutomatic();
-    }).then((_) {
-      var address = WalletContext.getInstance().walletAddress?.hexNo0x;
-      var params = Map();
-      var email = Get.parameters['email'] as String?;
-      if (email != null) {
-        params['email'] = email;
-        params['wallet_address'] = address;
-        params['key'] = WalletContext.getInstance().getEoaAddress();
-        return requestNetwork(Method.post, url: HttpApi.updateAccount, params: params, onSuccess: (data) {
+    WalletContext.createAccount(Web3Helper.client);
+    final walletJson = WalletContext.getInstance().toKeystore(password);
+    await Get.find<SharedPreferences>().setString(
+      WalletSp.WALLET_JSON,
+      walletJson,
+    );
+    Log.d("walletJson = $walletJson");
+    WalletContext.getInstance().setWalletAddressAutomatic();
+    final address = WalletContext.getInstance().walletAddress?.hexNo0x;
+    final params = {};
+    final email = Get.parameters['email'];
+    if (email != null) {
+      params['email'] = email;
+      params['wallet_address'] = address;
+      params['key'] = WalletContext.getInstance().getEoaAddress();
+      await requestNetwork(
+        Method.post,
+        url: HttpApi.updateAccount,
+        params: params,
+        onSuccess: (data) {
           isLoading.value = false;
           Get.find<SharedPreferences>().setString(WalletSp.EMAIL, email);
           Get.offAllNamed(Routes.homePage);
-        }, onError: (_, _2){
+        },
+        onError: (_, __) {
           isLoading.value = false;
-        });
-      }
-    });
+        },
+      );
+    }
   }
 }

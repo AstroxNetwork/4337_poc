@@ -12,34 +12,36 @@ import 'package:shared_preferences/shared_preferences.dart';
 class LoginController extends BaseGetController {
   TextEditingController passwordController = TextEditingController(text: '');
 
-  onLogin() {
-    var email = Get.find<SharedPreferences>().getString(WalletSp.EMAIL);
-    var walletJson = Get.find<SharedPreferences>().getString(WalletSp.WALLET_JSON);
-    if (email == null || email.isEmpty || walletJson == null || walletJson.isEmpty) {
+  void onLogin() {
+    final sp = Get.find<SharedPreferences>();
+    final email = sp.getString(WalletSp.EMAIL);
+    final walletJson = sp.getString(WalletSp.WALLET_JSON);
+    if (email == null ||
+        email.isEmpty ||
+        walletJson == null ||
+        walletJson.isEmpty) {
       ToastUtil.show('no wallet yet');
       return;
     }
     Get.bottomSheet(PasswordBottomSheet(onLogin: () {
-      confrim(email, passwordController.text, walletJson);
+      confirm(email, passwordController.text, walletJson);
     }));
   }
 
-  confrim(String email, String password, String walletJson) {
+  void confirm(String email, String password, String walletJson) {
     isLoading.value = true;
-    Future(() {
-      WalletContext.recoverKeystore(Web3Helper.web3(), walletJson, password);
+    try {
+      WalletContext.recoverKeystore(Web3Helper.client, walletJson, password);
       WalletContext.getInstance().setWalletAddressAutomatic();
-    }).then((_) {
       Get.offAllNamed(Routes.homePage);
-      isLoading.value = false;
-    }).catchError((err) {
-      isLoading.value = false;
-      print('err = $err');
-      ToastUtil.show(err.toString());
-    });
+    } catch (e) {
+      print('err = $e');
+      ToastUtil.show(e.toString());
+    }
+    isLoading.value = false;
   }
 
-  jumpDebugPage() {
+  void jumpDebugPage() {
     Get.toNamed(Routes.debugPage);
   }
 }
