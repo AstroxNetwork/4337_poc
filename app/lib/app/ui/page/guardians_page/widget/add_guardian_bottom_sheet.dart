@@ -1,11 +1,9 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/info/app_theme.dart';
-import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/guardians_page/guardians_controller.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/edit_widget.dart';
-import 'package:app/app/util/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -124,26 +122,30 @@ class AddGuardianBottomSheet extends GetCommonView<GuardiansController> {
             Padding(
               padding: const EdgeInsets.only(bottom: 30, top: 30),
               child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        fontSize: 20,
-                        color: ColorStyle.color_FF3940FF,
+                    child: Container(
+                      decoration: const BoxDecoration(),
+                      width: 112,
+                      height: 60,
+                      child: const Center(
+                        child: Text(
+                          'Cancel',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: ColorStyle.color_FF3940FF,
+                          ),
+                        ),
                       ),
                     ),
                     onTap: () => Get.back(),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 40),
-                    child: Button(
-                      width: 200,
-                      height: 60,
-                      onPressed: () => onContinue(),
-                      data: 'Continue',
-                    ),
+                  Button(
+                    width: 200,
+                    height: 60,
+                    onPressed: () => onContinue(),
+                    data: 'Continue',
                   )
                 ],
               ),

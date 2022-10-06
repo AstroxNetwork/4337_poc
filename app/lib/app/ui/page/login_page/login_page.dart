@@ -7,6 +7,7 @@ import 'package:app/app/ui/page/login_page/widget/password_bottom_sheet.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/edit_widget.dart';
+import 'package:app/app/util/platform_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -19,10 +20,13 @@ class LoginPage extends GetCommonView<LoginController> {
       body: Column(
         children: [
           const SizedBox(height: 120),
-          Image.asset(
-            R.assetsImagesAppIconBig,
-            width: 350,
-            height: 318,
+          GestureDetector(
+            onTap: () => controller.jumpDebugPage(),
+            child: Image.asset(
+              R.assetsImagesAppIconBig,
+              width: 350,
+              height: 318,
+            ),
           ),
           const Spacer(),
           Row(

@@ -4,10 +4,12 @@ import 'package:app/app/ui/page/login_page/login_page.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/injection.dart';
 import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/app/util/platform_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/intercept.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 void main() async {
@@ -16,10 +18,15 @@ void main() async {
   runApp(
     MyApp(),
   );
+  if (PlatformUtil.isAndroid) {
+    SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
+        statusBarColor: Colors.transparent,
+        statusBarIconBrightness: Brightness.light);
+    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+  }
 }
 
 class MyApp extends StatelessWidget {
-
   MyApp() {
     initDio();
   }

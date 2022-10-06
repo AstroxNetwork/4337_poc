@@ -63,7 +63,9 @@ class TransactionItem extends GetCommonView<TransactionController> {
 
   onClick() {
     Get.bottomSheet(
-      const RecoverQRBottomSheet(),
+      RecoverQRBottomSheet(
+        model: model,
+      ),
     );
   }
 }

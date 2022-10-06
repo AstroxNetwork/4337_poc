@@ -1,7 +1,7 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/recover_page/transaction_page/transaction_controller.dart';
-import 'package:app/app/ui/page/recover_page/transaction_page/widget/PouringHourGlass.dart';
+import 'package:app/app/ui/page/recover_page/transaction_page/widget/pouring_hour_glass.dart';
 import 'package:app/app/ui/page/recover_page/transaction_page/widget/transaction_item.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
