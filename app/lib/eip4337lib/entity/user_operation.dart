@@ -74,14 +74,14 @@ class UserOperation {
   Map toMap() {
     return {
       "sender": sender.hex,
-      "nonce": nonce,
-      "callGas": callGas,
+      "nonce": nonce.toString(),
+      "callGas": callGas.toString(),
       "initCode": bytesToHex(initCode, include0x: true),
       "callData": bytesToHex(callData, include0x: true),
-      "verificationGas": verificationGas,
-      "preVerificationGas": preVerificationGas,
-      "maxFeePerGas": maxFeePerGas,
-      "maxPriorityFeePerGas": maxPriorityFeePerGas,
+      "verificationGas": verificationGas.toString(),
+      "preVerificationGas": preVerificationGas.toString(),
+      "maxFeePerGas": maxFeePerGas.toString(),
+      "maxPriorityFeePerGas": maxPriorityFeePerGas.toString(),
       "paymaster": paymaster.hex,
       "paymasterData": bytesToHex(paymasterData, include0x: true),
       "signature": bytesToHex(signature, include0x: true)

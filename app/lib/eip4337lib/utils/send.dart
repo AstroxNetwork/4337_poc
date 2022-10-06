@@ -12,31 +12,38 @@ const bundlerUrl = 'https://bundler-poc.soulwallets.me/';
 class Send {
   static final httpClient = http.Client();
   static Future<dynamic> sendOp(UserOperation op) async {
-    Log.d('${op.toString()}');
-    final response =  await httpClient.put(Uri.parse(bundlerUrl), body: op.toMap(),
+    final body = jsonEncode(op.toMap());
+    Log.d('$body, ${body.length}');
+    final response =  await httpClient.put(Uri.parse(bundlerUrl), body: body,
     headers: {'Content-Type': 'application/json', 'accept': 'application/json' });
     return json.decode(response.body);
   }
 
   static Future<http.Response> getOpStateByReqeustId(String requestId) async {
+    final url = bundlerUrl + requestId;
+    print('getOpStateByReqeustId: $url');
     return await httpClient.get(Uri.parse(bundlerUrl + requestId));
   }
 
-  static Future<dynamic> getOpStateByUserOperation(UserOperation op,
+  static Future getOpStateByUserOperation(UserOperation op,
       EthereumAddress entryPointAddress, BigInt chainId) async {
     final requestId = bytesToHex(op.requestId(entryPointAddress, chainId));
     final response = await getOpStateByReqeustId(requestId);
+    print('getOpStateByUserOperation: $response');
     return json.decode(response.body);
   }
 
   static Future sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
     Log.d('sendOpWait');
     final res0 = await sendOp(op);
-    Log.d('sendOp');
+    Log.d('sendOp $res0');
     if (res0['code'] == 0) {
+      final requestId = res0['requestId'];
       for (var i = 0; i < 60; i++) {
         sleep(Duration(seconds: 1));
-        final res = await getOpStateByUserOperation(op, entryPointAddress, chainId);
+        // final res = await getOpStateByUserOperation(op, entryPointAddress, chainId);
+        final response = await getOpStateByReqeustId(requestId);
+        final res = json.decode(response.body);
         if (res['code'] == 0) {
           print('pending...');
         } else if (res['code'] == 1) {
@@ -50,14 +57,17 @@ class Send {
             final receipt = await web3.getTransactionReceipt(res["txHash"]);
             if (receipt!.status == true) {
               print('tx: ${res["txHash"]} has been confirmed');
+              return res["txHash"];
             } else {
               throw(Exception('transaction failed'));
             }
           }
         } else if (res['code'] == 4) {
           print('failed $res');
+          break;
         } else if (res['code'] == 5) {
           print('notfound');
+          break;
         }
       }
     } else {
