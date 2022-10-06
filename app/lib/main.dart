@@ -10,6 +10,7 @@ import 'package:app/net/intercept.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
 void main() async {
@@ -51,7 +52,15 @@ class MyApp extends StatelessWidget {
       theme: appThemeData,
       getPages: Routes.routePage,
       initialBinding: LoginBinding(),
-      home: const LoginPage(),
+      initialRoute: Routes.loginPage,
+      builder: FlutterSmartDialog.init(
+        builder: (_, Widget? child) => GestureDetector(
+          onTap: () => SystemChannels.textInput
+              .invokeMethod('TextInput.hide')
+              .catchError((_) {}),
+          child: child,
+        ),
+      ),
     );
   }
 }

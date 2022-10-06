@@ -1,9 +1,9 @@
 import 'package:app/app/http/request_repository.dart';
+import 'package:app/app/ui/widget/loading_widget.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:dio/dio.dart';
-import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
 
 /// 基类 Controller
@@ -13,17 +13,15 @@ class BaseGetController extends GetxController {
 
   RxBool isLoading = false.obs;
 
-  OverlayEntry? loadingEntry;
-
   /// 初始化 [GetxController]，例如一些成员属性的初始化
   @override
   void onInit() {
     super.onInit();
     isLoading.listen((isLoading) {
       if (isLoading) {
-        loadingEntry = ToastUtil.loading();
+        LoadingWidget.show();
       } else {
-        ToastUtil.endLoading(loadingEntry);
+        LoadingWidget.dismiss();
       }
     });
   }
@@ -49,7 +47,7 @@ class BaseGetController extends GetxController {
   }
 
   /// 返回 Future 适用于刷新、加载更多
-  Future<dynamic> requestNetwork<T>(
+  Future<void> requestNetwork<T>(
     Method method, {
     required String url,
     bool isShow = true,
