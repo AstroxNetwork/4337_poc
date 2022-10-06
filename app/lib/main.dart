@@ -1,6 +1,5 @@
 import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/ui/page/login_page/login_binding.dart';
-import 'package:app/app/ui/page/login_page/login_page.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/injection.dart';
 import 'package:app/eip4337lib/utils/log_utils.dart';
@@ -16,19 +15,30 @@ import 'package:get/get_navigation/src/root/get_material_app.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Injection.init();
-  runApp(
-    MyApp(),
-  );
   if (PlatformUtil.isAndroid) {
-    SystemUiOverlayStyle systemUiOverlayStyle = const SystemUiOverlayStyle(
+    SystemChrome.setSystemUIOverlayStyle(
+      const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
-        statusBarIconBrightness: Brightness.light);
-    SystemChrome.setSystemUIOverlayStyle(systemUiOverlayStyle);
+        statusBarBrightness: Brightness.dark,
+        statusBarIconBrightness: Brightness.dark,
+        systemNavigationBarIconBrightness: Brightness.dark,
+      ),
+    );
   }
+  runApp(const MyApp());
 }
 
-class MyApp extends StatelessWidget {
-  MyApp() {
+class MyApp extends StatefulWidget {
+  const MyApp({Key? key}) : super(key: key);
+
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  @override
+  void initState() {
+    super.initState();
     initDio();
   }
 
