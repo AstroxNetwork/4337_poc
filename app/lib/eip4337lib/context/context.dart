@@ -131,7 +131,7 @@ class WalletContext {
   }
 
   // walletaddress是否init
-  Future<bool> getWalletType() async {
+  Future<bool> isWalletContract() async {
     final res = await web3.getCode(walletAddress!);
     return res.isNotEmpty;
     // return res.isNotEmpty ? "contract" : "eoa";

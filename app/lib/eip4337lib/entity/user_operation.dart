@@ -58,7 +58,8 @@ class UserOperation {
     return '''{
     sender: $sender,
     nonce: $nonce,
-    iniCode: ${bytesToHex(initCode, include0x: true)},
+    callGas: $callGas,
+    initCode: ${bytesToHex(initCode, include0x: true)},
     callData: ${bytesToHex(callData, include0x: true)},
     verificationGas: $verificationGas,
     preVerificationGas: $preVerificationGas,
@@ -68,6 +69,23 @@ class UserOperation {
     paymasterData: ${bytesToHex(paymasterData, include0x: true)},
     signature: ${bytesToHex(signature, include0x: true)}
     }''';
+  }
+
+  Map toMap() {
+    return {
+      "sender": sender.hex,
+      "nonce": nonce,
+      "callGas": callGas,
+      "initCode": bytesToHex(initCode, include0x: true),
+      "callData": bytesToHex(callData, include0x: true),
+      "verificationGas": verificationGas,
+      "preVerificationGas": preVerificationGas,
+      "maxFeePerGas": maxFeePerGas,
+      "maxPriorityFeePerGas": maxPriorityFeePerGas,
+      "paymaster": paymaster.hex,
+      "paymasterData": bytesToHex(paymasterData, include0x: true),
+      "signature": bytesToHex(signature, include0x: true)
+    };
   }
 
   Future<bool> estimateGas(Web3Client web3, EthereumAddress entryPointAddress) async {

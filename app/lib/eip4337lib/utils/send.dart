@@ -13,8 +13,8 @@ class Send {
   static final httpClient = http.Client();
   static Future<dynamic> sendOp(UserOperation op) async {
     Log.d('${op.toString()}');
-    final response =  await httpClient.post(Uri.parse(bundlerUrl), body: json.decode(op.toString()) as Map,
-    headers: {'Content-Type': 'application/json'});
+    final response =  await httpClient.put(Uri.parse(bundlerUrl), body: op.toMap(),
+    headers: {'Content-Type': 'application/json', 'accept': 'application/json' });
     return json.decode(response.body);
   }
 
