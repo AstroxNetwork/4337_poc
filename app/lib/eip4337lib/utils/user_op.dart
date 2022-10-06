@@ -100,9 +100,64 @@ Future<Uint8List> signUserOp(UserOperation op, EthereumAddress entryPoint, BigIn
 
 
 
-Future<String> packGuardiansSignByRequestId(String requestId, List<String> signatures, [String? walletAddress]) async{
-  ///
-  return '';
+Future<Uint8List> packGuardiansSignByRequestId(Uint8List requestId, List<Uint8List> signatures, [String? walletAddress]) async{
+  // const msg = keccak256_buffer(Buffer.concat([
+  //   Buffer.from('\x19Ethereum Signed Message:\n32', 'ascii'),
+  //   Buffer.from(arrayify(requestId))
+  // ]));
+  // const signList = [];
+  // const signerSet = new Set();
+  // for (let index = 0; index < signatures.length; index++) {
+  //   const signature = signatures[index];
+  //   try {
+  //     const signer = recoverAddress(msg, signature);
+  //     if (!signerSet.has(signer)) {
+  //       signerSet.add(signer);
+  //       signList.push({
+  //         signer: signer,
+  //         signature: signature
+  //       });
+  //     } else {
+  //       console.log("duplicate signer: ", signer);
+  //     }
+  //   } catch (error) {
+  //     throw new Error(`invalid signature: ${signature}`);
+  //   }
+  // }
+  //
+  // if (web3 && walletAddress) {
+  //   // function isGuardian(address account) public view returns (bool)
+  //   const contract = new web3.eth.Contract(SimpleWalletContract.ABI, walletAddress);
+  //   const guardiansCount: number = parseInt(await contract.methods.getGuardiansCount().call());
+  // if (guardiansCount < 2) {
+  // throw new Error(`guardians count must >= 2`);
+  // }
+  // const minSignatureLen: number = Math.round(guardiansCount / 2);
+  // if (signList.length < minSignatureLen) {
+  // throw new Error(`signatures count must >= ${minSignatureLen}`);
+  // }
+  // for (let index = 0; index < signList.length; index++) {
+  // const sign = signList[index];
+  // const isGuardian = await contract.methods.isGuardian(sign.signer).call();
+  // if (!isGuardian) {
+  // throw new Error(`signer ${sign.signer} is not a guardian`);
+  // }
+  // }
+  // }
+  //
+  // // sort signList by bn asc
+  // signList.sort((a, b) => {
+  // return BigNumber.from(a.signer).lt(BigNumber.from(b.signer)) ? -1 : 1;
+  // });
+  //
+  // const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
+  // [
+  // SignatureMode.guardians,
+  // signList
+  // ]
+  // );
+  // return enc;
+  return hexToBytes('0x');
 }
 
 String payMasterSignHash(UserOperation op) {

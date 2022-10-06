@@ -8,18 +8,34 @@ class Request {
   static Future<http.Response> addAccount(Object params) async {
     return await httpClient.post(Uri.parse('$backendURL/add-account'), body: params);
   }
+  // email
 
   static Future<http.Response> updateAccount(Object params) async {
     return await httpClient.post(Uri.parse('$backendURL/update-account'), body: params);
   }
+  // email, key, wallet_address
 
   static Future<http.Response> verifyEmail(Object params) async {
     return await httpClient.post(Uri.parse('$backendURL/verify-email'), body: params);
   }
+  // email, code
 
-  static Future<http.Response> recover(Object params) async {
+  static Future<http.Response> addRecover(Object params) async {
     return await httpClient.post(Uri.parse('$backendURL/add-recovery-record'), body: params);
   }
+
+  static Future<http.Response> finishRecover(Object params) async {
+    return await httpClient.post(Uri.parse('$backendURL/finish-recovery-record'), body: params);
+  }
+
+  static Future<http.Response> isWalletOwner(Object params) async {
+    return await httpClient.post(Uri.parse('$backendURL/is-wallet-owner'), body: params);
+  }
+
+  static Future<http.Response> getWalletAddress(Object params) async {
+    return await httpClient.post(Uri.parse('$backendURL/get-wallet-address'), body: params);
+  }
+
 
   static Future<http.Response> getGuardian(Object params) async {
     return await httpClient.post(Uri.parse('$backendURL/get-account-guardian'), body: params);

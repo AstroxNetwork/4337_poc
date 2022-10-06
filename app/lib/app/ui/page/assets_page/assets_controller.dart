@@ -73,13 +73,13 @@ class AssetsController extends BaseGetController {
 
   onActivateMyWallet() async {
     isLoading.value = true;
-    var walletType = '';
+    bool walletType = false;
     try {
       await WalletContext.getInstance().activateWallet();
       walletType = await WalletContext.getInstance().getWalletType();
     } catch (err) {}
     isLoading.value = false;
-    if (walletType != "contract") {
+    if (walletType) {
       Get.dialog(const WithoutWalletDialog());
     } else {
       Get.bottomSheet(const ActivateWalletBottomSheet());

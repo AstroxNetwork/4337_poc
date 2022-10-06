@@ -19,4 +19,6 @@ class Goerli {
   static final paymasterAddress = EthereumAddress.fromHex(paymaster);
   static const weth = "0x2787015262404f11d7B6920C7eB46e25595e2Bf5";
   static final wethAddress = EthereumAddress.fromHex(weth);
+
+  static final zeroAddress = EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
 }
