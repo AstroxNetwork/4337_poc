@@ -39,11 +39,19 @@ class AutoDisposeState<S extends GetxController> extends State<GetCommonView> {
   @override
   void initState() {
     super.initState();
+    widget.controller.isLoading.listen((isLoading) {
+      if (isLoading) {
+        loadingEntry = ToastUtil.loading();
+      } else {
+        ToastUtil.endLoading(loadingEntry);
+      }
+    });
   }
 
   @override
   void dispose() {
     // Get.delete<S>();
     super.dispose();
+    widget.controller.isLoading.close();
   }
 }
