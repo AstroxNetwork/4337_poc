@@ -5,7 +5,8 @@ import 'package:app/app/ui/page/assets_page/assets_controller.dart';
 import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/assets_button.dart';
 import 'package:app/app/ui/page/assets_page/widget/asset_item.dart';
-import 'package:app/app/ui/page/assets_page/widget/receivingt_tokens_bottom_sheet.dart';
+import 'package:app/app/ui/page/assets_page/widget/receiving_tokens_bottom_sheet.dart';
+import 'package:app/app/ui/page/assets_page/widget/send_tokens_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/wallet_account_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
 import 'package:app/app/ui/widget/address_text.dart';
@@ -51,7 +52,10 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           onTap: () => onAvatarClick(),
                           child: Obx(() {
                             print('yjk jazziconData');
-                            return controller.jazziconData.value == null ? Container(width: 60, height: 60) : Jazzicon.getIconWidget(controller.jazziconData.value!);
+                            return controller.jazziconData.value == null
+                                ? Container(width: 60, height: 60)
+                                : Jazzicon.getIconWidget(
+                                    controller.jazziconData.value!);
                           }),
                         ),
                       ),
@@ -125,7 +129,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                                 // await wallet.sendETH() wallet.sendERC20() // weth放资产。。
                                 data: 'Send',
                                 image: R.assetsImagesSendIcon,
-                                onTap: () {},
+                                onTap: () => onSendClick(),
                               ),
                             ),
                           ],
@@ -146,7 +150,9 @@ class AssetsPage extends GetCommonView<AssetsController> {
                             print('yjk assets');
                             return AssetItem(
                               icon: controller.assets[index].icon,
-                              count: controller.balanceMap[controller.assets[index].address] ?? '0',
+                              count: controller.balanceMap[
+                                      controller.assets[index].address] ??
+                                  '0.0',
                               symbol: controller.assets[index].symbol,
                             );
                           },
@@ -170,5 +176,12 @@ class AssetsPage extends GetCommonView<AssetsController> {
 
   onReceiveClick() {
     Get.bottomSheet(const ReceivingTokensBottomSheet());
+  }
+
+  onSendClick() {
+    Get.bottomSheet(
+      const SendTokensBottomSheet(),
+      isScrollControlled: true,
+    );
   }
 }

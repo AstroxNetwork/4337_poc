@@ -12,17 +12,23 @@ import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:app/jazzicon/jazziconshape.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
 import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class AssetsController extends BaseGetController {
+  // List<String> currencys = ['ETH', 'BTC'];
+
   late UserModel userModel;
   late Rx<JazziconData?> jazziconData = Rx<JazziconData?>(null);
 
   RxList<AssetModel> assets = <AssetModel>[].obs;
   RxMap<String, String> balanceMap = <String, String>{}.obs;
   late Timer timer;
+
+  TextEditingController toController = TextEditingController(text: '');
+  TextEditingController tokenController = TextEditingController(text: '');
 
   @override
   void onInit() {
@@ -88,7 +94,17 @@ class AssetsController extends BaseGetController {
 
   void generateJazzIcon() async {
     Future(() {
-      jazziconData.value = Jazzicon.getJazziconData(60, address: WalletContext.getInstance().walletAddress?.hex);
+      jazziconData.value = Jazzicon.getJazziconData(60, address: WalletContext
+          .getInstance()
+          .walletAddress
+          ?.hex);
     });
+  }
+
+  List<String> getCurrencys() {
+    return assets.value.map((e) => e.symbol).toList();
+  }
+
+  void sendTokens() {
   }
 }

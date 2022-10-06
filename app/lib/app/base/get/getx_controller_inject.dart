@@ -72,19 +72,28 @@ class BaseGetController extends GetxController {
       options: options,
       cancelToken: cancelToken ?? _cancelToken,
       onSuccess: (data) {
-        if (isClose) {
+        if (isShow) {
           isLoading.value = false;
         }
         onSuccess?.call(data);
       },
       onError: (code, msg) {
+        if (isShow) {
+          isLoading.value = false;
+        }
         _onError(code, msg, onError);
       },
     );
+    // return HttpUtils.instance.requestPost<T>(url, params: params, onSuccess: (T? res) {
+    //   isLoading.value = false;
+    //   onSuccess?.call(res);
+    // }, onError: (int code, String msg) {
+    //   isLoading.value = false;
+    //   onError?.call(code, msg);
+    // });
   }
 
   void _onError(int code, String msg, NetErrorCallback? onError) {
-    isLoading.value = false;
     if (code != ExceptionHandle.cancel_error) {
       ToastUtil.show(msg);
     }

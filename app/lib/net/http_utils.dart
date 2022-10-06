@@ -1,19 +1,19 @@
 import 'dart:convert';
 
+import 'package:app/constant.dart';
 import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/base_entity.dart';
+import 'package:app/net/dio_utils.dart';
 import 'package:flutter/foundation.dart';
+import 'package:get/get.dart';
 
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 
 Map<String, dynamic> parseData(String data) {
   return json.decode(data) as Map<String, dynamic>;
 }
-
-typedef NetSuccessCallback<T> = Function(T data);
-typedef NetSuccessListCallback<T> = Function(List<T> data);
-typedef NetErrorCallback = Function(int code, String msg);
 
 class HttpUtils {
   static final HttpUtils _singleton = HttpUtils._();
@@ -51,8 +51,12 @@ class HttpUtils {
 
   // 数据返回格式统一，统一处理异常
   Future<BaseEntity<T>> _post<T>(String url, {Object? params}) async {
+    final String? accessToken = Get.find<SharedPreferences>().getString(Constant.accessToken);
+    Map<String, String> headers = {
+      Constant.accessToken: 'bearer $accessToken'
+    };
     http.Response response =
-        await _httpClient.post(Uri.parse(url), body: params);
+        await _httpClient.post(Uri.parse(url), body: params, headers: headers);
     try {
       final String data = response.body.toString();
 
