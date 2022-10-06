@@ -118,15 +118,15 @@ class WalletContext {
     final activateOp = EIP4337Lib.activateWalletOp(Goerli.entryPointAddress,
         Goerli.paymasterAddress, account.address, Goerli.wethAddress,
         currentFee, BigInt.from(10).pow(10), BigInt.zero);
-    _executeOperation(activateOp);
+    await _executeOperation(activateOp);
   }
 
   // 执行和sendOp
-  void _executeOperation(UserOperation op) async {
+  Future _executeOperation(UserOperation op) async {
     final requestId = op.requestId(Goerli.entryPointAddress, Goerli.chainId);
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
-    Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+    await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
   }
 
   // 发送eth

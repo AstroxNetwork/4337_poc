@@ -29,7 +29,7 @@ class Send {
     return json.decode(response.body);
   }
 
-  static void sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
+  static Future sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
     Log.d('sendOpWait');
     final res0 = await sendOp(op);
     Log.d('sendOp');
