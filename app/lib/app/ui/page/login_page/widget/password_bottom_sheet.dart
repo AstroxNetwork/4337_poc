@@ -10,6 +10,7 @@ import 'package:get/get.dart';
 
 class PasswordBottomSheet extends GetCommonView<LoginController> {
   final VoidCallback onLogin;
+
   PasswordBottomSheet({super.key, required this.onLogin});
 
   @override
@@ -48,23 +49,27 @@ class PasswordBottomSheet extends GetCommonView<LoginController> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 GestureDetector(
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
-                      fontSize: 20,
-                      color: ColorStyle.color_FF3940FF,
+                  child: Container(
+                    decoration: const BoxDecoration(),
+                    width: 112,
+                    height: 60,
+                    child: const Center(
+                      child: Text(
+                        'Cancel',
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: ColorStyle.color_FF3940FF,
+                        ),
+                      ),
                     ),
                   ),
                   onTap: () => Get.back(),
                 ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 40),
-                  child: Button(
-                    width: 200,
-                    height: 60,
-                    onPressed: onLogin,
-                    data: 'Confirm',
-                  ),
+                Button(
+                  width: 200,
+                  height: 60,
+                  onPressed: onLogin,
+                  data: 'Confirm',
                 )
               ],
             ),

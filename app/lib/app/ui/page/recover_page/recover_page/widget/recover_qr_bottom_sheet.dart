@@ -1,14 +1,18 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/info/app_theme.dart';
+import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class RecoverQRBottomSheet extends GetCommonView<RecoverController> {
-  const RecoverQRBottomSheet({super.key});
+  GuardianModel model;
+
+  RecoverQRBottomSheet({super.key, required this.model});
 
   @override
   Widget build(BuildContext context) {
@@ -43,10 +47,12 @@ class RecoverQRBottomSheet extends GetCommonView<RecoverController> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(14),
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.pinkAccent,
+                child: QrImage(
+                  data: model.address,
+                  version: QrVersions.auto,
+                  size: double.infinity,
+                  backgroundColor: Colors.white,
+                  padding: const EdgeInsets.all(5),
                 ),
               ),
             ),

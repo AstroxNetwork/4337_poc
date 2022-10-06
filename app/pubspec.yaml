@@ -50,6 +50,8 @@ dependencies:
   common_utils: 2.1.0
   json_annotation: ^4.7.0
   flutter_svg: ^1.1.5
+  mobile_scanner: ^2.0.0
+  qr_flutter: ^4.0.0
 
 dev_dependencies:
   flutter_test:

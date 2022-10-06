@@ -14,9 +14,15 @@ import 'package:app/app/ui/page/recover_page/signed_page/signed_binding.dart';
 import 'package:app/app/ui/page/recover_page/signed_page/signed_page.dart';
 import 'package:app/app/ui/page/recover_page/transaction_page/transaction_binding.dart';
 import 'package:app/app/ui/page/recover_page/transaction_page/transaction_page.dart';
+import 'package:app/app/ui/page/scan_page/scan_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
+import '../page/debug_page/debug_binding.dart';
+import '../page/debug_page/debug_page.dart';
+import '../page/scan_page/scan_binding.dart';
+
 abstract class Routes {
+  static const String debugPage = '/debug';
   static const String loginPage = '/login';
   static const String emailPage = '/email';
   static const String passwordPage = '/password';
@@ -25,8 +31,14 @@ abstract class Routes {
   static const String recoverPage = '/recover';
   static const String transactionPage = '/transaction';
   static const String signedPage = '/signed';
+  static const String scanPage = '/scan';
 
   static final routePage = [
+    GetPage(
+      name: debugPage,
+      page: () => DebugPage(),
+      binding: DebugBinding(),
+    ),
     GetPage(
         name: loginPage,
         page: () => const LoginPage(),
@@ -65,6 +77,11 @@ abstract class Routes {
       name: signedPage,
       page: () => SignedPage(),
       binding: SignedBinding(),
+    ),
+    GetPage(
+      name: scanPage,
+      page: () => ScanPage(),
+      binding: ScanBinding(),
     ),
   ];
 }

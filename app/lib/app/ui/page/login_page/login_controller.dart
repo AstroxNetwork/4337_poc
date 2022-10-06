@@ -38,4 +38,8 @@ class LoginController extends BaseGetController {
       ToastUtil.show(err.toString());
     });
   }
+
+  jumpDebugPage() {
+    Get.toNamed(Routes.debugPage);
+  }
 }

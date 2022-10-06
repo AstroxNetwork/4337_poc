@@ -1,7 +1,9 @@
 import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
+import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
+import 'package:app/app/util/platform_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -18,52 +20,55 @@ class TopBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        if (!needInfo && !needBack)
-          const SizedBox(
-            width: 28,
-            height: 28,
-          ),
-        if (needInfo)
-          GestureDetector(
-            child: Image.asset(
-              R.assetsImagesTopbarInfo,
+    return Padding(
+      padding: EdgeInsets.only(top: PlatformUtil.isAndroid ? 15 : 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          if (!needInfo && !needBack)
+            const SizedBox(
               width: 28,
               height: 28,
             ),
-            onTap: () => onInfoIconClick(),
+          if (needInfo)
+            GestureDetector(
+              child: Image.asset(
+                R.assetsImagesTopbarInfo,
+                width: 28,
+                height: 28,
+              ),
+              onTap: () => onInfoIconClick(),
+            ),
+          if (needBack)
+            GestureDetector(
+              child: Image.asset(
+                R.assetsImagesArrowLeft,
+                width: 28,
+                height: 28,
+              ),
+              onTap: () => Get.back(),
+            ),
+          Image.asset(
+            R.assetsImagesAppIconMid,
+            width: 139,
+            height: 39,
           ),
-        if (needBack)
-          GestureDetector(
-            child: Image.asset(
-              R.assetsImagesArrowLeft,
+          if (needScan)
+            GestureDetector(
+              child: Image.asset(
+                R.assetsImagesScan,
+                width: 28,
+                height: 28,
+              ),
+              onTap: () => Get.toNamed(Routes.scanPage),
+            ),
+          if (!needScan)
+            const SizedBox(
               width: 28,
               height: 28,
             ),
-            onTap: () => Get.back(),
-          ),
-        Image.asset(
-          R.assetsImagesAppIconMid,
-          width: 139,
-          height: 39,
-        ),
-        if (needScan)
-          GestureDetector(
-            child: Image.asset(
-              R.assetsImagesScan,
-              width: 28,
-              height: 28,
-            ),
-            onTap: () => onScanClick(),
-          ),
-        if (!needScan)
-          const SizedBox(
-            width: 28,
-            height: 28,
-          ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -129,6 +134,4 @@ class TopBar extends StatelessWidget {
       ),
     );
   }
-
-  onScanClick() {}
 }
