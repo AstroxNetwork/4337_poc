@@ -8,6 +8,7 @@ class Edit extends StatefulWidget {
     required this.height,
     this.hintText = "",
     this.controller,
+    this.focusNode,
     this.autofocus = false,
     this.obscureText = false,
   });
@@ -16,6 +17,7 @@ class Edit extends StatefulWidget {
   final double height;
   final String hintText;
   final TextEditingController? controller;
+  final FocusNode? focusNode;
   final bool autofocus;
   final bool obscureText;
 
@@ -53,6 +55,7 @@ class _EditState extends State<Edit> {
         child: TextField(
           autofocus: widget.autofocus,
           controller: widget.controller,
+          focusNode: widget.focusNode,
           cursorColor: Colors.black,
           keyboardType: TextInputType.text,
           textAlign: TextAlign.left,
