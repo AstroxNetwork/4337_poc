@@ -8,19 +8,17 @@ import 'package:get/get.dart';
 
 /// 基类 Controller
 class BaseGetController extends GetxController {
-  late RequestRepository request;
-  RxBool isLoading = false.obs;
+  late final CancelToken _cancelToken = CancelToken();
+  late RequestRepository request = Get.find<RequestRepository>();
 
-  late CancelToken _cancelToken;
+  RxBool isLoading = false.obs;
 
   OverlayEntry? loadingEntry;
 
-  /// 初始化 Controller，例如一些成员属性的初始化
+  /// 初始化 [GetxController]，例如一些成员属性的初始化
   @override
   void onInit() {
     super.onInit();
-    request = Get.find<RequestRepository>();
-    _cancelToken = CancelToken();
     isLoading.listen((isLoading) {
       if (isLoading) {
         loadingEntry = ToastUtil.loading();
@@ -30,8 +28,29 @@ class BaseGetController extends GetxController {
     });
   }
 
-  /// 返回Future 适用于刷新，加载更多
-  Future<dynamic> requestNetwork<T>(Method method, {
+  /// 就绪后的业务处理，如异步操作、导航进入的参数处理
+  @override
+  void onReady() {
+    super.onReady();
+  }
+
+  /// 释放资源，避免内存泄露，同时也可以进行数据持久化
+  @override
+  void onClose() {
+    super.onClose();
+    // 销毁时，将请求取消
+    if (!_cancelToken.isCancelled) {
+      _cancelToken.cancel();
+    }
+    final isClosed = isLoading.subject.isClosed;
+    if (!isClosed) {
+      isLoading.close();
+    }
+  }
+
+  /// 返回 Future 适用于刷新、加载更多
+  Future<dynamic> requestNetwork<T>(
+    Method method, {
     required String url,
     bool isShow = true,
     bool isClose = true,
@@ -45,11 +64,13 @@ class BaseGetController extends GetxController {
     if (isShow) {
       isLoading.value = true;
     }
-    return DioUtils.instance.requestNetwork<T>(method, url,
+    return DioUtils.instance.requestNetwork<T>(
+      method,
+      url,
       params: params,
       queryParameters: queryParameters,
       options: options,
-      cancelToken: cancelToken?? _cancelToken,
+      cancelToken: cancelToken ?? _cancelToken,
       onSuccess: (data) {
         if (isClose) {
           isLoading.value = false;
@@ -67,24 +88,32 @@ class BaseGetController extends GetxController {
     if (code != ExceptionHandle.cancel_error) {
       ToastUtil.show(msg);
     }
-    /// 页面如果dispose，则不回调onError
+    // 页面如果dispose，则不回调onError
     if (onError != null) {
       onError(code, msg);
     }
   }
 
-  void requestPost<T>(String url,
-      {NetSuccessCallback<T?>? onSuccess,
-      NetErrorCallback? onError,
-      Object? params}) {
+  void requestPost<T>(
+    String url, {
+    NetSuccessCallback<T?>? onSuccess,
+    NetErrorCallback? onError,
+    Object? params,
+  }) {
     isLoading.value = true;
-    DioUtils.instance.requestNetwork(Method.post, url, params: params, onSuccess: (T? res) {
-      isLoading.value = false;
-      onSuccess?.call(res);
-    }, onError: (int code, String msg) {
-      isLoading.value = false;
-      onError?.call(code, msg);
-    });
+    DioUtils.instance.requestNetwork(
+      Method.post,
+      url,
+      params: params,
+      onSuccess: (T? res) {
+        isLoading.value = false;
+        onSuccess?.call(res);
+      },
+      onError: (int code, String msg) {
+        isLoading.value = false;
+        onError?.call(code, msg);
+      },
+    );
     // HttpUtils.instance.requestPost<T>(url, params: params, onSuccess: (T? res) {
     //   isLoading.value = false;
     //   onSuccess?.call(res);
@@ -92,25 +121,5 @@ class BaseGetController extends GetxController {
     //   isLoading.value = false;
     //   onError?.call(code, msg);
     // });
-  }
-
-  /// 就绪后的业务处理，如异步操作、导航进入的参数处理
-  @override
-  void onReady() {
-    super.onReady();
-  }
-
-  /// 释放资源，避免内存泄露，同时也可以进行数据持久化
-  @override
-  void onClose() {
-    super.onClose();
-    /// 销毁时，将请求取消
-    if (!_cancelToken.isCancelled) {
-      _cancelToken.cancel();
-    }
-    var isClosed = isLoading.subject.isClosed;
-    if (!isClosed) {
-      isLoading.close();
-    }
   }
 }
