@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:math';
 
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/model/asset_model.dart';
@@ -35,8 +34,14 @@ class AssetsController extends BaseGetController {
     super.onInit();
     Log.d('AssetsController onInit');
     assets.value = [
-      AssetModel(icon: R.assetsImagesTokenETH, symbol: 'ETH', address: '0x0000000000000000000000000000000000000000'),
-      AssetModel(icon: R.assetsImagesTokenWETH, symbol: 'WETH', address: '0xec2a384Fa762C96140c817079768a1cfd0e908EA'),
+      AssetModel(
+          icon: R.assetsImagesTokenETH,
+          symbol: 'ETH',
+          address: '0x0000000000000000000000000000000000000000'),
+      AssetModel(
+          icon: R.assetsImagesTokenWETH,
+          symbol: 'WETH',
+          address: '0xec2a384Fa762C96140c817079768a1cfd0e908EA'),
     ];
     userModel = UserModel(
       name: 'Soul Wallet',
@@ -78,13 +83,13 @@ class AssetsController extends BaseGetController {
   }
 
   onActivateMyWallet() async {
-    isLoading.value = true;
+    loadingStart();
     bool isContract = false;
     try {
       await WalletContext.getInstance().activateWallet();
       isContract = await WalletContext.getInstance().isWalletContract();
-    } catch (err) {}
-    isLoading.value = false;
+    } catch (_) {}
+    loadingStop();
     if (!isContract) {
       Get.dialog(const WithoutWalletDialog());
     } else {
@@ -94,10 +99,8 @@ class AssetsController extends BaseGetController {
 
   void generateJazzIcon() async {
     Future(() {
-      jazziconData.value = Jazzicon.getJazziconData(60, address: WalletContext
-          .getInstance()
-          .walletAddress
-          ?.hex);
+      jazziconData.value = Jazzicon.getJazziconData(60,
+          address: WalletContext.getInstance().walletAddress?.hex);
     });
   }
 
@@ -105,6 +108,5 @@ class AssetsController extends BaseGetController {
     return assets.value.map((e) => e.symbol).toList();
   }
 
-  void sendTokens() {
-  }
+  void sendTokens() {}
 }

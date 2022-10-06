@@ -29,7 +29,7 @@ class LoginController extends BaseGetController {
   }
 
   void confirm(String email, String password, String walletJson) {
-    isLoading.value = true;
+    loadingStart();
     try {
       WalletContext.recoverKeystore(Web3Helper.client, walletJson, password);
       WalletContext.getInstance().setWalletAddressAutomatic();
@@ -38,7 +38,7 @@ class LoginController extends BaseGetController {
       print('err = $e');
       ToastUtil.show(e.toString());
     }
-    isLoading.value = false;
+    loadingStop();
   }
 
   void jumpDebugPage() {

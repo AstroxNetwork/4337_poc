@@ -4,20 +4,21 @@ import 'package:app/app/util/toast_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 
 /// 基类 Controller
 class BaseGetController extends GetxController {
+  final RxBool _isLoading = false.obs;
   late final CancelToken _cancelToken = CancelToken();
   late RequestRepository request = Get.find<RequestRepository>();
 
-  RxBool isLoading = false.obs;
-
   /// 初始化 [GetxController]，例如一些成员属性的初始化
+  @mustCallSuper
   @override
   void onInit() {
     super.onInit();
-    isLoading.listen((isLoading) {
+    _isLoading.listen((isLoading) {
       if (isLoading) {
         LoadingWidget.show();
       } else {
@@ -27,12 +28,14 @@ class BaseGetController extends GetxController {
   }
 
   /// 就绪后的业务处理，如异步操作、导航进入的参数处理
+  @mustCallSuper
   @override
   void onReady() {
     super.onReady();
   }
 
   /// 释放资源，避免内存泄露，同时也可以进行数据持久化
+  @mustCallSuper
   @override
   void onClose() {
     super.onClose();
@@ -40,10 +43,18 @@ class BaseGetController extends GetxController {
     if (!_cancelToken.isCancelled) {
       _cancelToken.cancel();
     }
-    final isClosed = isLoading.subject.isClosed;
+    final isClosed = _isLoading.subject.isClosed;
     if (!isClosed) {
-      isLoading.close();
+      _isLoading.close();
     }
+  }
+
+  void loadingStart() {
+    _isLoading.value = true;
+  }
+
+  void loadingStop() {
+    _isLoading.value = false;
   }
 
   /// 返回 Future 适用于刷新、加载更多
@@ -60,7 +71,7 @@ class BaseGetController extends GetxController {
     Options? options,
   }) {
     if (isShow) {
-      isLoading.value = true;
+      loadingStart();
     }
     return DioUtils.instance.requestNetwork<T>(
       method,
@@ -71,22 +82,22 @@ class BaseGetController extends GetxController {
       cancelToken: cancelToken ?? _cancelToken,
       onSuccess: (data) {
         if (isShow) {
-          isLoading.value = false;
+          loadingStop();
         }
         onSuccess?.call(data);
       },
       onError: (code, msg) {
         if (isShow) {
-          isLoading.value = false;
+          loadingStop();
         }
         _onError(code, msg, onError);
       },
     );
     // return HttpUtils.instance.requestPost<T>(url, params: params, onSuccess: (T? res) {
-    //   isLoading.value = false;
+    //   loadingStop();
     //   onSuccess?.call(res);
     // }, onError: (int code, String msg) {
-    //   isLoading.value = false;
+    //   loadingStop();
     //   onError?.call(code, msg);
     // });
   }
@@ -107,25 +118,25 @@ class BaseGetController extends GetxController {
     NetErrorCallback? onError,
     Object? params,
   }) {
-    isLoading.value = true;
+    loadingStart();
     DioUtils.instance.requestNetwork(
       Method.post,
       url,
       params: params,
       onSuccess: (T? res) {
-        isLoading.value = false;
+        loadingStop();
         onSuccess?.call(res);
       },
       onError: (int code, String msg) {
-        isLoading.value = false;
+        loadingStop();
         onError?.call(code, msg);
       },
     );
     // HttpUtils.instance.requestPost<T>(url, params: params, onSuccess: (T? res) {
-    //   isLoading.value = false;
+    //   loadingStop();
     //   onSuccess?.call(res);
     // }, onError: (int code, String msg) {
-    //   isLoading.value = false;
+    //   loadingStop();
     //   onError?.call(code, msg);
     // });
   }

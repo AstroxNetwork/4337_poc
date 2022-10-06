@@ -33,7 +33,7 @@ class PasswordController extends BaseGetController {
   }
 
   Future<void> createAccount(String password) async {
-    isLoading.value = true;
+    loadingStart();
     WalletContext.createAccount(Web3Helper.client);
     final walletJson = WalletContext.getInstance().toKeystore(password);
     await Get.find<SharedPreferences>().setString(
@@ -54,13 +54,11 @@ class PasswordController extends BaseGetController {
         url: HttpApi.updateAccount,
         params: params,
         onSuccess: (data) {
-          isLoading.value = false;
+          loadingStop();
           Get.find<SharedPreferences>().setString(WalletSp.EMAIL, email);
           Get.offAllNamed(Routes.homePage);
         },
-        onError: (_, __) {
-          isLoading.value = false;
-        },
+        onError: (_, __) => loadingStop(),
       );
     }
   }
