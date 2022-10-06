@@ -5,13 +5,12 @@ import 'package:app/app/ui/page/login_page/login_controller.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/edit_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 class PasswordBottomSheet extends GetCommonView<LoginController> {
-  final VoidCallback onLogin;
+  const PasswordBottomSheet({super.key, required this.onLogin});
 
-  PasswordBottomSheet({super.key, required this.onLogin});
+  final VoidCallback onLogin;
 
   @override
   Widget build(BuildContext context) {
@@ -40,6 +39,8 @@ class PasswordBottomSheet extends GetCommonView<LoginController> {
               controller: controller.passwordController,
               width: 322,
               height: 55,
+              autofocus: true,
+              obscureText: true,
             ),
           ),
           const Spacer(),

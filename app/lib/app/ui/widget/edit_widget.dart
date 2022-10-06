@@ -2,25 +2,34 @@ import 'package:app/app/info/app_theme.dart';
 import 'package:flutter/material.dart';
 
 class Edit extends StatefulWidget {
-  double width;
-  double height;
-  String hintText;
-  TextEditingController controller;
-  bool obscureText;
+  const Edit({
+    super.key,
+    required this.width,
+    required this.height,
+    this.hintText = "",
+    this.controller,
+    this.autofocus = false,
+    this.obscureText = false,
+  });
 
-  Edit(
-      {super.key,
-      required this.width,
-      required this.height,
-      this.hintText = "",
-      required this.controller,
-      this.obscureText = false});
+  final double width;
+  final double height;
+  final String hintText;
+  final TextEditingController? controller;
+  final bool autofocus;
+  final bool obscureText;
 
   @override
   State<Edit> createState() => _EditState();
 }
 
 class _EditState extends State<Edit> {
+  @override
+  void dispose() {
+    widget.controller?.clear();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -32,15 +41,17 @@ class _EditState extends State<Edit> {
       ),
       child: Container(
         decoration: BoxDecoration(
-            borderRadius: const BorderRadius.all(Radius.circular(28)),
-            boxShadow: [
-              BoxShadow(
-                color: appThemeData.scaffoldBackgroundColor,
-                blurRadius: 10,
-                blurStyle: BlurStyle.inner,
-              )
-            ]),
+          borderRadius: const BorderRadius.all(Radius.circular(28)),
+          boxShadow: [
+            BoxShadow(
+              color: appThemeData.scaffoldBackgroundColor,
+              blurRadius: 10,
+              blurStyle: BlurStyle.inner,
+            )
+          ],
+        ),
         child: TextField(
+          autofocus: widget.autofocus,
           controller: widget.controller,
           cursorColor: Colors.black,
           keyboardType: TextInputType.text,
@@ -80,11 +91,5 @@ class _EditState extends State<Edit> {
         width: 1,
       ),
     );
-  }
-
-  @override
-  void dispose() {
-    super.dispose();
-    widget.controller.clear();
   }
 }
