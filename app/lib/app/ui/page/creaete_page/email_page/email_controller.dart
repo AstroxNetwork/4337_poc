@@ -12,70 +12,76 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class EmailController extends BaseGetController {
-  RxInt countdown = 60.obs;
-  RxBool isVerification = false.obs;
+  final emailController = TextEditingController();
+  final verifyController = TextEditingController();
+  final verifyFocusNode = FocusNode();
+  final RxInt countdown = 60.obs;
+  final RxBool isVerification = false.obs;
+  Timer? timer;
 
-  late Timer timer;
+  @override
+  void onClose() {
+    super.onClose();
+    timer?.cancel();
+  }
 
-  TextEditingController emailController = TextEditingController(text: '');
-  TextEditingController verfCodeController = TextEditingController(text: '');
-
-  sendVerification() {
-    if (!EmailValidator.validate(emailController.text)) {
+  Future<void> sendVerification() async {
+    final email = emailController.text;
+    if (!EmailValidator.validate(email)) {
       ToastUtil.show('Not a valid email address');
       return;
     }
-    var params = Map();
-    var emailStr = emailController.text;
-    params['email'] = emailStr;
-    requestNetwork<String>(Method.post,
-        url: HttpApi.verifyEmail, params: params, onSuccess: (_) {
-      isVerification.value = true;
-      timer = Timer.periodic(
-        const Duration(seconds: 1),
-        (timer) {
+    loadingStart();
+    await requestNetwork<String>(
+      Method.post,
+      url: HttpApi.verifyEmail,
+      params: {'email': email},
+      onSuccess: (_) {
+        countdown.value = 60;
+        isVerification.value = true;
+        verifyFocusNode.requestFocus();
+        timer = Timer.periodic(const Duration(seconds: 1), (timer) {
           countdown.value--;
           if (countdown.value == 0) {
             timer.cancel();
           }
-        },
-      );
-    }, onError: (int code, String msg) {});
+        });
+      },
+      onError: (int code, String msg) {},
+    );
+    loadingStop();
   }
 
-  verification() {
-    if (!EmailValidator.validate(emailController.text)) {
+  Future<void> verifyCode() async {
+    final email = emailController.text, code = verifyController.text;
+    if (!EmailValidator.validate(email)) {
       ToastUtil.show('Not a valid email address');
       return;
     }
-    if (!(verfCodeController.text.length == 6)) {
+    if (code.length != 6) {
       ToastUtil.show('Not a valid verification code (6 digits)');
       return;
     }
-
-    var emailStr = emailController.text;
-    var params = Map();
-
-    params['email'] = emailStr;
-    params['code'] = verfCodeController.text;
-    requestNetwork<Map>(
+    loadingStart();
+    await requestNetwork<Map>(
       Method.post,
       url: HttpApi.addAccount,
-      params: params,
+      params: {'email': email, 'code': code},
       onSuccess: (Map? res) {
         if (res != null) {
           // cache authorization
           if (res[Constant.jwtToken] != null) {
-            Get.find<SharedPreferences>()
-                .setString(Constant.accessToken, res[Constant.jwtToken]);
-            var parameters = <String, String>{};
-            parameters['email'] = emailStr;
-            Get.toNamed(Routes.passwordPage, parameters: parameters);
+            Get.find<SharedPreferences>().setString(
+              Constant.accessToken,
+              res[Constant.jwtToken],
+            );
+            Get.toNamed(Routes.passwordPage, parameters: {'email': email});
           } else {
             ToastUtil.show('jwtToken error');
           }
         }
       },
     );
+    loadingStop();
   }
 }
