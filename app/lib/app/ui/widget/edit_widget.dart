@@ -8,14 +8,13 @@ class Edit extends StatefulWidget {
   TextEditingController controller;
   bool obscureText;
 
-  Edit({
-    super.key,
-    required this.width,
-    required this.height,
-    this.hintText = "",
-    required this.controller,
-    this.obscureText = false
-  });
+  Edit(
+      {super.key,
+      required this.width,
+      required this.height,
+      this.hintText = "",
+      required this.controller,
+      this.obscureText = false});
 
   @override
   State<Edit> createState() => _EditState();
@@ -53,20 +52,21 @@ class _EditState extends State<Edit> {
           onChanged: (text) {},
           obscureText: widget.obscureText,
           decoration: InputDecoration(
-              fillColor: Colors.white12,
-              filled: true,
-              hintText: widget.hintText,
-              hintStyle: const TextStyle(
-                fontSize: 20,
-                color: Color(0xFFB7B7B7),
-                fontStyle: FontStyle.italic,
-              ),
-              border: _getBorder(false),
-              focusedBorder: _getBorder(true),
-              disabledBorder: _getBorder(false),
-              enabledBorder: _getBorder(false),
-              contentPadding: const EdgeInsets.only(
-                  left: 25, top: 16, right: 24, bottom: 15)),
+            fillColor: Colors.white12,
+            filled: true,
+            hintText: widget.hintText,
+            hintStyle: const TextStyle(
+              fontSize: 20,
+              color: Color(0xFFB7B7B7),
+              fontStyle: FontStyle.italic,
+            ),
+            border: _getBorder(false),
+            focusedBorder: _getBorder(true),
+            disabledBorder: _getBorder(false),
+            enabledBorder: _getBorder(false),
+            contentPadding:
+                const EdgeInsets.only(left: 25, top: 16, right: 24, bottom: 15),
+          ),
         ),
       ),
     );

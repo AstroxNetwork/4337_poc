@@ -1,4 +1,5 @@
 import 'package:app/constant.dart';
+import 'package:app/generated/json/base/json_convert_content.dart';
 
 class BaseEntity<T> {
 
@@ -22,7 +23,7 @@ class BaseEntity<T> {
     } else if (T.toString() == 'Map<dynamic, dynamic>') {
       return json as T;
     } else {
-      return json.toString() as T;
+      return json as T;
       /// List类型数据由fromJsonAsT判断处理
       // return JsonConvert.fromJsonAsT<T>(json);
     }
