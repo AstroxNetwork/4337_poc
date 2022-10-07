@@ -13,16 +13,15 @@ class Send {
   static final httpClient = http.Client();
   static Future<dynamic> sendOp(UserOperation op) async {
     final body = jsonEncode(op.toMap());
-    print('$body, ${body.length}');
+    // print('sendOp $body, ${body.length}');
     final response =  await httpClient.put(Uri.parse(bundlerUrl), body: body,
     headers: {'Content-Type': 'application/json', 'accept': 'application/json' });
-    print(response.body);
     return json.decode(response.body);
   }
 
   static Future<http.Response> getOpStateByReqeustId(String requestId) async {
     final url = bundlerUrl + requestId;
-    print('getOpStateByReqeustId: $url');
+    // print('getOpStateByReqeustId: $url');
     return await httpClient.get(Uri.parse(bundlerUrl + requestId));
   }
 
@@ -34,7 +33,7 @@ class Send {
     return json.decode(response.body);
   }
 
-  static Future sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
+  static Future<dynamic> sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
     print('sendOpWait');
     final res0 = await sendOp(op);
     print('sendOp $res0');
@@ -74,7 +73,7 @@ class Send {
         }
       }
     } else {
-      print(res0);
+      print('sendOp return $res0');
       throw(Exception('activateOp failed'));
     }
   }

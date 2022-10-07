@@ -4,6 +4,7 @@ import 'dart:typed_data';
 
 import 'package:app/eip4337lib/EIP4337Lib.dart';
 import 'package:app/eip4337lib/backend/request.dart';
+import 'package:app/eip4337lib/contracts/entryPoint.dart';
 import 'package:app/eip4337lib/define/abi.dart';
 import 'package:app/eip4337lib/define/address.dart';
 import 'package:app/eip4337lib/entity/user_operation.dart';
@@ -13,28 +14,27 @@ import 'package:app/eip4337lib/utils/send.dart';
 import 'package:app/eip4337lib/utils/tokens.dart';
 import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/web3dart.dart';
+import 'package:app/web3dart/crypto.dart';
 
 // WalletContext.getInstance()
 class WalletContext {
-  WalletContext(this.web3, this.account);
-
-  final Web3Client web3;
-  final EthPrivateKey account; // 本地账户
+  Web3Client web3;
+  EthPrivateKey account;  // 本地账户
   EthereumAddress? walletAddress;
-
+  WalletContext(this.web3, this.account);
   static WalletContext? _instance; // 记录本地账户
 
   static WalletContext getInstance() {
     if (_instance == null) {
-      throw (Exception("need create or recover"));
+      throw(Exception("need create or recover"));
     }
     return _instance!;
   }
 
   // 创建本地账户
   static void createAccount(Web3Client web3) {
-    final privateKey = Web3Helper.generateKey();
-    _instance = WalletContext(web3, privateKey);
+      final privateKey = Web3Helper.generateKey();
+      _instance = WalletContext(web3, privateKey);
   }
 
   // 从keystore本地恢复
@@ -55,10 +55,10 @@ class WalletContext {
   // }
 
   // 从私钥恢复本地
-  // static void recoverPrivateKey(Web3Client web3, String priKey) {
-  //   final privateKey = Web3Helper.recoverKeys(priKey);
-  //   _instance = WalletContext(web3, privateKey);
-  // }
+  static void recoverPrivateKey(Web3Client web3, String priKey) {
+    final privateKey = Web3Helper.recoverKeys(priKey);
+    _instance = WalletContext(web3, privateKey);
+  }
 
   // 本地账户生成keystore，本地保存
   String toKeystore(String password) {
@@ -71,14 +71,14 @@ class WalletContext {
   }
 
   Future<String> getWalletAddress() async {
-    Map params = {'key': account.address.hex};
+    Map params = { 'key': account.address.hex };
     final response = await Request.getWalletAddress(params);
     final body = jsonDecode(response.body);
     return body['data']['wallet_address'];
   }
 
   Future<String> getWalletAddressByEmail(String email) async {
-    Map params = {'email': email};
+    Map params = { 'email': email };
     final response = await Request.getWalletAddress(params);
     final body = jsonDecode(response.body);
     return body['data']['wallet_address'];
@@ -133,9 +133,8 @@ class WalletContext {
   }
 
   // 取得gasPrice, BigInt, eth = 10^18 wei
-  Future<BigInt> getGasPriceBI() async {
-    final amount = await web3.getGasPrice();
-    return amount.getInWei;
+  BigInt getGasPriceBI() {
+    return BigInt.from(5000000000);
   }
 
   // walletaddress是否init
@@ -148,15 +147,9 @@ class WalletContext {
   // 激活钱包
   Future activateWallet() async {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
-    final activateOp = EIP4337Lib.activateWalletOp(
-      Goerli.entryPointAddress,
-      Goerli.paymasterAddress,
-      account.address,
-      Goerli.wethAddress,
-      currentFee,
-      BigInt.from(10).pow(10),
-      BigInt.zero,
-    );
+    final activateOp = EIP4337Lib.activateWalletOp(Goerli.entryPointAddress,
+        Goerli.paymasterAddress, account.address, Goerli.wethAddress,
+        currentFee, BigInt.from(10).pow(10), BigInt.zero);
     await _executeOperation(activateOp);
   }
 
@@ -199,78 +192,42 @@ class WalletContext {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final contract = DeployedContract(ERC20ABI, tokenAddress);
-    final op = await ERC20(web3, contract).transfer(
-      walletAddress!,
-      nonce,
-      Goerli.entryPointAddress,
-      Goerli.paymasterAddress,
-      currentFee,
-      BigInt.from(10).pow(10),
-      to,
-      amount,
-    );
+    final op = await ERC20(web3, contract).transfer(walletAddress!, nonce, Goerli.entryPointAddress,
+        Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10), to, amount);
     _executeOperation(op);
   }
 
   void addGuardian(EthereumAddress guardianAddress) async {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
-    final op = await Guardian.walletContract(web3, walletAddress!)
-        .grantGuardianRequest(
-      nonce,
-      guardianAddress,
-      Goerli.entryPointAddress,
-      Goerli.paymasterAddress,
-      currentFee,
-      BigInt.from(10).pow(10),
-    );
+    final op = await Guardian.walletContract(web3, walletAddress!).grantGuardianRequest(nonce, guardianAddress,
+        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10));
     _executeOperation(op);
   }
 
   void removeGuardian(EthereumAddress guardianAddress) async {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
-    final op = await Guardian.walletContract(web3, walletAddress!)
-        .revokeGuardianRequest(
-      nonce,
-      guardianAddress,
-      Goerli.entryPointAddress,
-      Goerli.paymasterAddress,
-      currentFee,
-      BigInt.from(10).pow(10),
-    );
+    final op = await Guardian.walletContract(web3, walletAddress!).revokeGuardianRequest(nonce, guardianAddress,
+        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10));
     _executeOperation(op);
   }
 
   Future<UserOperation> transferOwner(EthereumAddress newOwner) async {
     final currentFee = (await getGasPriceBI()) * BigInt.from(3);
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
-    final op = await Guardian.walletContract(
-      web3,
-      walletAddress!,
-    ).transferOwner(
-      nonce,
-      newOwner,
-      Goerli.entryPointAddress,
-      Goerli.paymasterAddress,
-      currentFee,
-      BigInt.from(10).pow(10),
-    );
+    final op = await Guardian.walletContract(web3, walletAddress!).transferOwner(nonce, newOwner,
+        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10));
     return op;
   }
-
   // getRecoverId
 
-  void recoverWallet(
-    EthereumAddress newOwner,
-    List<Uint8List> signatures,
-  ) async {
+  void recoverWallet(EthereumAddress newOwner, List<Uint8List> signatures) async {
     final recoveryOp = await transferOwner(newOwner);
-    final requestId = recoveryOp.requestId(
-      Goerli.entryPointAddress,
-      Goerli.chainId,
-    );
-    final signPack = await packGuardiansSignByRequestId(requestId, signatures);
+    final requestId = recoveryOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
+    final signPack = await packGuardiansSignByRequestId(requestId, signatures); ///
     recoveryOp.signature = signPack;
+
   }
+
 }

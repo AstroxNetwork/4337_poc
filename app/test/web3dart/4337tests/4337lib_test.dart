@@ -1,3 +1,4 @@
+import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/define/address.dart';
 import 'package:app/eip4337lib/utils/send.dart';
 import 'package:app/web3dart/crypto.dart';
@@ -95,7 +96,6 @@ void main() async {
   var activateOp = EIP4337Lib.activateWalletOp(
       Goerli.entryPointAddress, Goerli.paymasterAddress, userAddress,Goerli.wethAddress,
       gasMax, gasPriority, BigInt.zero);
-  
   // print(op);
 
   final requestId = activateOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
@@ -103,12 +103,12 @@ void main() async {
   final signature = await user.signPersonalMessage(requestId);
   // print('signature ${bytesToHex(signature)}');
   activateOp.signWithSignature(user.address, signature);
-  print(activateOp);
+  // print(activateOp);
 
   /// ########### simulate
   final code = await ethClient.getCode(simpleWalletAddress);
   print('send op ${code.isEmpty}');
-  // if (code.isEmpty) {
+  if (code.isEmpty) {
     final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
     final simulateValidation = entryPointContract.function("simulateValidation");
 
@@ -122,9 +122,17 @@ void main() async {
     } catch (e) {
       print('catch $e');
     }
+  } else {
+    print("simpleWalletAddress $simpleWalletAddress inited");
 
-
-  // }
+    WalletContext.recoverPrivateKey(ethClient, USER_PRIVATE_KEY);
+    final ctx = WalletContext.getInstance();
+    ctx.setWalletAddress(simpleWallet);
+    final toAddress = EthereumAddress.fromHex('0x8af8c26D62954B5CA17B7EEA5231b0F9893aDD9f');
+    final amount = EtherAmount.fromUnitAndValue(EtherUnit.finney, 1).getInWei;
+    print("sendERC20 $toAddress, $amount");
+    await ctx.sendERC20(wethContractAddress, toAddress, amount);
+  }
 
   /// ########### guardian
   final guardian1 = Web3Helper.recoverKeys("0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80");
