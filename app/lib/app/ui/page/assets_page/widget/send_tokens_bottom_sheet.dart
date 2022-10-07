@@ -100,7 +100,9 @@ class SendTokensBottomSheet extends GetCommonView<AssetsController> {
                           child: Padding(
                             padding: const EdgeInsets.only(left: 10),
                             child: DropdownButton(
-                              value: 'ETH',
+                              value: controller.sendCurrency.isEmpty
+                                  ? controller.getCurrencys().first
+                                  : controller.sendCurrency,
                               style: const TextStyle(
                                 fontSize: 20,
                                 color: Colors.black,
@@ -108,9 +110,8 @@ class SendTokensBottomSheet extends GetCommonView<AssetsController> {
                               iconSize: 28,
                               iconEnabledColor: Colors.black,
                               items: _getCurrencys(),
-                              onChanged: (value) {
-                                controller.tokenSeleted = value;
-                              },
+                              onChanged: (value) =>
+                                  controller.changeCurrency(value),
                               underline: Container(),
                               elevation: 0,
                               dropdownColor: Colors.transparent,

@@ -27,7 +27,7 @@ class AssetsController extends BaseGetController {
 
   TextEditingController toController = TextEditingController(text: '');
   TextEditingController tokenController = TextEditingController(text: '');
-  String tokenSeleted = 'ETH';
+  String sendCurrency = '';
 
   @override
   void onInit() {
@@ -106,9 +106,9 @@ class AssetsController extends BaseGetController {
     final amount = BigInt.parse(tokenController.text);
     try {
       print('sendTokens $toAddress, $amount');
-      if (tokenSeleted == 'ETH') {
+      if (sendCurrency == 'ETH') {
         await WalletContext.getInstance().sendETH(toAddress, amount);
-      } else if (tokenSeleted == 'WETH') {
+      } else if (sendCurrency == 'WETH') {
         final tokenAddress = EthereumAddress.fromHex('0xec2a384Fa762C96140c817079768a1cfd0e908EA');
         await WalletContext.getInstance().sendERC20(tokenAddress, toAddress, amount);
       }
@@ -117,5 +117,10 @@ class AssetsController extends BaseGetController {
 
   onReceiveClick() {
     Get.bottomSheet(const ReceivingTokensBottomSheet());
+  }
+
+  void changeCurrency(String value) {
+    sendCurrency = value;
+    update();
   }
 }

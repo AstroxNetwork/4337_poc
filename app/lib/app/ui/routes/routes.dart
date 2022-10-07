@@ -4,6 +4,8 @@ import 'package:app/app/ui/page/creaete_page/password_page/password_binding.dart
 import 'package:app/app/ui/page/creaete_page/password_page/password_page.dart';
 import 'package:app/app/ui/page/guardian_page/guardian_binding.dart';
 import 'package:app/app/ui/page/guardian_page/guardian_page.dart';
+import 'package:app/app/ui/page/help_page/help_binding.dart';
+import 'package:app/app/ui/page/help_page/help_page.dart';
 import 'package:app/app/ui/page/home_page/home_binding.dart';
 import 'package:app/app/ui/page/home_page/home_page.dart';
 import 'package:app/app/ui/page/login_page/login_binding.dart';
@@ -32,6 +34,7 @@ abstract class Routes {
   static const String transactionPage = '/transaction';
   static const String signedPage = '/signed';
   static const String scanPage = '/scan';
+  static const String helpPage = '/help';
 
   static final routePage = [
     GetPage(
@@ -80,8 +83,13 @@ abstract class Routes {
     ),
     GetPage(
       name: scanPage,
-      page: () => ScanPage(),
+      page: () => const ScanPage(),
       binding: ScanBinding(),
+    ),
+    GetPage(
+      name: helpPage,
+      page: () => const HelpPage(),
+      binding: HelpBinding(),
     ),
   ];
 }

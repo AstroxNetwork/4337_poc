@@ -1,10 +1,10 @@
 import 'dart:io';
 
 import 'package:app/app/res/r.dart';
+import 'package:app/app/ui/routes/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
-import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({Key? key}) : super(key: key);
@@ -69,6 +69,7 @@ class _ScanPageState extends State<ScanPage>
                   } else {
                     final String code = barcode.rawValue!;
                     debugPrint('Barcode found! $code');
+                    onScanCallback(code);
                   }
                 }),
             CustomPaint(
@@ -94,6 +95,12 @@ class _ScanPageState extends State<ScanPage>
         ),
       ),
     );
+  }
+
+  void onScanCallback(String value) {
+    if (value.isNotEmpty) {
+      Get.toNamed(Routes.helpPage, arguments: value);
+    }
   }
 }
 

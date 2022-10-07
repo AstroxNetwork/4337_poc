@@ -40,6 +40,14 @@ class DebugPage extends GetCommonView<DebugController> {
                         ListTile(
                           title: const Text('HomePage'),
                           onTap: () => Get.toNamed(Routes.homePage),
+                        ),
+                        ListTile(
+                          title: const Text('HelpPage'),
+                          onTap: () => Get.toNamed(
+                            Routes.helpPage,
+                            arguments:
+                                '0x6b5cf860506c6291711478F54123312066946b0',
+                          ),
                         )
                       ],
                     ),
