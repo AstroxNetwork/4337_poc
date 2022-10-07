@@ -5,6 +5,7 @@ import 'package:app/app/util/toast_util.dart';
 import 'package:app/app/wallet_sp.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/helper.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -35,7 +36,7 @@ class LoginController extends BaseGetController {
       WalletContext.getInstance().setWalletAddressAutomatic();
       Get.offAllNamed(Routes.homePage);
     } catch (e) {
-      print('err = $e');
+      LogUtil.d('err = $e');
       ToastUtil.show(e.toString());
     }
     loadingStop();

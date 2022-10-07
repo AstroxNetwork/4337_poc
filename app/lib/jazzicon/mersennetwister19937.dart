@@ -67,7 +67,7 @@ class MersenneTwister19937
       /* 2002/01/09 modified by Makoto Matsumoto             */
       //c//mt[mti] &= 0xffffffff;
       mt[mti] = unsigned32(mt[mti] & 0xffffffff);
-      // print("init_seed  index=$mti  ${mt[mti]}");
+      // LogUtil.d("init_seed  index=$mti  ${mt[mti]}");
       /* for >32 bit machines */
     }
   }

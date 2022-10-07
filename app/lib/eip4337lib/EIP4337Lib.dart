@@ -32,27 +32,27 @@ class EIP4337Lib {
     final walletConstructor = contract.ABI.functions.singleWhere((f) => f.isConstructor);
     final initParamsEncoded = bytesToHex(walletConstructor.encodeCall(initArgs), include0x: false);
     initCodeWithArgs += initParamsEncoded;
-    // print('initCodeWithArgs: $initCodeWithArgs');
+    // LogUtil.d('initCodeWithArgs: $initCodeWithArgs');
     return initCodeWithArgs;
   }
 
   static String calculateWalletAddressByCode(IContract contract, List<dynamic> initArgs, BigInt salt) {
     final initCodeWithArgs = getWalletCodeWithArgs(contract, initArgs);
     final initCodeHash = keccak256(hexToBytes(initCodeWithArgs));
-    // print('initCodeHash: ${bytesToHex(initCodeHash, include0x: true)}');
+    // LogUtil.d('initCodeHash: ${bytesToHex(initCodeHash, include0x: true)}');
     return calculateWalletAddressByCodeHash(initCodeHash, salt);
   }
 
   static String calculateWalletAddressByCodeHash(Uint8List initCodeHash, BigInt salt) {
     final saltBytes32 = bytesToHex(unsignedIntToBytes(salt), forcePadLength: 64, include0x: true, padToEvenLength: true);
-    // print('saltBytes32: $saltBytes32');
+    // LogUtil.d('saltBytes32: $saltBytes32');
     return getCreate2Address(Create2Factory, saltBytes32, initCodeHash);
   }
 
   // create2
   static String getCreate2Address(EthereumAddress factory, String saltBytes32, Uint8List initCodeHash) {
     final salt = hexToBytes(saltBytes32);
-    // print('getCreate2Address: len ${salt.length}, ${initCodeHash.length}');
+    // LogUtil.d('getCreate2Address: len ${salt.length}, ${initCodeHash.length}');
     final input = '0xff' + factory.hexNo0x + bytesToHex(salt, include0x: false) + bytesToHex(initCodeHash, include0x: false);
     return bytesToHex(keccak256(hexToBytes(input)).sublist(12), include0x: true);
   }
@@ -87,7 +87,7 @@ class EIP4337Lib {
       final SoulWalletContract = DeployedContract(SoulWallet().ABI, walletAddress);
       final getNonce = SoulWalletContract.function("nonce");
       final response = await web3.call(contract: SoulWalletContract, function: getNonce, params: []);
-      // print(response);
+      // LogUtil.d(response);
       nonce = response[0] as BigInt;
     }
     return nonce;

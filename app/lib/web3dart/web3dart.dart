@@ -3,6 +3,7 @@ library web3dart;
 import 'dart:async';
 import 'dart:typed_data';
 
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:collection/collection.dart';
 import 'package:http/http.dart';
 import 'package:json_rpc_2/json_rpc_2.dart' as rpc;

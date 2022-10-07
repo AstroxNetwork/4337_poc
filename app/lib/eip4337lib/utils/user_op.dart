@@ -38,7 +38,7 @@ String packUserOp(UserOperation op, [bool forSignature = true]) {
 
 Uint8List getRequestId(UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) {
   final userOpHash = keccak256(hexToBytes(packUserOp(op)));
-  // print('userOpHash ${bytesToHex(userOpHash, include0x: true)}');
+  // LogUtil.d('userOpHash ${bytesToHex(userOpHash, include0x: true)}');
   const tuple = TupleType([
     FixedBytes(32),
     AddressType(),

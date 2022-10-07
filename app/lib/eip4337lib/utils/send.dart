@@ -5,29 +5,23 @@ import 'package:app/eip4337lib/entity/user_operation.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:dio/dio.dart';
 
-import 'log_utils.dart';
+import 'log_util.dart';
 
 const bundlerUrl = 'https://bundler-poc.soulwallets.me/';
 
 class Send {
-  static final dio = Dio();
+  static final _dio = Dio(
+    BaseOptions(contentType: 'application/json;charset=utf-8'),
+  );
 
-  static Future<dynamic> sendOp(UserOperation op) async {
+  static Future<Map<String, dynamic>> sendOp(UserOperation op) async {
     final body = jsonEncode(op.toMap());
-    final response = await dio.put(
-      bundlerUrl,
-      data: body,
-      options: Options(headers: {
-        'Content-Type': 'application/json',
-        'accept': 'application/json'
-      }),
-    );
+    final response = await _dio.put(bundlerUrl, data: body);
     return response.data;
   }
 
-  static Future<Response> getOpStateByRequestId(String requestId) async {
-    final url = bundlerUrl + requestId;
-    return dio.get(bundlerUrl + requestId);
+  static Future<Response> getOpStateByRequestId(String requestId) {
+    return _dio.get(bundlerUrl + requestId);
   }
 
   static Future getOpStateByUserOperation(
@@ -58,36 +52,36 @@ class Send {
         final response = await getOpStateByRequestId(requestId);
         final res = response.data;
         if (res['code'] == 0) {
-          Log.d('pending...');
+          LogUtil.d('pending...');
         } else if (res['code'] == 1) {
-          Log.d('replaced with request id ${res["requestId"]}');
+          LogUtil.d('replaced with request id ${res["requestId"]}');
           break;
         } else if (res['code'] == 2) {
-          Log.d('processing...');
+          LogUtil.d('processing...');
         } else if (res['code'] == 3) {
           final hash = res["txHash"];
           for (var i = 0; i < 60; i++) {
             await Future.delayed(const Duration(seconds: 1));
             final receipt = await web3.getTransactionReceipt(hash);
             if (receipt?.status == true) {
-              Log.d('tx: $hash has been confirmed');
+              LogUtil.d('tx: $hash has been confirmed');
               return hash;
             } else {
-              Log.d('tx receipt: $receipt');
+              LogUtil.d('tx receipt: $receipt');
               // throw(Exception('transaction failed'));
             }
           }
         } else if (res['code'] == 4) {
-          Log.d('failed $res');
+          LogUtil.d('failed $res');
           break;
         } else if (res['code'] == 5) {
-          Log.d('notfound');
+          LogUtil.d('notfound');
           break;
         }
       }
     } else {
-      Log.e('sendOp return $res0');
-      throw (Exception('activateOp failed'));
+      LogUtil.e('sendOp return $res0');
+      throw Exception('activateOp failed');
     }
   }
 }

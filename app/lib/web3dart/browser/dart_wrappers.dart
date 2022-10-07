@@ -23,7 +23,7 @@ extension DartEthereum on Ethereum {
   /// Future<void> main() async {
   ///   final eth = window.ethereum;
   ///   if (eth == null) {
-  ///     print('MetaMask is not available');
+  ///     LogUtil.d('MetaMask is not available');
   ///     return;
   ///   }
   ///

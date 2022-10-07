@@ -14,7 +14,6 @@ import 'package:app/eip4337lib/utils/send.dart';
 import 'package:app/eip4337lib/utils/tokens.dart';
 import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/web3dart.dart';
-import 'package:app/web3dart/crypto.dart';
 
 import '../utils/log_utils.dart';
 

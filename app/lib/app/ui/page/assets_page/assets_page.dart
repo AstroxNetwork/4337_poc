@@ -10,6 +10,7 @@ import 'package:app/app/ui/page/assets_page/widget/wallet_account_bottom_sheet.d
 import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -20,24 +21,18 @@ class AssetsPage extends GetCommonView<AssetsController> {
 
   @override
   Widget build(BuildContext context) {
-    print('AssetsPage build');
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         maintainBottomViewPadding: true,
-        child: SizedBox(
-          width: double.infinity,
-          height: double.infinity,
+        child: SizedBox.expand(
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 30, right: 30),
+              const Padding(
+                padding: EdgeInsets.symmetric(horizontal: 30),
                 child: Align(
                   alignment: Alignment.topCenter,
-                  child: TopBar(
-                    needInfo: true,
-                    needScan: true,
-                  ),
+                  child: TopBar(needInfo: true, needScan: true),
                 ),
               ),
               Expanded(
@@ -49,7 +44,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                         child: GestureDetector(
                           onTap: () => onAvatarClick(),
                           child: Obx(() {
-                            print('yjk jazziconData');
+                            LogUtil.d('yjk jazziconData');
                             return controller.jazziconData.value == null
                                 ? Container(width: 60, height: 60)
                                 : Jazzicon.getIconWidget(
@@ -147,7 +142,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
                           itemBuilder: (_, index) {
-                            print('yjk assets');
+                            LogUtil.d('yjk assets');
                             return AssetItem(
                               icon: controller.assets[index].icon,
                               count: controller.balanceMap[
