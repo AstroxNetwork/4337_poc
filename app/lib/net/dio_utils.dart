@@ -6,6 +6,8 @@ import 'package:app/net/base_entity.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 
+import 'intercept.dart';
+
 /// 默认dio配置
 int _connectTimeout = 15000;
 int _receiveTimeout = 15000;
@@ -49,7 +51,7 @@ class DioUtils {
       baseUrl: _baseUrl,
 //      contentType: Headers.formUrlEncodedContentType, // 适用于post form表单提交
     );
-    _dio = Dio(options);
+    _dio = Dio(options)..interceptors.add(AuthInterceptor());
 
     /// 添加拦截器
     void addInterceptor(Interceptor interceptor) {
@@ -76,7 +78,7 @@ class DioUtils {
     CancelToken? cancelToken,
     Options? options,
   }) async {
-    LogUtil.d('request：url: $url, data: $data');
+    LogUtil.d('request：url: $url, data: $data, headers: ${options?.headers}');
     final Response<String> response = await _dio.request<String>(
       url,
       data: data,
