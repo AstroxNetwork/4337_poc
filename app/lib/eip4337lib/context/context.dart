@@ -163,7 +163,7 @@ class WalletContext {
     // final simulateValidation = entryPointContract.function("simulateValidation");
     // web3.call(contract: entryPointContract, function: simulateValidation, params: [Goerli.zeroAddress]);
 
-    Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+    await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
   }
 
   // 发送eth
@@ -180,7 +180,7 @@ class WalletContext {
       to,
       amount,
     );
-    _executeOperation(op);
+    await _executeOperation(op);
   }
 
   // 发送erc20
@@ -194,7 +194,7 @@ class WalletContext {
     final contract = DeployedContract(ERC20ABI, tokenAddress);
     final op = await ERC20(web3, contract).transfer(walletAddress!, nonce, Goerli.entryPointAddress,
         Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10), to, amount);
-    _executeOperation(op);
+    await _executeOperation(op);
   }
 
   void addGuardian(EthereumAddress guardianAddress) async {
