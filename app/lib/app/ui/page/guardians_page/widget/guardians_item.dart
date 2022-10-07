@@ -12,13 +12,15 @@ class GuardiansItem extends StatelessWidget {
   GuardianModel model;
   bool isAdded;
 
-  GuardiansItem({super.key, required this.model, this.isAdded = true});
+  Function(GuardianModel)? onItemClick;
+
+  GuardiansItem({super.key, required this.model, this.isAdded = true, this.onItemClick});
 
   @override
   Widget build(BuildContext context) {
     LogUtil.d('GuardiansItem build ${model.toJson()}');
     return GestureDetector(
-      onTap: () => onItemClick(),
+      onTap: () => onItemClick?.call(model),
       child: Container(
         decoration: const BoxDecoration(),
         child: Row(
@@ -108,11 +110,5 @@ class GuardiansItem extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  onItemClick() {
-    LogUtil.d('GuardiansItem onItemClick ${model.toJson()}');
-
-    Get.toNamed(Routes.guardianPage, arguments: model);
   }
 }

@@ -1,4 +1,5 @@
 import 'package:app/app/base/get/getx_controller_inject.dart';
+import 'package:app/app/ui/page/activities_page/activities_controller.dart';
 import 'package:app/app/ui/page/assets_page/assets_controller.dart';
 import 'package:app/app/ui/page/guardians_page/guardians_controller.dart';
 import 'package:app/app/ui/page/home_page/widget/congratulations_bottom_sheet.dart';
@@ -12,12 +13,11 @@ class HomeController extends BaseGetController {
   changeTab(int index) {
     tabIndex = index;
     if (index == 0) {
-      Get.find<AssetsController>().notifyUserModel();
+      Get.find<AssetsController>().onVisiablity();
     } else if (index == 1) {
-      // Get.find<AssetsController>().notifyXXX();
+      Get.find<ActivitiesController>().onVisiablity();
     } else if (index == 2) {
       Get.find<GuardiansController>().onVisiablity();
-      // Get.find<AssetsController>().notifyXXX();
     }
     update();
   }

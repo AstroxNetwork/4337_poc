@@ -94,19 +94,21 @@ class AssetsPage extends GetCommonView<AssetsController> {
                           ],
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 29),
-                        child: Button(
-                          width: 323,
-                          height: 54,
-                          onPressed: () => controller.onActivateMyWallet(),
-                          data: 'Activate My Wallet',
-                          borderWidth: 2,
-                          color: ColorStyle.color_FFF5F5FF,
-                          fontColor: ColorStyle.color_FF4132FF,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
+                      Obx(() {
+                        return !controller.isContractWallet.value ? Padding(
+                          padding: const EdgeInsets.only(top: 29),
+                          child: Button(
+                            width: 323,
+                            height: 54,
+                            onPressed: () => controller.onActivateMyWallet(),
+                            data: 'Activate My Wallet',
+                            borderWidth: 2,
+                            color: ColorStyle.color_FFF5F5FF,
+                            fontColor: ColorStyle.color_FF4132FF,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ) : Container();
+                      }),
                       Padding(
                         padding: const EdgeInsets.only(top: 30),
                         child: Row(

@@ -2,10 +2,12 @@ import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/guardian_page/guardian_controller.dart';
+import 'package:app/app/ui/page/guardians_page/guardians_controller.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:get/get.dart';
 
 class GuardianPage extends GetCommonView<GuardianController> {
   @override
@@ -83,7 +85,9 @@ class GuardianPage extends GetCommonView<GuardianController> {
                   child: Button(
                     width: double.infinity,
                     height: 60,
-                    onPressed: () {},
+                    onPressed: () {
+                      controller.removeGuardian();
+                    },
                     data: 'Delete',
                     color: appThemeData.scaffoldBackgroundColor,
                     borderWidth: 1,

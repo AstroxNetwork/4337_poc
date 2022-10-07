@@ -64,7 +64,10 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                             itemBuilder: (_, index) {
                               return GuardiansItem(
                                 model: controller.datas[index],
-                                isAdded: controller.isAdded(controller.datas[index].address)
+                                isAdded: controller.isAdded(controller.datas[index].address),
+                                onItemClick: (model){
+                                  controller.onGuardianItemClick(model);
+                                },
                               );
                             },
                             itemCount: controller.datas.length,
@@ -104,7 +107,7 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
     );
   }
 
-  onAddGuardian() {
+  void onAddGuardian() {
     Get.bottomSheet(
       const AddGuardianBottomSheet(),
       isScrollControlled: true,

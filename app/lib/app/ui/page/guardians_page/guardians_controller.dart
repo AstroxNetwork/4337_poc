@@ -1,20 +1,17 @@
 import 'package:app/app/base/get/getx_controller_inject.dart';
+import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/model/data_model.dart';
 import 'package:app/app/util/toast_util.dart';
+import 'package:app/constant.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
+import 'package:app/web3dart/credentials/address.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:localstorage/localstorage.dart';
 
 class GuardiansController extends BaseGetController {
-
-  static final String KEY_ADDED_GUARDIANS = 'added_guardians';
-  static final String KEY_GUARDIAN_NAME_MAP = 'guardian_name_map';
-  LocalStorage? storage;
-
   late RxList<GuardianModel> datas = <GuardianModel>[].obs;
 
   late List<GuardianModel> addedGuardian = <GuardianModel>[];
@@ -23,25 +20,15 @@ class GuardiansController extends BaseGetController {
 
   bool isAdding = false;
 
-  // late List<String> guardians = <String>[];
-
   TextEditingController nameController = TextEditingController(text: '');
   TextEditingController addressController = TextEditingController(text: '');
-
-  @override
-  void onInit() {
-    super.onInit();
-    var hex = WalletContext.getInstance().walletAddress?.hex;
-    if (hex != null && hex.isNotEmpty) {
-      storage = new LocalStorage(hex);
-    }
-  }
 
   @override
   void onReady() {
     super.onReady();
   }
 
+  @override
   void onVisiablity() {
     fetchData();
   }
@@ -72,15 +59,13 @@ class GuardiansController extends BaseGetController {
       return;
     }
 
-    if (guardianNameMapping.containsKey(address)) {
-      ToastUtil.show('The guardian $address you want to add has exists in your guardian list.');
-      return;
-    }
-
+    var guardianModel = GuardianModel(name: name,
+        address: address,
+        addedDate: DateTime.now().toString());
     isAdding = true;
     guardianNameMapping[address] = name;
     LogUtil.d('setItem guardianNameMapping = ${guardianNameMapping}');
-    await storage?.setItem(KEY_GUARDIAN_NAME_MAP, guardianNameMapping);
+    await storage?.setItem(Constant.KEY_GUARDIAN_NAME_MAP, guardianNameMapping);
 
     var params = Map();
     params['wallet_address'] =
@@ -89,21 +74,38 @@ class GuardiansController extends BaseGetController {
             .walletAddress
             ?.hexNo0x;
     params['guardian'] = address;
-    requestNetwork<Object?>(
-      Method.post,
-      url: HttpApi.addAccountGuardian,
-      params: params,
-      onSuccess: (Object? res) {
-        var guardianModel = GuardianModel(name: name,
-            address: address,
-            addedDate: DateTime.now().toString());
-        isAdding = false;
-        addedGuardian.add(guardianModel);
-        datas.add(guardianModel);
-        storage?.setItem(KEY_ADDED_GUARDIANS, addedGuardian);
-        callback?.call();
-      },
-    );
+    loadingStart();
+    try {
+      var ethereumAddress = EthereumAddress.fromHex(address);
+      await WalletContext.getInstance().addGuardian(ethereumAddress);
+      await requestNetwork<Object?>(
+          Method.post,
+          url: HttpApi.addAccountGuardian,
+          params: params,
+          onSuccess: (Object? res) {
+            loadingStop();
+            isAdding = false;
+            datas.add(guardianModel);
+            addedGuardian.add(guardianModel);
+            storage?.setItem(Constant.KEY_ADDED_GUARDIANS, addedGuardian);
+            callback?.call();
+          },
+          onError: (_, __) {
+            loadingStop();
+          },
+          isShow: false
+      );
+    } on ArgumentError catch(err) {
+      if (err != null && (err.message ?? '').isNotEmpty) {
+        loadingStop();
+        ToastUtil.show(err.message!);
+      }
+    } catch(err){
+      if (err != null) ToastUtil.show(err.toString());
+      loadingStop();
+    } finally {
+      isAdding = false;
+    }
   }
 
   bool isAdded(String address) {
@@ -139,7 +141,7 @@ class GuardiansController extends BaseGetController {
           realGuardians.add(guardianModel);
         });
         addedGuardian.removeWhere((element) => guardians.contains(element.address));
-        storage?.setItem(KEY_ADDED_GUARDIANS, addedGuardian);
+        storage?.setItem(Constant.KEY_ADDED_GUARDIANS, addedGuardian);
         datas.clear();
         datas.addAll(realGuardians);
         datas.addAll(addedGuardian);
@@ -149,8 +151,8 @@ class GuardiansController extends BaseGetController {
   }
 
   Future fetchAddedGuardians() async {
-    Future(() {
-      var item = storage?.getItem(KEY_ADDED_GUARDIANS) as List<dynamic>?;
+    return Future(() {
+      var item = storage?.getItem(Constant.KEY_ADDED_GUARDIANS) as List<dynamic>?;
       LogUtil.d('fetchAddedGuardians $item');
       addedGuardian.clear();
       if (item != null) {
@@ -164,11 +166,58 @@ class GuardiansController extends BaseGetController {
 
   Future fetchGuardiansNameMapping() async {
     return Future(() {
-      var item = storage?.getItem(KEY_GUARDIAN_NAME_MAP) as Map<String, dynamic>?;
+      var item = storage?.getItem(Constant.KEY_GUARDIAN_NAME_MAP) as Map<String, dynamic>?;
       LogUtil.d('fetchGuardiansNameMapping $item');
       item?.forEach((key, value) {
         guardianNameMapping[key] = value;
       });
     });
+  }
+
+  void onGuardianItemClick(GuardianModel model) {
+    LogUtil.d('GuardiansItem onItemClick ${model.toJson()}');
+    Get.toNamed(Routes.guardianPage, arguments: model)?.then((value) {
+      if (value is String && value.isNotEmpty) {
+        removeGuardian(value as String);
+        fetchData();
+      }
+    });
+  }
+
+  Future<void> removeGuardian(String address) async {
+    if (address.isEmpty) {
+      return;
+    }
+    addedGuardian.removeWhere((element) => element.address == address);
+    var params = {};
+    params['wallet_address'] =
+        WalletContext
+            .getInstance()
+            .walletAddress
+            ?.hexNo0x;
+    params['guardian'] = address;
+    loadingStart();
+    try {
+      var ethereumAddress = EthereumAddress.fromHex(address);
+      await WalletContext.getInstance().removeGuardian(ethereumAddress);
+      await requestNetwork<Object?>(
+          Method.post,
+          url: HttpApi.delAccountGuardian,
+          params: params,
+          onSuccess: (Object? res) {
+            datas.removeWhere((element) => element.address == address);
+            loadingStop();
+          },
+          onError: (_, __) {
+            loadingStop();
+          },
+          isShow: false
+      );
+    } on ArgumentError catch(err) {
+      if (err != null && (err.message ?? '').isNotEmpty) ToastUtil.show(err.message!);
+    } catch(err){
+      if (err.toString().isNotEmpty) ToastUtil.show(err.toString());
+      loadingStop();
+    }
   }
 }

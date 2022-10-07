@@ -240,5 +240,4 @@ class WalletContext {
     final signPack = await packGuardiansSignByRequestId(requestId, signatures); ///
     recoveryOp.signature = signPack;
   }
-
 }

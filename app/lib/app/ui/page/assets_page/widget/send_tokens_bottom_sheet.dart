@@ -98,23 +98,23 @@ class SendTokensBottomSheet extends GetCommonView<AssetsController> {
                       child: Center(
                         child: Padding(
                           padding: const EdgeInsets.only(left: 10),
-                          child: DropdownButton(
-                            value: controller.sendCurrency.isEmpty
-                                ? controller.getCurrencys().first
-                                : controller.sendCurrency,
-                            style: const TextStyle(
-                              fontSize: 20,
-                              color: Colors.black,
-                            ),
-                            iconSize: 28,
-                            iconEnabledColor: Colors.black,
-                            items: _getCurrencys(),
-                            onChanged: (value) =>
-                                controller.changeCurrency(value),
-                            underline: Container(),
-                            elevation: 0,
-                            dropdownColor: Colors.transparent,
-                          ),
+                          child: Obx(() {
+                            return DropdownButton(
+                              value: controller.sendCurrency.value,
+                              style: const TextStyle(
+                                fontSize: 20,
+                                color: Colors.black,
+                              ),
+                              iconSize: 28,
+                              iconEnabledColor: Colors.black,
+                              items: _getCurrencys(),
+                              onChanged: (value) =>
+                                  controller.changeCurrency(value),
+                              underline: Container(),
+                              elevation: 0,
+                              dropdownColor: Colors.transparent,
+                            );
+                          }),
                         ),
                       ),
                     ),
@@ -265,9 +265,8 @@ class SendTokensBottomSheet extends GetCommonView<AssetsController> {
   }
 
   onContinue() async {
-    LogUtil.d('onContinue');
+    LogUtil.d('send token onContinue');
     await controller.sendTokens();
-    Get.back();
   }
 
   List<DropdownMenuItem> _getCurrencys() {

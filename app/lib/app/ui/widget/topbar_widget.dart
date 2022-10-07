@@ -123,9 +123,7 @@ class TopBar extends StatelessWidget {
             GestureDetector(
               child: Image.asset(R.assetsImagesScan, width: 28, height: 28),
               onTap: () async {
-                Log.d('scan onTap');
                 final status = await Permission.camera.request();
-                Log.d('scan onTap2 $status');
                 if (status.isGranted) {
                   Get.toNamed(Routes.scanPage);
                 }

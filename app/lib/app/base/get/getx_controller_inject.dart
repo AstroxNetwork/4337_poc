@@ -1,11 +1,14 @@
 import 'package:app/app/http/request_repository.dart';
 import 'package:app/app/ui/widget/loading_widget.dart';
 import 'package:app/app/util/toast_util.dart';
+import 'package:app/eip4337lib/context/context.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
+import 'package:localstorage/localstorage.dart';
 
 /// 基类 Controller
 class BaseGetController extends GetxController {
@@ -13,11 +16,22 @@ class BaseGetController extends GetxController {
   late final CancelToken _cancelToken = CancelToken();
   late RequestRepository request = Get.find<RequestRepository>();
 
+  LocalStorage? storage;
+
   /// 初始化 [GetxController]，例如一些成员属性的初始化
   @mustCallSuper
   @override
   void onInit() {
     super.onInit();
+    try {
+      var hex = WalletContext.getInstance().walletAddress?.hex;
+      if (hex != null && hex.isNotEmpty) {
+        storage = LocalStorage(hex);
+      }
+    } catch(err) {
+      LogUtil.e(err);
+    }
+
     _isLoading.listen((isLoading) {
       if (isLoading) {
         LoadingWidget.show();
@@ -47,6 +61,9 @@ class BaseGetController extends GetxController {
     if (!isClosed) {
       _isLoading.close();
     }
+  }
+
+  void onVisiablity() {
   }
 
   void loadingStart() {

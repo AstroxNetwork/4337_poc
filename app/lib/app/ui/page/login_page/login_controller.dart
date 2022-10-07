@@ -24,9 +24,12 @@ class LoginController extends BaseGetController {
       ToastUtil.show('no wallet yet');
       return;
     }
-    Get.bottomSheet(PasswordBottomSheet(onLogin: () {
-      confirm(email, passwordController.text, walletJson);
-    }));
+    Get.bottomSheet(
+      PasswordBottomSheet(onLogin: () {
+        confirm(email, passwordController.text, walletJson);
+      }),
+      isScrollControlled: true,
+    );
   }
 
   void confirm(String email, String password, String walletJson) {

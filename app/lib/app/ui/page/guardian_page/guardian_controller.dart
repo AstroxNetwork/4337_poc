@@ -4,4 +4,10 @@ import 'package:get/get.dart';
 
 class GuardianController extends BaseGetController {
   GuardianModel model = Get.arguments;
+
+  Future<void> removeGuardian() async {
+    var guardianModel = model;
+    var address = guardianModel.address;
+    Get.back<String>(result: address);
+  }
 }
