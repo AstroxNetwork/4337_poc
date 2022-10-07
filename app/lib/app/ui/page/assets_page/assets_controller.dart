@@ -18,7 +18,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:get/get.dart';
 
 class AssetsController extends BaseGetController {
-
   late UserModel userModel;
   late Rx<JazziconData?> jazziconData = Rx<JazziconData?>(null);
 
@@ -37,12 +36,12 @@ class AssetsController extends BaseGetController {
     LogUtil.d('AssetsController onInit');
     assets.value = [
       const AssetModel(
-        icon: R.assetsImagesTokenETH,
+        icon: R.ASSETS_IMAGES_TOKENS_ETH_PNG,
         symbol: 'ETH',
         address: '0x0000000000000000000000000000000000000000',
       ),
       const AssetModel(
-        icon: R.assetsImagesTokenWETH,
+        icon: R.ASSETS_IMAGES_TOKENS_WETH_PNG,
         symbol: 'WETH',
         address: '0xec2a384Fa762C96140c817079768a1cfd0e908EA',
       ),
@@ -58,19 +57,18 @@ class AssetsController extends BaseGetController {
   }
 
   @override
-  void onVisiablity() {
-    super.onVisiablity();
+  void onVisibility() {
+    super.onVisibility();
     LogUtil.d('AssetsController onVisiablity');
     fetchBalance();
     fetchWalletContract();
   }
 
-  void fetchBalance() {
+  Future<void> fetchBalance() {
     LogUtil.d('fetchBalance');
-    assets.value.forEach((element) async {
-      Map<String, String> balanceMapping = Map();
-      balanceMapping.addAll(balanceMap.value);
-      double balance = 0.0;
+    return Future.wait(assets.map((element) async {
+      final Map<String, String> balanceMapping = {...balanceMap};
+      final double balance;
       if (element.symbol == 'ETH') {
         balance = await WalletContext.getInstance().getEthBalance();
       } else {
@@ -80,11 +78,12 @@ class AssetsController extends BaseGetController {
       balanceMapping[element.address] = '$balance';
       balanceMap[element.address] = '$balance';
       update();
-    });
+    }));
   }
 
   Future<void> fetchWalletContract() async {
-    var isWalletContract = await WalletContext.getInstance().isWalletContract();
+    final isWalletContract =
+        await WalletContext.getInstance().isWalletContract();
     if (isContractWallet.value != isWalletContract) {
       isContractWallet.value = isWalletContract;
     }
@@ -104,8 +103,9 @@ class AssetsController extends BaseGetController {
         loadingStart();
         try {
           await WalletContext.getInstance().activateWallet();
-          isContractWallet.value = await WalletContext.getInstance().isWalletContract();
-        } catch(err){
+          isContractWallet.value =
+              await WalletContext.getInstance().isWalletContract();
+        } catch (err) {
           if (err.toString().isNotEmpty) ToastUtil.show(err.toString());
         }
         if (isContractWallet.value) {
@@ -144,15 +144,17 @@ class AssetsController extends BaseGetController {
         await WalletContext.getInstance().sendETH(toAddress, amount);
       } else if (sendCurrency.value == 'WETH') {
         final tokenAddress = Goerli.wethAddress;
-        await WalletContext.getInstance().sendERC20(tokenAddress, toAddress, amount);
+        await WalletContext.getInstance().sendERC20(
+          tokenAddress,
+          toAddress,
+          amount,
+        );
       }
       fetchBalance();
       Get.back();
-    } on ArgumentError catch(err) {
+    } on ArgumentError catch (err) {
       LogUtil.d(err);
-      if (err != null && (err.message ?? '').isNotEmpty) {
-        ToastUtil.show(err.message!);
-      }
+      ToastUtil.show(err.message.toString());
     } catch (err) {
       LogUtil.d(err);
       if (err.toString().isNotEmpty) {

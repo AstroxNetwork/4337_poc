@@ -9,7 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmailPage extends GetCommonView<EmailController> {
-  const EmailPage({super.key});
+  const EmailPage({super.key, required this.onConfirm});
+
+  final void Function(EmailController) onConfirm;
 
   Widget _buildCountdown(BuildContext context) {
     if (!controller.isVerification.value) {
@@ -135,7 +137,7 @@ class EmailPage extends GetCommonView<EmailController> {
                         width: double.infinity,
                         height: 61,
                         onPressed: () => controller.isVerification.value
-                            ? controller.verifyCode()
+                            ? onConfirm(controller)
                             : controller.sendVerification(),
                         data: controller.isVerification.value
                             ? 'Confirm'

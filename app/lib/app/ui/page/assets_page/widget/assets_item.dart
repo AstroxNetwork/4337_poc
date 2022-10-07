@@ -20,7 +20,7 @@ class AssetsItem extends GetCommonView<AssetsController> {
               child: Image.network(
                 '',
                 errorBuilder: (_, __, ___) => Image.asset(
-                  R.assetsImagesDefaultAssetsItemIcon,
+                  R.ASSETS_IMAGES_DEFAULT_ASSETS_ITEM_ICON_PNG,
                   width: 30,
                   height: 30,
                 ),

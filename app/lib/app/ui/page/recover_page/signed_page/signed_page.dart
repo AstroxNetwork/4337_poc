@@ -30,7 +30,7 @@ class SignedPage extends GetCommonView<SignedController> {
                 Padding(
                   padding: const EdgeInsets.only(top: 83),
                   child: Image.asset(
-                    R.assetsTransactionSigned,
+                    R.ASSETS_IMAGES_TRANSACTION_SIGNED_PNG,
                     width: 80,
                     height: 80,
                   ),

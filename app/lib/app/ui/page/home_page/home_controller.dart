@@ -13,11 +13,11 @@ class HomeController extends BaseGetController {
   changeTab(int index) {
     tabIndex = index;
     if (index == 0) {
-      Get.find<AssetsController>().onVisiablity();
+      Get.find<AssetsController>().onVisibility();
     } else if (index == 1) {
-      Get.find<ActivitiesController>().onVisiablity();
+      Get.find<ActivitiesController>().onVisibility();
     } else if (index == 2) {
-      Get.find<GuardiansController>().onVisiablity();
+      Get.find<GuardiansController>().onVisibility();
     }
     update();
   }

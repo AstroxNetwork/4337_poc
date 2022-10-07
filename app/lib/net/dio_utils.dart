@@ -69,6 +69,8 @@ class DioUtils {
 
   Dio get dio => _dio;
 
+  static const String _tag = '🌐 DioUtil';
+
   // 数据返回格式统一，统一处理异常
   Future<BaseEntity<T>> _request<T>(
     String method,
@@ -78,7 +80,10 @@ class DioUtils {
     CancelToken? cancelToken,
     Options? options,
   }) async {
-    LogUtil.d('request：url: $url, data: $data, headers: ${options?.headers}');
+    LogUtil.d(
+      'request：url: $url, data: $data, headers: ${options?.headers}',
+      tag: _tag,
+    );
     final Response<String> response = await _dio.request<String>(
       url,
       data: data,
@@ -88,7 +93,7 @@ class DioUtils {
     );
     try {
       final String data = response.data.toString();
-      LogUtil.d('response：data: $data');
+      LogUtil.d('response：data: $data', tag: _tag);
       // 集成测试无法使用 isolate https://github.com/flutter/flutter/issues/24703
       // 使用 compute 条件：数据大于10KB（粗略使用10 * 1024）
       // 且当前不是集成测试（后面可能会根据Web环境进行调整）
@@ -175,7 +180,7 @@ class DioUtils {
 
   void _cancelLogPrint(dynamic e, String url) {
     if (e is DioError && CancelToken.isCancel(e)) {
-      LogUtil.e('取消请求接口： $url');
+      LogUtil.e('取消请求接口： $url', tag: _tag);
     }
   }
 
@@ -184,7 +189,7 @@ class DioUtils {
       code = ExceptionHandle.unknown_error;
       msg = '未知异常';
     }
-    LogUtil.e('接口请求异常： code: $code, mag: $msg');
+    LogUtil.e('接口请求异常： code: $code, mag: $msg', tag: _tag);
     onError?.call(code, msg);
   }
 }

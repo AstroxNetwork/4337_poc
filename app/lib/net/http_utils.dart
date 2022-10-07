@@ -51,10 +51,9 @@ class HttpUtils {
 
   // 数据返回格式统一，统一处理异常
   Future<BaseEntity<T>> _post<T>(String url, {Object? params}) async {
-    final String? accessToken = Get.find<SharedPreferences>().getString(Constant.accessToken);
-    Map<String, String> headers = {
-      Constant.accessToken: 'bearer $accessToken'
-    };
+    final String? accessToken =
+        Get.find<SharedPreferences>().getString(Constant.accessToken);
+    Map<String, String> headers = {Constant.accessToken: 'bearer $accessToken'};
     http.Response response =
         await _httpClient.post(Uri.parse(url), body: params, headers: headers);
     try {

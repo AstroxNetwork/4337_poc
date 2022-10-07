@@ -39,7 +39,7 @@ class TopBar extends StatelessWidget {
               Align(
                 alignment: Alignment.topCenter,
                 child: Image.asset(
-                  R.assetsImagesAppIconMid,
+                  R.ASSETS_IMAGES_APP_ICON_MID_PNG,
                   width: 139,
                   height: 39,
                 ),
@@ -99,7 +99,7 @@ class TopBar extends StatelessWidget {
           if (needInfo)
             GestureDetector(
               child: Image.asset(
-                R.assetsImagesTopbarInfo,
+                R.ASSETS_IMAGES_TOPBAR_INFO_PNG,
                 width: 28,
                 height: 28,
               ),
@@ -108,20 +108,24 @@ class TopBar extends StatelessWidget {
           if (needBack)
             GestureDetector(
               child: Image.asset(
-                R.assetsImagesArrowLeft,
+                R.ASSETS_IMAGES_ARROW_LEFT_PNG,
                 width: 28,
                 height: 28,
               ),
               onTap: () => Get.back(),
             ),
           Image.asset(
-            R.assetsImagesAppIconMid,
+            R.ASSETS_IMAGES_APP_ICON_MID_PNG,
             width: 139,
             height: 39,
           ),
           if (needScan)
             GestureDetector(
-              child: Image.asset(R.assetsImagesScan, width: 28, height: 28),
+              child: Image.asset(
+                R.ASSETS_IMAGES_SCAN_PNG,
+                width: 28,
+                height: 28,
+              ),
               onTap: () async {
                 final status = await Permission.camera.request();
                 if (status.isGranted) {

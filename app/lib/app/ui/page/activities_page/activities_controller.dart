@@ -3,7 +3,6 @@ import 'package:app/eip4337lib/context/context.dart';
 import 'package:localstorage/localstorage.dart';
 
 class ActivitiesController extends BaseGetController {
-
   LocalStorage? storage;
 
   @override
@@ -17,12 +16,5 @@ class ActivitiesController extends BaseGetController {
     }
   }
 
-  @override
-  void onVisiablity() {
-    super.onVisiablity();
-  }
-
-  fetchActivities() {
-
-  }
+  fetchActivities() {}
 }

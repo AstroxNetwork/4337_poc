@@ -234,11 +234,10 @@ class ContractFunction {
     }
 
     final sink = LengthTrackingByteSink();
-      //First four bytes to identify the function with its parameters
-    if (!this.isConstructor) {
+    // First four bytes to identify the function with its parameters
+    if (!isConstructor) {
       sink.add(selector);
     }
-
 
     TupleType(parameters.map((param) => param.type).toList())
         .encode(params, sink);

@@ -65,7 +65,7 @@ class RecoverQRBottomSheet extends GetCommonView<RecoverController> {
               onPressed: () {},
               data: 'Download',
               image: Image.asset(
-                R.assetsImagesDownload,
+                R.ASSETS_IMAGES_DOWNLOAD_PNG,
                 width: 22,
                 height: 22,
               ),

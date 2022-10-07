@@ -20,8 +20,8 @@ void main() async {
 
   // {"code":400,"msg":"Code is not valid.","data":{}}
   // {"code":200,"msg":"Add record successfully.","data":{"jwtToken":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6InNreWhpZ2hmZW5nQGdtYWlsLmNvbSIsImlhdCI6MTY2NDQ1ODgzOSwiZXhwIjoxNjY1NzU0ODM5fQ.QssiBtGElqIwuzSIaZJyRW8Jyw_iNQmDFQaEOdm2Bmg"}}
-  print(response.body);
-  final body = jsonDecode(response.body);
+  print(response.data);
+  final body = response.data!;
   print(body['data']['wallet_address']);
 
   // final web3 = Web3Helper.web3();

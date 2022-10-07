@@ -45,10 +45,10 @@ class CostomCheckBox extends StatefulWidget {
   final double? widgetPadding;
 
   @override
-  _CostomCheckBoxState createState() => _CostomCheckBoxState();
+  State<CostomCheckBox> createState() => _CustomCheckBoxState();
 }
 
-class _CostomCheckBoxState extends State<CostomCheckBox> {
+class _CustomCheckBoxState extends State<CostomCheckBox> {
   bool? isChecked;
   late Duration animationDuration;
   double? size;

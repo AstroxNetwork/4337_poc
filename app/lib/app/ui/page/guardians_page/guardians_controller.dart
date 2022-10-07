@@ -24,12 +24,7 @@ class GuardiansController extends BaseGetController {
   TextEditingController addressController = TextEditingController(text: '');
 
   @override
-  void onReady() {
-    super.onReady();
-  }
-
-  @override
-  void onVisiablity() {
+  void onVisibility() {
     fetchData();
   }
 
@@ -59,9 +54,11 @@ class GuardiansController extends BaseGetController {
       return;
     }
 
-    var guardianModel = GuardianModel(name: name,
-        address: address,
-        addedDate: DateTime.now().toString());
+    var guardianModel = GuardianModel(
+      name: name,
+      address: address,
+      addedDate: DateTime.now().toString(),
+    );
     isAdding = true;
     guardianNameMapping[address] = name;
     LogUtil.d('setItem guardianNameMapping = ${guardianNameMapping}');
@@ -69,39 +66,36 @@ class GuardiansController extends BaseGetController {
 
     var params = Map();
     params['wallet_address'] =
-        WalletContext
-            .getInstance()
-            .walletAddress
-            ?.hexNo0x;
+        WalletContext.getInstance().walletAddress?.hexNo0x;
     params['guardian'] = address;
     loadingStart();
     try {
       var ethereumAddress = EthereumAddress.fromHex(address);
       await WalletContext.getInstance().addGuardian(ethereumAddress);
       await requestNetwork<Object?>(
-          Method.post,
-          url: HttpApi.addAccountGuardian,
-          params: params,
-          onSuccess: (Object? res) {
-            loadingStop();
-            isAdding = false;
-            datas.add(guardianModel);
-            addedGuardian.add(guardianModel);
-            storage?.setItem(Constant.KEY_ADDED_GUARDIANS, addedGuardian);
-            callback?.call();
-          },
-          onError: (_, __) {
-            loadingStop();
-          },
-          isShow: false
+        Method.post,
+        url: HttpApi.addAccountGuardian,
+        params: params,
+        onSuccess: (Object? res) {
+          loadingStop();
+          isAdding = false;
+          datas.add(guardianModel);
+          addedGuardian.add(guardianModel);
+          storage?.setItem(Constant.KEY_ADDED_GUARDIANS, addedGuardian);
+          callback?.call();
+        },
+        onError: (_, __) {
+          loadingStop();
+        },
+        isShow: false,
       );
-    } on ArgumentError catch(err) {
-      if (err != null && (err.message ?? '').isNotEmpty) {
+    } on ArgumentError catch (err) {
+      if ((err.message ?? '').isNotEmpty) {
         loadingStop();
-        ToastUtil.show(err.message!);
+        ToastUtil.show(err.message.toString());
       }
-    } catch(err){
-      if (err != null) ToastUtil.show(err.toString());
+    } catch (err) {
+      ToastUtil.show(err.toString());
       loadingStop();
     } finally {
       isAdding = false;
@@ -116,10 +110,7 @@ class GuardiansController extends BaseGetController {
   Future fetchGuardians() async {
     var params = {};
     params['wallet_address'] =
-        WalletContext
-            .getInstance()
-            .walletAddress
-            ?.hexNo0x;
+        WalletContext.getInstance().walletAddress?.hexNo0x;
     requestNetwork<List<dynamic>>(
       Method.post,
       url: HttpApi.getAccountGuardian,
@@ -140,19 +131,23 @@ class GuardiansController extends BaseGetController {
           );
           realGuardians.add(guardianModel);
         });
-        addedGuardian.removeWhere((element) => guardians.contains(element.address));
+        addedGuardian.removeWhere(
+          (element) => guardians.contains(element.address),
+        );
         storage?.setItem(Constant.KEY_ADDED_GUARDIANS, addedGuardian);
         datas.clear();
         datas.addAll(realGuardians);
         datas.addAll(addedGuardian);
       },
-      isShow: false
+      isShow: false,
     );
   }
 
   Future fetchAddedGuardians() async {
     return Future(() {
-      var item = storage?.getItem(Constant.KEY_ADDED_GUARDIANS) as List<dynamic>?;
+      var item = storage?.getItem(
+        Constant.KEY_ADDED_GUARDIANS,
+      ) as List<dynamic>?;
       LogUtil.d('fetchAddedGuardians $item');
       addedGuardian.clear();
       if (item != null) {
@@ -166,7 +161,9 @@ class GuardiansController extends BaseGetController {
 
   Future fetchGuardiansNameMapping() async {
     return Future(() {
-      var item = storage?.getItem(Constant.KEY_GUARDIAN_NAME_MAP) as Map<String, dynamic>?;
+      var item = storage?.getItem(
+        Constant.KEY_GUARDIAN_NAME_MAP,
+      ) as Map<String, dynamic>?;
       LogUtil.d('fetchGuardiansNameMapping $item');
       item?.forEach((key, value) {
         guardianNameMapping[key] = value;
@@ -191,32 +188,31 @@ class GuardiansController extends BaseGetController {
     addedGuardian.removeWhere((element) => element.address == address);
     var params = {};
     params['wallet_address'] =
-        WalletContext
-            .getInstance()
-            .walletAddress
-            ?.hexNo0x;
+        WalletContext.getInstance().walletAddress?.hexNo0x;
     params['guardian'] = address;
     loadingStart();
     try {
       var ethereumAddress = EthereumAddress.fromHex(address);
       await WalletContext.getInstance().removeGuardian(ethereumAddress);
       await requestNetwork<Object?>(
-          Method.post,
-          url: HttpApi.delAccountGuardian,
-          params: params,
-          onSuccess: (Object? res) {
-            datas.removeWhere((element) => element.address == address);
-            loadingStop();
-          },
-          onError: (_, __) {
-            loadingStop();
-          },
-          isShow: false
+        Method.post,
+        url: HttpApi.delAccountGuardian,
+        params: params,
+        onSuccess: (Object? res) {
+          datas.removeWhere((element) => element.address == address);
+          loadingStop();
+        },
+        onError: (_, __) {
+          loadingStop();
+        },
+        isShow: false,
       );
-    } on ArgumentError catch(err) {
-      if (err != null && (err.message ?? '').isNotEmpty) ToastUtil.show(err.message!);
-    } catch(err){
-      if (err.toString().isNotEmpty) ToastUtil.show(err.toString());
+    } on ArgumentError catch (err) {
+      ToastUtil.show(err.message.toString());
+    } catch (err) {
+      if (err.toString().isNotEmpty) {
+        ToastUtil.show(err.toString());
+      }
       loadingStop();
     }
   }

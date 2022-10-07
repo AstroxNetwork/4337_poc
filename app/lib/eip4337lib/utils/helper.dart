@@ -27,5 +27,4 @@ class Web3Helper {
   static EthPrivateKey recoverKeys(String privateKey) {
     return EthPrivateKey.fromHex(privateKey);
   }
-
 }

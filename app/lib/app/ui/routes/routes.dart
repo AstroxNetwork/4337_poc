@@ -1,5 +1,3 @@
-import 'package:app/app/ui/page/creaete_page/email_page/email_binding.dart';
-import 'package:app/app/ui/page/creaete_page/email_page/email_page.dart';
 import 'package:app/app/ui/page/creaete_page/password_page/password_binding.dart';
 import 'package:app/app/ui/page/creaete_page/password_page/password_page.dart';
 import 'package:app/app/ui/page/guardian_page/guardian_binding.dart';
@@ -26,7 +24,6 @@ import '../page/scan_page/scan_binding.dart';
 abstract class Routes {
   static const String debugPage = '/debug';
   static const String loginPage = '/login';
-  static const String emailPage = '/email';
   static const String passwordPage = '/password';
   static const String homePage = '/home';
   static const String guardianPage = '/guardian';
@@ -46,11 +43,6 @@ abstract class Routes {
         name: loginPage,
         page: () => const LoginPage(),
         binding: LoginBinding()),
-    GetPage(
-      name: emailPage,
-      page: () => const EmailPage(),
-      binding: EmailBinding(),
-    ),
     GetPage(
       name: passwordPage,
       page: () => const PasswordPage(),

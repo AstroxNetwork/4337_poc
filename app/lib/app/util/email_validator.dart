@@ -139,7 +139,7 @@ class EmailValidator {
     _index++;
 
     while (
-    _index < text.length && _isDomain(text[_index], allowInternational)) {
+        _index < text.length && _isDomain(text[_index], allowInternational)) {
       _index++;
     }
 

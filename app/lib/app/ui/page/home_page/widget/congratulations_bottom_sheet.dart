@@ -24,7 +24,7 @@ class CongratulationsBottomSheet extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(top: 30),
               child: Image.asset(
-                R.assetsImagesCongratulations,
+                R.ASSETS_IMAGES_CONGRATULATIONS_PNG,
                 width: 42,
                 height: 42,
               ),

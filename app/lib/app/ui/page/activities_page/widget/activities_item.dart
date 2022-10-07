@@ -22,8 +22,8 @@ class ActivitiesItem extends StatelessWidget {
           children: [
             Image.asset(
               model.type == ActivityType.receive
-                  ? R.assetsImagesArrowDown
-                  : R.assetsImagesArrowUp,
+                  ? R.ASSETS_IMAGES_ARROW_DOWN_PNG
+                  : R.ASSETS_IMAGES_ARROW_UP_PNG,
               width: 30,
               height: 30,
             ),

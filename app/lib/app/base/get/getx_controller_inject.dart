@@ -28,7 +28,7 @@ class BaseGetController extends GetxController {
       if (hex != null && hex.isNotEmpty) {
         storage = LocalStorage(hex);
       }
-    } catch(err) {
+    } catch (err) {
       LogUtil.e(err);
     }
 
@@ -63,8 +63,7 @@ class BaseGetController extends GetxController {
     }
   }
 
-  void onVisiablity() {
-  }
+  void onVisibility() {}
 
   void loadingStart() {
     _isLoading.value = true;

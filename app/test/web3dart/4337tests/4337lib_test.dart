@@ -189,11 +189,11 @@ void main() async {
     final ctx = WalletContext.getInstance();
     ctx.setWalletAddress(simpleWallet);
 
-    print("addGuardian $guardian1Address");
+    LogUtil.d("addGuardian $guardian1Address");
     await ctx.addGuardian(guardian1Address);
   }
 
   final nonce = await EIP4337Lib.getNonce(simpleWalletAddress, ethClient);
-  print(nonce);
+  LogUtil.d(nonce);
   // print(requestId);
 }

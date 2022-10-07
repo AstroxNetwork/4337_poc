@@ -14,7 +14,8 @@ class GuardiansItem extends StatelessWidget {
 
   Function(GuardianModel)? onItemClick;
 
-  GuardiansItem({super.key, required this.model, this.isAdded = true, this.onItemClick});
+  GuardiansItem(
+      {super.key, required this.model, this.isAdded = true, this.onItemClick});
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +102,7 @@ class GuardiansItem extends StatelessWidget {
             Padding(
               padding: const EdgeInsets.only(left: 10, right: 3),
               child: Image.asset(
-                R.assetsImagesArrowRight,
+                R.ASSETS_IMAGES_ARROW_RIGHT_PNG,
                 width: 14,
                 height: 24,
               ),

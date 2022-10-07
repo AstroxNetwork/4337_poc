@@ -83,7 +83,7 @@ class _ScanPageState extends State<ScanPage>
               top: 56,
               child: GestureDetector(
                 child: Image.asset(
-                  R.assetsImagesArrowLeft,
+                  R.ASSETS_IMAGES_ARROW_LEFT_PNG,
                   width: 28,
                   height: 28,
                   color: Colors.white,

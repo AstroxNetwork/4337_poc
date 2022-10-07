@@ -1,7 +1,6 @@
 import 'package:app/web3dart/contracts.dart';
 
-final execFromEntryPoint = ContractAbi.fromJson(
-    '''
+final execFromEntryPoint = ContractAbi.fromJson('''
 [{
     "inputs": [
         {
@@ -787,7 +786,7 @@ final ERC1155ABI = ContractAbi.fromJson('''
 ]
   ''', 'ERC1155');
 
-final wethABI =  ContractAbi.fromJson('''
+final wethABI = ContractAbi.fromJson('''
 [
     {
         "constant": true,
