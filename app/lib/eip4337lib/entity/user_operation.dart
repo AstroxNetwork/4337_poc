@@ -96,7 +96,7 @@ class UserOperation {
         verificationGas += BigInt.from(3200 + 200 * initCode.length);
       }
       callGas = await web3.estimateGas(sender: entryPointAddress, to: sender, data: callData);
-      print('estimateGas: $callGas');
+      // print('estimateGas: $callGas');
       return true;
     } catch (e) {
       return false;

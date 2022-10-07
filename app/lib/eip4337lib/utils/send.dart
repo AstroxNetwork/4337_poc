@@ -5,6 +5,8 @@ import 'package:app/eip4337lib/entity/user_operation.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:dio/dio.dart';
 
+import 'log_utils.dart';
+
 const bundlerUrl = 'https://bundler-poc.soulwallets.me/';
 
 class Send {
@@ -12,7 +14,6 @@ class Send {
 
   static Future<dynamic> sendOp(UserOperation op) async {
     final body = jsonEncode(op.toMap());
-    // print('sendOp $body, ${body.length}');
     final response = await dio.put(
       bundlerUrl,
       data: body,
@@ -39,7 +40,6 @@ class Send {
       include0x: true,
     );
     final response = await getOpStateByRequestId(requestId);
-    print('getOpStateByUserOperation: $response');
     return response.data;
   }
 
@@ -49,9 +49,7 @@ class Send {
     EthereumAddress entryPointAddress,
     BigInt chainId,
   ) async {
-    print('sendOpWait');
     final res0 = await sendOp(op);
-    print('sendOp $res0');
     if (res0['code'] == 0) {
       final requestId = res0['requestId'];
       for (var i = 0; i < 60; i++) {
@@ -60,35 +58,35 @@ class Send {
         final response = await getOpStateByRequestId(requestId);
         final res = response.data;
         if (res['code'] == 0) {
-          print('pending...');
+          Log.d('pending...');
         } else if (res['code'] == 1) {
-          print('replaced with request id ${res["requestId"]}');
+          Log.d('replaced with request id ${res["requestId"]}');
           break;
         } else if (res['code'] == 2) {
-          print('processing...');
+          Log.d('processing...');
         } else if (res['code'] == 3) {
           final hash = res["txHash"];
           for (var i = 0; i < 60; i++) {
             await Future.delayed(const Duration(seconds: 1));
             final receipt = await web3.getTransactionReceipt(hash);
             if (receipt?.status == true) {
-              print('tx: $hash has been confirmed');
+              Log.d('tx: $hash has been confirmed');
               return hash;
             } else {
-              print('tx receipt: $receipt');
+              Log.d('tx receipt: $receipt');
               // throw(Exception('transaction failed'));
             }
           }
         } else if (res['code'] == 4) {
-          print('failed $res');
+          Log.d('failed $res');
           break;
         } else if (res['code'] == 5) {
-          print('notfound');
+          Log.d('notfound');
           break;
         }
       }
     } else {
-      print('sendOp return $res0');
+      Log.e('sendOp return $res0');
       throw (Exception('activateOp failed'));
     }
   }

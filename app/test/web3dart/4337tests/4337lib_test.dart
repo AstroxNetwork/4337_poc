@@ -131,7 +131,8 @@ void main() async {
     final toAddress = EthereumAddress.fromHex('0x8af8c26D62954B5CA17B7EEA5231b0F9893aDD9f');
     final amount = EtherAmount.fromUnitAndValue(EtherUnit.finney, 1).getInWei;
     print("sendERC20 $toAddress, $amount");
-    await ctx.sendERC20(wethContractAddress, toAddress, amount);
+    // await ctx.sendERC20(wethContractAddress, toAddress, amount);
+    // await ctx.sendETH(toAddress, amount);
   }
 
   /// ########### guardian

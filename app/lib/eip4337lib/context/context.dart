@@ -16,6 +16,8 @@ import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/web3dart.dart';
 import 'package:app/web3dart/crypto.dart';
 
+import '../utils/log_utils.dart';
+
 // WalletContext.getInstance()
 class WalletContext {
   Web3Client web3;
@@ -145,30 +147,40 @@ class WalletContext {
   }
 
   // 激活钱包
-  Future activateWallet() async {
-    final currentFee = (await getGasPriceBI()) * BigInt.from(3);
+  Future<void> activateWallet() async {
+    final currentFee = getGasPriceBI() * Goerli.multiplier;
     final activateOp = EIP4337Lib.activateWalletOp(Goerli.entryPointAddress,
         Goerli.paymasterAddress, account.address, Goerli.wethAddress,
-        currentFee, BigInt.from(10).pow(10), BigInt.zero);
+        currentFee, Goerli.priorityFee, BigInt.zero);
     await _executeOperation(activateOp);
   }
 
   // 执行和sendOp
-  Future _executeOperation(UserOperation op) async {
+  Future<void> _executeOperation(UserOperation op) async {
     final requestId = op.requestId(Goerli.entryPointAddress, Goerli.chainId);
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
 
-    // final entryPointContract = DeployedContract(EntryPoint().ABI, Goerli.entryPointAddress);
-    // final simulateValidation = entryPointContract.function("simulateValidation");
-    // web3.call(contract: entryPointContract, function: simulateValidation, params: [Goerli.zeroAddress]);
-
-    await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+    try {
+      final entryPointContract = DeployedContract(EntryPoint().ABI, Goerli.entryPointAddress);
+      final simulateValidation = entryPointContract.function("simulateValidation");
+      final response = await web3.call(
+          sender: Goerli.zeroAddress,
+          contract: entryPointContract,
+          function: simulateValidation, params: [
+        op.toTuple()
+      ]);
+      Log.d('simulateValidation $response');
+      await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+      // add tx to localstorage
+    } catch (e) {
+      throw(Exception("simulateValidation error"));
+    }
   }
 
   // 发送eth
   Future<void> sendETH(EthereumAddress to, BigInt amount) async {
-    final currentFee = (await getGasPriceBI()) * BigInt.from(3);
+    final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await ETH(web3).transfer(
       walletAddress!,
@@ -176,7 +188,7 @@ class WalletContext {
       Goerli.entryPointAddress,
       Goerli.paymasterAddress,
       currentFee,
-      BigInt.from(10).pow(10),
+      Goerli.priorityFee,
       to,
       amount,
     );
@@ -189,35 +201,35 @@ class WalletContext {
     EthereumAddress to,
     BigInt amount,
   ) async {
-    final currentFee = (await getGasPriceBI()) * BigInt.from(3);
+    final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final contract = DeployedContract(ERC20ABI, tokenAddress);
     final op = await ERC20(web3, contract).transfer(walletAddress!, nonce, Goerli.entryPointAddress,
-        Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10), to, amount);
+        Goerli.paymasterAddress, currentFee, Goerli.priorityFee, to, amount);
     await _executeOperation(op);
   }
 
   void addGuardian(EthereumAddress guardianAddress) async {
-    final currentFee = (await getGasPriceBI()) * BigInt.from(3);
+    final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).grantGuardianRequest(nonce, guardianAddress,
-        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10));
+        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
     _executeOperation(op);
   }
 
   void removeGuardian(EthereumAddress guardianAddress) async {
-    final currentFee = (await getGasPriceBI()) * BigInt.from(3);
+    final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).revokeGuardianRequest(nonce, guardianAddress,
-        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10));
+        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
     _executeOperation(op);
   }
 
   Future<UserOperation> transferOwner(EthereumAddress newOwner) async {
-    final currentFee = (await getGasPriceBI()) * BigInt.from(3);
+    final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).transferOwner(nonce, newOwner,
-        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, BigInt.from(10).pow(10));
+        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
     return op;
   }
   // getRecoverId
