@@ -42,11 +42,23 @@ class R {
 
   static const String ASSETS_IMAGES_LOGOUT_PNG = 'assets/images/logout.png';
 
-  static const String ASSETS_IMAGES_NAVIGATION_ACTIVE_ICON_PNG =
-      'assets/images/navigation_active_icon.png';
+  static const String ASSETS_IMAGES_NAV_ACTIVITIES_PNG =
+      'assets/images/nav_activities.png';
 
-  static const String ASSETS_IMAGES_NAVIGATION_ICON_PNG =
-      'assets/images/navigation_icon.png';
+  static const String ASSETS_IMAGES_NAV_ACTIVITIES_ACTIVE_PNG =
+      'assets/images/nav_activities_active.png';
+
+  static const String ASSETS_IMAGES_NAV_ASSETS_PNG =
+      'assets/images/nav_assets.png';
+
+  static const String ASSETS_IMAGES_NAV_ASSETS_ACTIVE_PNG =
+      'assets/images/nav_assets_active.png';
+
+  static const String ASSETS_IMAGES_NAV_GUARDIANS_PNG =
+      'assets/images/nav_guardians.png';
+
+  static const String ASSETS_IMAGES_NAV_GUARDIANS_ACTIVE_PNG =
+      'assets/images/nav_guardians_active.png';
 
   static const String ASSETS_IMAGES_SCAN_PNG = 'assets/images/scan.png';
 
