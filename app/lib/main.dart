@@ -3,9 +3,6 @@ import 'package:app/app/ui/page/login_page/login_binding.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/injection.dart';
 import 'package:app/app/util/platform_util.dart';
-import 'package:app/net/dio_utils.dart';
-import 'package:app/net/intercept.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -38,11 +35,13 @@ class _MyAppState extends State<MyApp> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      debugShowCheckedModeBanner: false,
+      title: 'Soul Wallet',
       theme: appThemeData,
       getPages: Routes.routePage,
       initialBinding: LoginBinding(),
       initialRoute: Routes.loginPage,
+      navigatorObservers: [FlutterSmartDialog.observer],
+      scrollBehavior: const _ScrollBehavior(),
       builder: FlutterSmartDialog.init(
         builder: (_, Widget? child) => GestureDetector(
           onTap: () => SystemChannels.textInput
@@ -52,5 +51,18 @@ class _MyAppState extends State<MyApp> {
         ),
       ),
     );
+  }
+}
+
+class _ScrollBehavior extends MaterialScrollBehavior {
+  const _ScrollBehavior();
+
+  @override
+  Widget buildOverscrollIndicator(
+    BuildContext context,
+    Widget child,
+    ScrollableDetails details,
+  ) {
+    return child;
   }
 }

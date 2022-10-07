@@ -10,7 +10,7 @@ import 'package:flutter/foundation.dart';
 int _connectTimeout = 15000;
 int _receiveTimeout = 15000;
 int _sendTimeout = 10000;
-String _baseUrl = '';
+String _baseUrl = 'https://securecenter-poc.soulwallets.me';
 List<Interceptor> _interceptors = [];
 
 /// 初始化Dio配置
