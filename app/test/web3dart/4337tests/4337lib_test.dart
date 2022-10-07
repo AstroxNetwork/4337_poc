@@ -156,6 +156,7 @@ void main() async {
   } else {
     LogUtil.d("simpleWalletAddress $simpleWalletAddress inited", tag: _tag);
 
+    // add account and wallet
     WalletContext.recoverPrivateKey(ethClient, USER_PRIVATE_KEY);
     final ctx = WalletContext.getInstance();
     ctx.setWalletAddress(simpleWallet);
@@ -165,7 +166,7 @@ void main() async {
     final amount = EtherAmount.fromUnitAndValue(EtherUnit.finney, 1).getInWei;
     LogUtil.d("sendERC20 $toAddress, $amount", tag: _tag);
     // await ctx.sendERC20(wethContractAddress, toAddress, amount);
-    // await ctx.sendETH(toAddress, amount);
+    await ctx.sendETH(toAddress, amount);
   }
 
   /// ########### guardian
@@ -182,6 +183,17 @@ void main() async {
   );
   final guardian3Address = await guardian3.extractAddress();
 
+  if (code.isNotEmpty) {
+    // add account and wallet
+    WalletContext.recoverPrivateKey(ethClient, USER_PRIVATE_KEY);
+    final ctx = WalletContext.getInstance();
+    ctx.setWalletAddress(simpleWallet);
+
+    print("addGuardian $guardian1Address");
+    await ctx.addGuardian(guardian1Address);
+  }
+
   final nonce = await EIP4337Lib.getNonce(simpleWalletAddress, ethClient);
-  LogUtil.d(nonce, tag: _tag);
+  print(nonce);
+  // print(requestId);
 }

@@ -160,6 +160,7 @@ class WalletContext {
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
 
+    print(op);
     try {
       final entryPointContract = DeployedContract(EntryPoint().ABI, Goerli.entryPointAddress);
       final simulateValidation = entryPointContract.function("simulateValidation");
@@ -169,7 +170,7 @@ class WalletContext {
           function: simulateValidation, params: [
         op.toTuple()
       ]);
-      Log.d('simulateValidation $response');
+      print('simulateValidation $response');
       await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
       // add tx to localstorage
     } catch (e) {
@@ -208,7 +209,7 @@ class WalletContext {
     await _executeOperation(op);
   }
 
-  void addGuardian(EthereumAddress guardianAddress) async {
+  Future<void> addGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).grantGuardianRequest(nonce, guardianAddress,
@@ -216,7 +217,7 @@ class WalletContext {
     _executeOperation(op);
   }
 
-  void removeGuardian(EthereumAddress guardianAddress) async {
+  Future<void> removeGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).revokeGuardianRequest(nonce, guardianAddress,
@@ -233,12 +234,11 @@ class WalletContext {
   }
   // getRecoverId
 
-  void recoverWallet(EthereumAddress newOwner, List<Uint8List> signatures) async {
+  Future<void> recoverWallet(EthereumAddress newOwner, List<Uint8List> signatures) async {
     final recoveryOp = await transferOwner(newOwner);
     final requestId = recoveryOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
     final signPack = await packGuardiansSignByRequestId(requestId, signatures); ///
     recoveryOp.signature = signPack;
-
   }
 
 }

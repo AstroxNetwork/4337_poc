@@ -44,6 +44,7 @@ class Send {
     BigInt chainId,
   ) async {
     final res0 = await sendOp(op);
+    print('sendOp $res0');
     if (res0['code'] == 0) {
       final requestId = res0['requestId'];
       for (var i = 0; i < 60; i++) {
