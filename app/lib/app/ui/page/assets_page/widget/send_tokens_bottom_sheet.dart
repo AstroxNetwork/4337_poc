@@ -108,7 +108,9 @@ class SendTokensBottomSheet extends GetCommonView<AssetsController> {
                               iconSize: 28,
                               iconEnabledColor: Colors.black,
                               items: _getCurrencys(),
-                              onChanged: (value) {},
+                              onChanged: (value) {
+                                controller.tokenSeleted = value;
+                              },
                               underline: Container(),
                               elevation: 0,
                               dropdownColor: Colors.transparent,
@@ -262,8 +264,9 @@ class SendTokensBottomSheet extends GetCommonView<AssetsController> {
     );
   }
 
-  onContinue() {
-    controller.sendTokens();
+  onContinue() async {
+    print('onContinue');
+    await controller.sendTokens();
     Get.back();
   }
 

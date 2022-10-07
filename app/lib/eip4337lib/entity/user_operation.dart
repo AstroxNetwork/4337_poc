@@ -1,6 +1,7 @@
 
 import 'dart:typed_data';
 
+import 'package:agent_dart/utils/extension.dart';
 import 'package:app/web3dart/credentials.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/web3dart.dart';

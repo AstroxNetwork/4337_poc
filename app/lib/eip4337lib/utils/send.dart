@@ -13,9 +13,10 @@ class Send {
   static final httpClient = http.Client();
   static Future<dynamic> sendOp(UserOperation op) async {
     final body = jsonEncode(op.toMap());
-    Log.d('$body, ${body.length}');
+    print('$body, ${body.length}');
     final response =  await httpClient.put(Uri.parse(bundlerUrl), body: body,
     headers: {'Content-Type': 'application/json', 'accept': 'application/json' });
+    print(response.body);
     return json.decode(response.body);
   }
 
@@ -27,16 +28,16 @@ class Send {
 
   static Future getOpStateByUserOperation(UserOperation op,
       EthereumAddress entryPointAddress, BigInt chainId) async {
-    final requestId = bytesToHex(op.requestId(entryPointAddress, chainId));
+    final requestId = bytesToHex(op.requestId(entryPointAddress, chainId), include0x: true);
     final response = await getOpStateByReqeustId(requestId);
     print('getOpStateByUserOperation: $response');
     return json.decode(response.body);
   }
 
   static Future sendOpWait(Web3Client web3, UserOperation op, EthereumAddress entryPointAddress, BigInt chainId) async {
-    Log.d('sendOpWait');
+    print('sendOpWait');
     final res0 = await sendOp(op);
-    Log.d('sendOp $res0');
+    print('sendOp $res0');
     if (res0['code'] == 0) {
       final requestId = res0['requestId'];
       for (var i = 0; i < 60; i++) {
@@ -52,14 +53,16 @@ class Send {
         } else if (res['code'] == 2) {
           print('processing...');
         } else if (res['code'] == 3) {
+          final hash = res["txHash"];
           for (var i = 0; i < 60; i++) {
             sleep(Duration(seconds: 1));
-            final receipt = await web3.getTransactionReceipt(res["txHash"]);
-            if (receipt!.status == true) {
-              print('tx: ${res["txHash"]} has been confirmed');
-              return res["txHash"];
+            final receipt = await web3.getTransactionReceipt(hash);
+            if (receipt?.status == true) {
+              print('tx: ${hash} has been confirmed');
+              return hash;
             } else {
-              throw(Exception('transaction failed'));
+              print('tx receipt: ${receipt}');
+              // throw(Exception('transaction failed'));
             }
           }
         } else if (res['code'] == 4) {

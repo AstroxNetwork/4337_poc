@@ -1,3 +1,5 @@
+import 'package:app/eip4337lib/define/address.dart';
+import 'package:app/eip4337lib/utils/send.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:http/http.dart';
 import 'package:app/web3dart/web3dart.dart';
@@ -10,7 +12,9 @@ import 'package:app/eip4337lib/utils/helper.dart';
 import 'abi.dart';
 
 const SPONSER_KEY = "0xa6df89ed3e4f20e095f08730dd5435875ee6fa6e2b33bca5fb59f62afc06a56b";
-const USER_PRIVATE_KEY = "0x214306b6552884da884b199938a86225a0221d5e775bd65dd528e229735ddf72";
+const USER_PRIVATE_KEY = "0x0061673ca1536d71ea0f0b31640be07ce92613df645e05fff338edb560381da5";
+// const USER_PRIVATE_KEY = "0x13333840f99337428ffa54331d4854481ba8ea8fc1335f8775292b8958963763";
+const USER_PRIVATE_KEY_2 = "0x214306b6552884da884b199938a86225a0221d5e775bd65dd528e229735ddf72";
 const PAYMASTER_PRIVATE_KEY = "0xa6df89ed3e4f20e095f08730dd5435875ee6fa6e2b33bca5fb59f62afc06a56b";
 const PAYMASTER_SIGN_KEY = "0xd076a42bda94685d1c26d43362884b40cdcfd38e3e2e0b445f97fc37c35362d5";
 const BENEFICIARY_ADDR = "0x64dBEb9F393D40b3B33d192cB94F59090aBB5d77";
@@ -88,12 +92,13 @@ void main() async {
   // getGasPrice
   final gasMax = BigInt.from(3000000000);
   final gasPriority = BigInt.from(2000000000);
-  var activateOp = EIP4337Lib.activateWalletOp(entryPointAddress, wethPaymasterAddress, userAddress, wethContractAddress,
-      gasMax, gasPriority, simpleWalletCreateSalt);
+  var activateOp = EIP4337Lib.activateWalletOp(
+      Goerli.entryPointAddress, Goerli.paymasterAddress, userAddress,Goerli.wethAddress,
+      gasMax, gasPriority, BigInt.zero);
   
   // print(op);
 
-  final requestId = activateOp.requestId(entryPointAddress, chainId);
+  final requestId = activateOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
   print('requestId: ${bytesToHex(requestId)}, user: $userAddress');
   final signature = await user.signPersonalMessage(requestId);
   // print('signature ${bytesToHex(signature)}');
@@ -102,16 +107,23 @@ void main() async {
 
   /// ########### simulate
   final code = await ethClient.getCode(simpleWalletAddress);
+  print('send op ${code.isEmpty}');
   // if (code.isEmpty) {
-  //   final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
-  //   final simulateValidation = entryPointContract.function("simulateValidation");
-  //
-  //   final response = await ethClient.call(sender: zeroAddress, contract: entryPointContract, function: simulateValidation, params: [
-  //     activateOp.toTuple()
-  //   ]);
-  //   print(response);
-  //
-  //   // sendOp();
+    final entryPointContract = DeployedContract(EntryPoint().ABI, entryPointAddress);
+    final simulateValidation = entryPointContract.function("simulateValidation");
+
+    try {
+      final response = await ethClient.call(sender: zeroAddress, contract: entryPointContract, function: simulateValidation, params: [
+        activateOp.toTuple()
+      ]);
+      print('ethClient.call $response');
+      final txHash = await Send.sendOpWait(ethClient, activateOp, entryPointAddress, chainId);
+      print('txHash $response');
+    } catch (e) {
+      print('catch $e');
+    }
+
+
   // }
 
   /// ########### guardian

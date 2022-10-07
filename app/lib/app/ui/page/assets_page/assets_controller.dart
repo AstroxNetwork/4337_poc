@@ -11,6 +11,7 @@ import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:app/jazzicon/jazziconshape.dart';
+import 'package:app/web3dart/credentials.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,7 @@ class AssetsController extends BaseGetController {
 
   TextEditingController toController = TextEditingController(text: '');
   TextEditingController tokenController = TextEditingController(text: '');
+  String tokenSeleted = 'ETH';
 
   @override
   void onInit() {
@@ -108,5 +110,18 @@ class AssetsController extends BaseGetController {
     return assets.value.map((e) => e.symbol).toList();
   }
 
-  void sendTokens() {}
+  Future sendTokens() async {
+    final toAddress = EthereumAddress.fromHex(toController.text);
+    final amount = BigInt.parse(tokenController.text);
+    try {
+      print('sendTokens $toAddress, $amount');
+      if (tokenSeleted == 'ETH') {
+        await WalletContext.getInstance().sendETH(toAddress, amount);
+      } else if (tokenSeleted == 'WETH') {
+        final tokenAddress = EthereumAddress.fromHex('0xec2a384Fa762C96140c817079768a1cfd0e908EA');
+        await WalletContext.getInstance().sendERC20(tokenAddress, toAddress, amount);
+      }
+    } catch (_) {}
+
+  }
 }
