@@ -4,6 +4,7 @@ import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/util/platform_util.dart';
+import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
@@ -122,7 +123,9 @@ class TopBar extends StatelessWidget {
             GestureDetector(
               child: Image.asset(R.assetsImagesScan, width: 28, height: 28),
               onTap: () async {
+                Log.d('scan onTap');
                 final status = await Permission.camera.request();
+                Log.d('scan onTap2 $status');
                 if (status.isGranted) {
                   Get.toNamed(Routes.scanPage);
                 }

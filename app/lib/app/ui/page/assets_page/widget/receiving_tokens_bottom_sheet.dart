@@ -62,26 +62,26 @@ class ReceivingTokensBottomSheet extends GetCommonView<AssetsController> {
           ),
           Padding(
             padding: const EdgeInsets.only(top: 37),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                GestureDetector(
-                  child: Image.asset(
+            child: GestureDetector(
+              onTap: () => copyAndToast(address),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  Image.asset(
                     R.assetsImagesCopy,
                     width: 16,
                     height: 16,
                   ),
-                  onTap: () => copyAndToast(address),
-                ),
-                const Padding(
-                  padding: EdgeInsets.only(left: 10),
-                  child: Text(
-                    'Copy',
-                    style: TextStyle(fontSize: 16, letterSpacing: -0.38),
-                  ),
-                )
-              ],
+                  const Padding(
+                    padding: EdgeInsets.only(left: 10),
+                    child: Text(
+                      'Copy',
+                      style: TextStyle(fontSize: 16, letterSpacing: -0.38),
+                    ),
+                  )
+                ],
+              ),
             ),
           ),
         ],

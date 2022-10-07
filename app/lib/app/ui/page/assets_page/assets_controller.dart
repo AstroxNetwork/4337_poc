@@ -5,6 +5,7 @@ import 'package:app/app/model/asset_model.dart';
 import 'package:app/app/model/user_model.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.dart';
+import 'package:app/app/ui/page/assets_page/widget/receiving_tokens_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
@@ -112,6 +113,9 @@ class AssetsController extends BaseGetController {
         await WalletContext.getInstance().sendERC20(tokenAddress, toAddress, amount);
       }
     } catch (_) {}
+  }
 
+  onReceiveClick() {
+    Get.bottomSheet(const ReceivingTokensBottomSheet());
   }
 }

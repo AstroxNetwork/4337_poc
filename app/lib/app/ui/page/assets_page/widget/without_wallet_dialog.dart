@@ -59,26 +59,32 @@ class WithoutWalletDialog extends GetCommonView<AssetsController> {
                       ),
                     ),
                   ),
-                  Container(
-                    width: 165,
-                    decoration: const BoxDecoration(
-                      border: Border(
-                        left: BorderSide(
-                          width: 1,
-                          color: ColorStyle.color_4D979797,
-                        ),
-                        top: BorderSide(
-                          width: 1,
-                          color: ColorStyle.color_4D979797,
+                  GestureDetector(
+                    onTap: () {
+                      Get.back();
+                      controller.onReceiveClick();
+                    },
+                    child: Container(
+                      width: 165,
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          left: BorderSide(
+                            width: 1,
+                            color: ColorStyle.color_4D979797,
+                          ),
+                          top: BorderSide(
+                            width: 1,
+                            color: ColorStyle.color_4D979797,
+                          ),
                         ),
                       ),
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Receive Fund',
-                        style: TextStyle(
-                          fontSize: 18,
-                          color: ColorStyle.color_FF3940FF,
+                      child: const Center(
+                        child: Text(
+                          'Receive Fund',
+                          style: TextStyle(
+                            fontSize: 18,
+                            color: ColorStyle.color_FF3940FF,
+                          ),
                         ),
                       ),
                     ),

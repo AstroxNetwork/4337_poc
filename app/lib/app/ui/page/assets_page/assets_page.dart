@@ -123,7 +123,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                             AssetsButton(
                               data: 'Receive',
                               image: R.assetsImagesReceiveIcon,
-                              onTap: () => onReceiveClick(),
+                              onTap: () => controller.onReceiveClick(),
                             ),
                             Padding(
                               padding: const EdgeInsets.only(left: 22),
@@ -175,10 +175,6 @@ class AssetsPage extends GetCommonView<AssetsController> {
 
   onAvatarClick() {
     Get.bottomSheet(const WalletAccountBottomSheet());
-  }
-
-  onReceiveClick() {
-    Get.bottomSheet(const ReceivingTokensBottomSheet());
   }
 
   onSendClick() {

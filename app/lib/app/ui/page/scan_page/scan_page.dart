@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:app/app/res/r.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class ScanPage extends StatefulWidget {
   const ScanPage({Key? key}) : super(key: key);
@@ -10,7 +13,8 @@ class ScanPage extends StatefulWidget {
   State<ScanPage> createState() => _ScanPageState();
 }
 
-class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
+class _ScanPageState extends State<ScanPage>
+    with SingleTickerProviderStateMixin {
   MobileScannerController cameraController = MobileScannerController();
 
   late Animation<double> _animation;
@@ -43,6 +47,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
   @override
   void dispose() {
     _controller.dispose();
+    cameraController.dispose();
     super.dispose();
   }
 
@@ -56,6 +61,7 @@ class _ScanPageState extends State<ScanPage> with TickerProviderStateMixin {
         child: Stack(
           children: [
             MobileScanner(
+                controller: cameraController,
                 allowDuplicates: false,
                 onDetect: (barcode, args) {
                   if (barcode.rawValue == null) {
