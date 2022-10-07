@@ -160,7 +160,7 @@ class WalletContext {
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
 
-    print(op);
+    // print(op);
     try {
       final entryPointContract = DeployedContract(EntryPoint().ABI, Goerli.entryPointAddress);
       final simulateValidation = entryPointContract.function("simulateValidation");
@@ -232,12 +232,27 @@ class WalletContext {
         Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
     return op;
   }
-  // getRecoverId
 
   Future<void> recoverWallet(EthereumAddress newOwner, List<Uint8List> signatures) async {
     final recoveryOp = await transferOwner(newOwner);
-    final requestId = recoveryOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
-    final signPack = await packGuardiansSignByRequestId(requestId, signatures); ///
+    final requestId = recoveryOp.requestId(Goerli.entryPointAddress, Goerli.chainId); // 用来做RecoverId
+    final signPack = await packGuardiansSignByRequestId(requestId, signatures);
     recoveryOp.signature = signPack;
+
+    try {
+      final entryPointContract = DeployedContract(EntryPoint().ABI, Goerli.entryPointAddress);
+      final simulateValidation = entryPointContract.function("simulateValidation");
+      final response = await web3.call(
+          sender: Goerli.zeroAddress,
+          contract: entryPointContract,
+          function: simulateValidation, params: [
+        recoveryOp.toTuple()
+      ]);
+      print('simulateValidation $response');
+      await Send.sendOpWait(web3, recoveryOp, Goerli.entryPointAddress, Goerli.chainId);
+      // add tx to localstorage
+    } catch (e) {
+      throw(Exception("simulateValidation error"));
+    }
   }
 }
