@@ -3,7 +3,7 @@ import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/routes/routes.dart';
-import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -16,7 +16,7 @@ class GuardiansItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    Log.d('GuardiansItem build ${model.toJSONEncodable()}');
+    LogUtil.d('GuardiansItem build ${model.toJSONEncodable()}');
     return GestureDetector(
       onTap: () => onItemClick(),
       child: Container(
@@ -111,7 +111,7 @@ class GuardiansItem extends StatelessWidget {
   }
 
   onItemClick() {
-    Log.d('GuardiansItem onItemClick ${model.toJSONEncodable()}');
+    LogUtil.d('GuardiansItem onItemClick ${model.toJSONEncodable()}');
 
     Get.toNamed(Routes.guardianPage, arguments: model);
   }

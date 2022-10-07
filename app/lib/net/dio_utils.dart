@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/base_entity.dart';
 import 'package:dio/dio.dart';
@@ -76,7 +76,7 @@ class DioUtils {
     CancelToken? cancelToken,
     Options? options,
   }) async {
-    Log.d('request：url: $url, data: $data');
+    LogUtil.d('request：url: $url, data: $data');
     final Response<String> response = await _dio.request<String>(
       url,
       data: data,
@@ -86,7 +86,7 @@ class DioUtils {
     );
     try {
       final String data = response.data.toString();
-      Log.d('response：data: $data');
+      LogUtil.d('response：data: $data');
       // 集成测试无法使用 isolate https://github.com/flutter/flutter/issues/24703
       // 使用 compute 条件：数据大于10KB（粗略使用10 * 1024）
       // 且当前不是集成测试（后面可能会根据Web环境进行调整）
@@ -173,7 +173,7 @@ class DioUtils {
 
   void _cancelLogPrint(dynamic e, String url) {
     if (e is DioError && CancelToken.isCancel(e)) {
-      Log.e('取消请求接口： $url');
+      LogUtil.e('取消请求接口： $url');
     }
   }
 
@@ -182,7 +182,7 @@ class DioUtils {
       code = ExceptionHandle.unknown_error;
       msg = '未知异常';
     }
-    Log.e('接口请求异常： code: $code, mag: $msg');
+    LogUtil.e('接口请求异常： code: $code, mag: $msg');
     onError?.call(code, msg);
   }
 }

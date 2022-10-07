@@ -2,7 +2,7 @@ import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/model/guardian_model.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/eip4337lib/context/context.dart';
-import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
 import 'package:flutter/material.dart';
@@ -51,8 +51,8 @@ class GuardiansController extends BaseGetController {
       await fetchGuardiansNameMapping();
       await fetchAddedGuardians();
       await fetchGuardians();
-    } catch(err) {
-      Log.e(err.toString());
+    } catch (e, s) {
+      LogUtil.e(e, stackTrace: s);
     }
   }
 
@@ -79,7 +79,7 @@ class GuardiansController extends BaseGetController {
 
     isAdding = true;
     guardianNameMapping[address] = name;
-    Log.d('setItem guardianNameMapping = ${guardianNameMapping}');
+    LogUtil.d('setItem guardianNameMapping = ${guardianNameMapping}');
     await storage?.setItem(KEY_GUARDIAN_NAME_MAP, guardianNameMapping);
 
     var params = Map();
@@ -151,7 +151,7 @@ class GuardiansController extends BaseGetController {
   Future fetchAddedGuardians() async {
     Future(() {
       var item = storage?.getItem(KEY_ADDED_GUARDIANS) as List<dynamic>?;
-      Log.d('fetchAddedGuardians $item');
+      LogUtil.d('fetchAddedGuardians $item');
       addedGuardian.clear();
       if (item != null) {
         item.forEach((element) {
@@ -165,7 +165,7 @@ class GuardiansController extends BaseGetController {
   Future fetchGuardiansNameMapping() async {
     return Future(() {
       var item = storage?.getItem(KEY_GUARDIAN_NAME_MAP) as Map<String, dynamic>?;
-      Log.d('fetchGuardiansNameMapping $item');
+      LogUtil.d('fetchGuardiansNameMapping $item');
       item?.forEach((key, value) {
         guardianNameMapping[key] = value;
       });

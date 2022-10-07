@@ -1,4 +1,4 @@
-import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/generated/json/base/json_field.dart';
 import 'package:app/generated/json/guardian_model_entity.g.dart';
 import 'dart:convert';
@@ -30,7 +30,7 @@ class GuardianModel {
   }
 
   bool isExpired() {
-    Log.d('addedDate = $addedDate');
+    LogUtil.d('addedDate = $addedDate');
     if (addedDate == null) {
       return false;
     }
@@ -39,7 +39,7 @@ class GuardianModel {
     }
     var dateTime = DateTime.now();
     var addedDateTime = DateTime.parse(addedDate!);
-    Log.d('dateTime = $dateTime, addedDateTime = $addedDateTime');
+    LogUtil.d('dateTime = $dateTime, addedDateTime = $addedDateTime');
     return dateTime.millisecondsSinceEpoch - addedDateTime.millisecondsSinceEpoch > 24 * 60 * 60 * 1000;
   }
 }

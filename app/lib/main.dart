@@ -2,7 +2,6 @@ import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/ui/page/login_page/login_binding.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/injection.dart';
-import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:app/app/util/platform_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/intercept.dart';
@@ -36,25 +35,6 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
-  @override
-  void initState() {
-    super.initState();
-    initDio();
-  }
-
-  void initDio() {
-    final List<Interceptor> interceptors = <Interceptor>[];
-
-    /// 统一添加身份验证请求头
-    interceptors.add(AuthInterceptor());
-    configDio(
-      connectTimeout: 15000,
-      baseUrl: 'https://securecenter-poc.soulwallets.me',
-      interceptors: interceptors,
-    );
-    Log.init();
-  }
-
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(

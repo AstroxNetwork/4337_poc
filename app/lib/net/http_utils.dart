@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:app/constant.dart';
-import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/base_entity.dart';
 import 'package:app/net/dio_utils.dart';
@@ -80,7 +80,7 @@ class HttpUtils {
       code = ExceptionHandle.unknown_error;
       msg = '未知异常';
     }
-    Log.e('接口请求异常： code: $code, mag: $msg');
+    LogUtil.e('接口请求异常： code: $code, mag: $msg');
     onError?.call(code, msg);
   }
 }

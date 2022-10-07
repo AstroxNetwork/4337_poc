@@ -8,7 +8,7 @@ import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.
 import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/eip4337lib/context/context.dart';
-import 'package:app/eip4337lib/utils/log_utils.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:app/jazzicon/jazziconshape.dart';
 import 'package:app/web3dart/credentials.dart';
@@ -34,7 +34,7 @@ class AssetsController extends BaseGetController {
   @override
   void onInit() {
     super.onInit();
-    Log.d('AssetsController onInit');
+    LogUtil.d('AssetsController onInit');
     assets.value = [
       AssetModel(
           icon: R.assetsImagesTokenETH,
