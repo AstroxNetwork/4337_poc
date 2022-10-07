@@ -1,17 +1,18 @@
 import 'package:app/app/base/get/get_common_view.dart';
+import 'package:app/app/base/methods.dart';
 import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/assets_page/assets_controller.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
+import 'package:qr_flutter/qr_flutter.dart';
 
 class ReceivingTokensBottomSheet extends GetCommonView<AssetsController> {
   const ReceivingTokensBottomSheet({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final address = controller.userModel.address;
     return Container(
       width: double.infinity,
       height: 470,
@@ -43,26 +44,20 @@ class ReceivingTokensBottomSheet extends GetCommonView<AssetsController> {
               ),
               child: Padding(
                 padding: const EdgeInsets.all(14),
-                child: Container(
-                  width: double.infinity,
-                  height: double.infinity,
-                  color: Colors.pinkAccent,
-                ),
+                child: QrImage(data: address),
               ),
             ),
           ),
-          const SizedBox(
+          Container(
             width: 220,
-            child: Padding(
-              padding: EdgeInsets.only(top: 16),
-              child: Text(
-                '0x6b5cf860506c6291711478F54123312066944B3',
-                style: TextStyle(
-                  fontSize: 18,
-                  color: ColorStyle.color_000000_50,
-                ),
-                textAlign: TextAlign.center,
+            padding: const EdgeInsets.only(top: 16),
+            child: Text(
+              address,
+              style: const TextStyle(
+                color: ColorStyle.color_000000_50,
+                fontSize: 18,
               ),
+              textAlign: TextAlign.center,
             ),
           ),
           Padding(
@@ -77,30 +72,19 @@ class ReceivingTokensBottomSheet extends GetCommonView<AssetsController> {
                     width: 16,
                     height: 16,
                   ),
-                  onTap: () => onCopy(),
+                  onTap: () => copyAndToast(address),
                 ),
                 const Padding(
                   padding: EdgeInsets.only(left: 10),
                   child: Text(
                     'Copy',
-                    style: TextStyle(
-                      fontSize: 16,
-                      letterSpacing: -0.38,
-                    ),
+                    style: TextStyle(fontSize: 16, letterSpacing: -0.38),
                   ),
                 )
               ],
             ),
           ),
         ],
-      ),
-    );
-  }
-
-  onCopy() {
-    Clipboard.setData(
-      const ClipboardData(
-        text: '0x6b5cf860506c6291711478F54123312066944B3…CbEF',
       ),
     );
   }

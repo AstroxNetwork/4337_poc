@@ -6,16 +6,13 @@ import 'package:app/app/model/user_model.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
-import 'package:app/app/util/toast_util.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:app/jazzicon/jazziconshape.dart';
 import 'package:app/web3dart/credentials.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
 
 class AssetsController extends BaseGetController {
   // List<String> currencys = ['ETH', 'BTC'];
@@ -58,13 +55,6 @@ class AssetsController extends BaseGetController {
   void notifyUserModel() {
     fetchBalance();
     // update();
-  }
-
-  onCopy() {
-    Clipboard.setData(ClipboardData(
-      text: userModel.address,
-    ));
-    ToastUtil.show("Copied");
   }
 
   void fetchBalance() {

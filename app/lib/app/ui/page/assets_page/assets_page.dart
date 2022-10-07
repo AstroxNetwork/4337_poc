@@ -1,4 +1,5 @@
 import 'package:app/app/base/get/get_common_view.dart';
+import 'package:app/app/base/methods.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/assets_page/assets_controller.dart';
@@ -86,7 +87,9 @@ class AssetsPage extends GetCommonView<AssetsController> {
                               ),
                             ),
                             GestureDetector(
-                              onTap: () => controller.onCopy(),
+                              onTap: () => copyAndToast(
+                                controller.userModel.address,
+                              ),
                               child: Padding(
                                 padding: const EdgeInsets.only(left: 10),
                                 child: Image.asset(
