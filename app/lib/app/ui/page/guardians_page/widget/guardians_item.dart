@@ -1,4 +1,4 @@
-import 'package:app/app/model/guardian_model.dart';
+import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/widget/address_text.dart';
@@ -16,7 +16,7 @@ class GuardiansItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    LogUtil.d('GuardiansItem build ${model.toJSONEncodable()}');
+    LogUtil.d('GuardiansItem build ${model.toJson()}');
     return GestureDetector(
       onTap: () => onItemClick(),
       child: Container(
@@ -111,7 +111,7 @@ class GuardiansItem extends StatelessWidget {
   }
 
   onItemClick() {
-    LogUtil.d('GuardiansItem onItemClick ${model.toJSONEncodable()}');
+    LogUtil.d('GuardiansItem onItemClick ${model.toJson()}');
 
     Get.toNamed(Routes.guardianPage, arguments: model);
   }

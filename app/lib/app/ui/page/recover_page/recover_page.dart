@@ -1,5 +1,5 @@
 import 'package:app/app/base/get/get_common_view.dart';
-import 'package:app/app/model/guardian_model.dart';
+import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/guardians_page/widget/guardians_item.dart';
 import 'package:app/app/ui/page/recover_page/recover_controller.dart';

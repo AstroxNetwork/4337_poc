@@ -1,8 +1,7 @@
 import 'dart:async';
 
 import 'package:app/app/base/get/getx_controller_inject.dart';
-import 'package:app/app/model/asset_model.dart';
-import 'package:app/app/model/user_model.dart';
+import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/receiving_tokens_bottom_sheet.dart';
@@ -34,14 +33,16 @@ class AssetsController extends BaseGetController {
     super.onInit();
     LogUtil.d('AssetsController onInit');
     assets.value = [
-      AssetModel(
-          icon: R.assetsImagesTokenETH,
-          symbol: 'ETH',
-          address: '0x0000000000000000000000000000000000000000'),
-      AssetModel(
-          icon: R.assetsImagesTokenWETH,
-          symbol: 'WETH',
-          address: '0xec2a384Fa762C96140c817079768a1cfd0e908EA'),
+      const AssetModel(
+        icon: R.assetsImagesTokenETH,
+        symbol: 'ETH',
+        address: '0x0000000000000000000000000000000000000000',
+      ),
+      const AssetModel(
+        icon: R.assetsImagesTokenWETH,
+        symbol: 'WETH',
+        address: '0xec2a384Fa762C96140c817079768a1cfd0e908EA',
+      ),
     ];
     userModel = UserModel(
       name: 'Soul Wallet',
@@ -59,20 +60,20 @@ class AssetsController extends BaseGetController {
   }
 
   void fetchBalance() {
-    assets.value.forEach((element) async {
-      Map<String, String> balanceMapping = Map();
-      balanceMapping.addAll(balanceMap.value);
+    Future.value(assets.toList().map((e) async {
+      Map<String, String> balanceMapping = {};
+      balanceMapping.addAll(balanceMap);
       double balance = 0.0;
-      if (element.symbol == 'ETH') {
+      if (e.symbol == 'ETH') {
         balance = await WalletContext.getInstance().getEthBalance();
       } else {
         balance = await WalletContext.getInstance().getWEthBalance();
       }
-      print('element.address = ${element.address}');
-      balanceMapping[element.address] = '$balance';
-      balanceMap[element.address] = '$balance';
+      LogUtil.d('element.address = ${e.address}');
+      balanceMapping[e.address] = '$balance';
+      balanceMap[e.address] = '$balance';
       update();
-    });
+    }));
   }
 
   onActivateMyWallet() async {
@@ -98,24 +99,33 @@ class AssetsController extends BaseGetController {
   }
 
   List<String> getCurrencys() {
-    return assets.value.map((e) => e.symbol).toList();
+    return assets.map((e) => e.symbol).toList();
   }
 
   Future sendTokens() async {
     final toAddress = EthereumAddress.fromHex(toController.text);
     final amount = BigInt.parse(tokenController.text);
     try {
-      print('sendTokens $toAddress, $amount');
+      LogUtil.d('sendTokens $toAddress, $amount');
       if (sendCurrency == 'ETH') {
-        await WalletContext.getInstance().sendETH(toAddress, amount);
+        await WalletContext.getInstance().sendETH(
+          toAddress,
+          amount,
+        );
       } else if (sendCurrency == 'WETH') {
-        final tokenAddress = EthereumAddress.fromHex('0xec2a384Fa762C96140c817079768a1cfd0e908EA');
-        await WalletContext.getInstance().sendERC20(tokenAddress, toAddress, amount);
+        final tokenAddress = EthereumAddress.fromHex(
+          '0xec2a384Fa762C96140c817079768a1cfd0e908EA',
+        );
+        await WalletContext.getInstance().sendERC20(
+          tokenAddress,
+          toAddress,
+          amount,
+        );
       }
     } catch (_) {}
   }
 
-  onReceiveClick() {
+  void onReceiveClick() {
     Get.bottomSheet(const ReceivingTokensBottomSheet());
   }
 

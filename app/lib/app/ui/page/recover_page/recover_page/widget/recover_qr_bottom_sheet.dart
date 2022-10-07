@@ -1,6 +1,6 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/info/app_theme.dart';
-import 'package:app/app/model/guardian_model.dart';
+import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';

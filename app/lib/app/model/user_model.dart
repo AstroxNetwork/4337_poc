@@ -1,17 +1,19 @@
-import 'package:app/app/model/asset_model.dart';
+part of 'data_model.dart';
 
-class UserModel {
-  String name;
-  String avatar;
-  String address;
-
-  UserModel({
+@JsonSerializable()
+class UserModel extends DataModel {
+  const UserModel({
     required this.name,
     required this.avatar,
-    required this.address
+    required this.address,
   });
 
-// todo: toJson
-// todo: fromJson
-// todo: toString
+  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+
+  final String name;
+  final String avatar;
+  final String address;
+
+  @override
+  Map<String, dynamic> toJson() => _$UserModelToJson(this);
 }

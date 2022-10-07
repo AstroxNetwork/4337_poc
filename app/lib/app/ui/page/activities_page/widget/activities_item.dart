@@ -1,16 +1,15 @@
 import 'package:app/app/extension/datetime_extension.dart';
-import 'package:app/app/model/activity_model.dart';
+import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/widget/address_text.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ActivitiesItem extends StatelessWidget {
-  ActivityModel model;
+  const ActivitiesItem({super.key, required this.model});
 
-  ActivitiesItem({super.key, required this.model});
+  final ActivityModel model;
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +21,7 @@ class ActivitiesItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             Image.asset(
-              model.type == ActivityType.Receive
+              model.type == ActivityType.receive
                   ? R.assetsImagesArrowDown
                   : R.assetsImagesArrowUp,
               width: 30,

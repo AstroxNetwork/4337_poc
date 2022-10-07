@@ -1,15 +1,20 @@
-class AssetModel {
-  String icon;
-  String symbol;
-  String address;
+part of 'data_model.dart';
 
-  AssetModel({
+@JsonSerializable()
+class AssetModel extends DataModel {
+  const AssetModel({
     required this.icon,
     required this.symbol,
     required this.address,
   });
 
-// todo: toJson
-// todo: fromJson
-// todo: toString
+  factory AssetModel.fromJson(Map<String, dynamic> json) =>
+      _$AssetModelFromJson(json);
+
+  final String icon;
+  final String symbol;
+  final String address;
+
+  @override
+  Map<String, dynamic> toJson() => _$AssetModelToJson(this);
 }

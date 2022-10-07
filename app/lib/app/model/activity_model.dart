@@ -1,16 +1,10 @@
-enum ActivityType {
-  Receive,
-  Send,
-}
+part of 'data_model.dart';
 
-class ActivityModel {
-  DateTime date;
-  ActivityType type;
-  String address;
-  double count;
-  String currency;
+enum ActivityType { receive, send }
 
-  ActivityModel({
+@JsonSerializable()
+class ActivityModel extends DataModel {
+  const ActivityModel({
     required this.date,
     required this.type,
     required this.address,
@@ -18,7 +12,15 @@ class ActivityModel {
     required this.currency,
   });
 
-// todo: toJson
-// todo: fromJson
-// todo: toString
+  factory ActivityModel.fromJson(Map<String, dynamic> json) =>
+      _$ActivityModelFromJson(json);
+
+  final DateTime date;
+  final ActivityType type;
+  final String address;
+  final double count;
+  final String currency;
+
+  @override
+  Map<String, dynamic> toJson() => _$ActivityModelToJson(this);
 }

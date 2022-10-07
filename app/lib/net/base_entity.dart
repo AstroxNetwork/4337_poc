@@ -1,31 +1,29 @@
 import 'package:app/constant.dart';
-import 'package:app/generated/json/base/json_convert_content.dart';
 
 class BaseEntity<T> {
+  const BaseEntity(this.code, this.message, this.data);
 
-  BaseEntity(this.code, this.message, this.data);
-
-  BaseEntity.fromJson(Map<String, dynamic> json) {
-    code = json[Constant.code] as int?;
-    message = json[Constant.message] as String;
-    if (json.containsKey(Constant.data)) {
-      data = _generateOBJ<T>(json[Constant.data] as Object);
-    }
+  factory BaseEntity.fromJson(Map<String, dynamic> json) {
+    return BaseEntity(
+      json[Constant.code] as int?,
+      json[Constant.message] as String,
+      json.containsKey(Constant.data)
+          ? _generateOBJ<T>(json[Constant.data] as Object)
+          : null,
+    );
   }
 
-  int? code;
-  late String message;
-  T? data;
+  final int? code;
+  final String message;
+  final T? data;
 
-  T? _generateOBJ<O>(Object json) {
-    if (T.toString() == 'String') {
+  static T? _generateOBJ<T>(Object json) {
+    if (T == String) {
       return json.toString() as T;
-    } else if (T.toString() == 'Map<dynamic, dynamic>') {
+    } else if (T == Map) {
       return json as T;
     } else {
       return json as T;
-      /// List类型数据由fromJsonAsT判断处理
-      // return JsonConvert.fromJsonAsT<T>(json);
     }
   }
 }
