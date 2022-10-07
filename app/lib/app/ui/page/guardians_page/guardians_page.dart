@@ -64,8 +64,9 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                             itemBuilder: (_, index) {
                               return GuardiansItem(
                                 model: controller.datas[index],
-                                isAdded: controller.isAdded(controller.datas[index].address),
-                                onItemClick: (model){
+                                isAdded: controller
+                                    .isAdded(controller.datas[index].address),
+                                onItemClick: (model) {
                                   controller.onGuardianItemClick(model);
                                 },
                               );

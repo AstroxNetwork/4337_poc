@@ -1,4 +1,3 @@
-
 const backendURL = "https://securecenter-poc.soulwallets.me";
 
 class HttpApi {
@@ -9,5 +8,6 @@ class HttpApi {
   static const String getAccountGuardian = '$backendURL/get-account-guardian';
   static const String addAccountGuardian = '$backendURL/add-account-guardian';
   static const String delAccountGuardian = '$backendURL/del-account-guardian';
-  static const String fetchRecoveryRecords = '$backendURL/fetch-recovery-records';
+  static const String fetchRecoveryRecords =
+      '$backendURL/fetch-recovery-records';
 }

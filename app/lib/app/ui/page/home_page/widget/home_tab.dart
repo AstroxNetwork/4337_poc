@@ -7,7 +7,7 @@ tab(String label) {
     icon: Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Image.asset(
-        R.assetsImagesNavigationIcon,
+        R.ASSETS_IMAGES_NAVIGATION_ICON_PNG,
         width: 20,
         height: 20,
       ),
@@ -15,7 +15,7 @@ tab(String label) {
     activeIcon: Padding(
       padding: const EdgeInsets.only(bottom: 4),
       child: Image.asset(
-        R.assetsImagesNavigationActiveIcon,
+        R.ASSETS_IMAGES_NAVIGATION_ACTIVE_ICON_PNG,
         width: 20,
         height: 20,
       ),

@@ -1,7 +1,7 @@
 import './IContract.dart';
 import 'package:app/web3dart/contracts.dart';
 
-class EntryPoint implements IContract{
+class EntryPoint implements IContract {
   @override
   final ABI = ContractAbi.fromJson('''
 [

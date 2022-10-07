@@ -28,7 +28,7 @@ class LoginPage extends GetCommonView<LoginController> {
           GestureDetector(
             onTap: () => controller.jumpDebugPage(),
             child: Image.asset(
-              R.assetsImagesAppIconBig,
+              R.ASSETS_IMAGES_APP_ICON_BIG_PNG,
               width: 350,
               height: 318,
             ),

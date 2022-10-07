@@ -8,7 +8,8 @@ class UserModel extends DataModel {
     required this.address,
   });
 
-  factory UserModel.fromJson(Map<String, dynamic> json) => _$UserModelFromJson(json);
+  factory UserModel.fromJson(Map<String, dynamic> json) =>
+      _$UserModelFromJson(json);
 
   final String name;
   final String avatar;

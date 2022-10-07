@@ -46,7 +46,7 @@ class WalletAccountBottomSheet extends GetCommonView<AssetsController> {
                     errorBuilder: (_, __, ___) => CircleAvatar(
                       radius: 20,
                       child: Image.asset(
-                        R.assetsImagesDefaultAvatar,
+                        R.ASSETS_IMAGES_DEFAULT_AVATAR_PNG,
                         width: 40,
                         height: 40,
                         fit: BoxFit.cover,
@@ -79,7 +79,7 @@ class WalletAccountBottomSheet extends GetCommonView<AssetsController> {
                     fontColor: ColorStyle.color_CCFF0000,
                     fontWeight: FontWeight.w700,
                     image: Image.asset(
-                      R.assetsImagesLogout,
+                      R.ASSETS_IMAGES_LOGOUT_PNG,
                       width: 18,
                       height: 18,
                     ),

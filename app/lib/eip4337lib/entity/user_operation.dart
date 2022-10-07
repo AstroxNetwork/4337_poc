@@ -1,18 +1,16 @@
-
 import 'dart:typed_data';
 
-import 'package:agent_dart/utils/extension.dart';
-import 'package:app/web3dart/credentials.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/web3dart.dart';
 
 import '../utils/user_op.dart';
 
 class TransactionInfo {
-  String? from;
-  String? to;
-  String? data;
-  TransactionInfo([this.from, this.to, this.data]);
+  const TransactionInfo([this.from, this.to, this.data]);
+
+  final String? from;
+  final String? to;
+  final String? data;
 }
 
 const zero = '0x0000000000000000000000000000000000000000';
@@ -49,9 +47,20 @@ class UserOperation {
   }
 
   List<dynamic> toTuple() {
-    return [sender,nonce,initCode,callData,callGas,
-      verificationGas,preVerificationGas,maxFeePerGas,maxPriorityFeePerGas,
-      paymaster,paymasterData,signature];
+    return [
+      sender,
+      nonce,
+      initCode,
+      callData,
+      callGas,
+      verificationGas,
+      preVerificationGas,
+      maxFeePerGas,
+      maxPriorityFeePerGas,
+      paymaster,
+      paymasterData,
+      signature,
+    ];
   }
 
   @override
@@ -89,13 +98,20 @@ class UserOperation {
     };
   }
 
-  Future<bool> estimateGas(Web3Client web3, EthereumAddress entryPointAddress) async {
+  Future<bool> estimateGas(
+    Web3Client web3,
+    EthereumAddress entryPointAddress,
+  ) async {
     try {
       verificationGas = BigInt.from(150000);
       if (initCode.isNotEmpty) {
         verificationGas += BigInt.from(3200 + 200 * initCode.length);
       }
-      callGas = await web3.estimateGas(sender: entryPointAddress, to: sender, data: callData);
+      callGas = await web3.estimateGas(
+        sender: entryPointAddress,
+        to: sender,
+        data: callData,
+      );
       // LogUtil.d('estimateGas: $callGas');
       return true;
     } catch (e) {

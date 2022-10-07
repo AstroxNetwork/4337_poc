@@ -68,7 +68,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Image.asset(
-                    R.assetsImagesCopy,
+                    R.ASSETS_IMAGES_COPY_PNG,
                     width: 16,
                     height: 16,
                   ),
@@ -104,7 +104,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
             children: [
               AssetsButton(
                 data: 'Receive',
-                image: R.assetsImagesReceiveIcon,
+                image: R.ASSETS_IMAGES_ASSETS_RECEIVE_ICON_PNG,
                 onTap: () => controller.onReceiveClick(),
               ),
               Padding(
@@ -113,7 +113,7 @@ class AssetsPage extends GetCommonView<AssetsController> {
                   /// Skyh
                   // await wallet.sendETH() wallet.sendERC20() // weth放资产。。
                   data: 'Send',
-                  image: R.assetsImagesSendIcon,
+                  image: R.ASSETS_IMAGES_ASSETS_SEND_ICON_PNG,
                   onTap: () => onSendClick(),
                 ),
               ),

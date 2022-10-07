@@ -36,12 +36,12 @@ class AssetsController extends BaseGetController {
     LogUtil.d('AssetsController onInit');
     assets.value = [
       const AssetModel(
-        icon: R.assetsImagesTokenETH,
+        icon: R.ASSETS_IMAGES_TOKENS_ETH_PNG,
         symbol: 'ETH',
         address: '0x0000000000000000000000000000000000000000',
       ),
       const AssetModel(
-        icon: R.assetsImagesTokenWETH,
+        icon: R.ASSETS_IMAGES_TOKENS_WETH_PNG,
         symbol: 'WETH',
         address: '0xec2a384Fa762C96140c817079768a1cfd0e908EA',
       ),

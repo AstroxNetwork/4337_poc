@@ -8,9 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ActivateWalletBottomSheet extends GetCommonView<AssetsController> {
-  final VoidCallback? onContinue;
+  const ActivateWalletBottomSheet({
+    Key? key,
+    this.onContinue,
+  }) : super(key: key);
 
-  const ActivateWalletBottomSheet({Key? key, this.onContinue}) : super(key: key);
+  final VoidCallback? onContinue;
 
   @override
   Widget build(BuildContext context) {

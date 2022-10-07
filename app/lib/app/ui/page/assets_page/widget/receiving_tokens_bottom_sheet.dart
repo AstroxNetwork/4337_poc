@@ -69,7 +69,7 @@ class ReceivingTokensBottomSheet extends GetCommonView<AssetsController> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   Image.asset(
-                    R.assetsImagesCopy,
+                    R.ASSETS_IMAGES_COPY_PNG,
                     width: 16,
                     height: 16,
                   ),

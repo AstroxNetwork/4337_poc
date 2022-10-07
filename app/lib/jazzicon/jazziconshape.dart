@@ -19,7 +19,12 @@ class JazziconShape {
   double rotate;
   Color fill;
 
-  JazziconShape({required this.center, required this.tx, required this.ty, required this.rotate, required this.fill});
+  JazziconShape(
+      {required this.center,
+      required this.tx,
+      required this.ty,
+      required this.rotate,
+      required this.fill});
 
   @override
   String toString() {
@@ -32,5 +37,6 @@ class JazziconData {
   Color background;
   List<JazziconShape> shapelist;
 
-  JazziconData({required this.size, required this.background, required this.shapelist});
+  JazziconData(
+      {required this.size, required this.background, required this.shapelist});
 }
