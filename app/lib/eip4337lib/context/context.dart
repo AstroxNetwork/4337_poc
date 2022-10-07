@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:app/eip4337lib/EIP4337Lib.dart';
@@ -10,32 +9,33 @@ import 'package:app/eip4337lib/define/address.dart';
 import 'package:app/eip4337lib/entity/user_operation.dart';
 import 'package:app/eip4337lib/utils/guardian.dart';
 import 'package:app/eip4337lib/utils/helper.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/eip4337lib/utils/send.dart';
 import 'package:app/eip4337lib/utils/tokens.dart';
 import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/web3dart.dart';
 
-import '../utils/log_utils.dart';
-
 // WalletContext.getInstance()
 class WalletContext {
-  Web3Client web3;
-  EthPrivateKey account;  // 本地账户
-  EthereumAddress? walletAddress;
   WalletContext(this.web3, this.account);
+
+  final Web3Client web3;
+  final EthPrivateKey account; // 本地账户
+  EthereumAddress? walletAddress;
+
   static WalletContext? _instance; // 记录本地账户
 
   static WalletContext getInstance() {
     if (_instance == null) {
-      throw(Exception("need create or recover"));
+      throw Exception('Need create or recover');
     }
     return _instance!;
   }
 
   // 创建本地账户
   static void createAccount(Web3Client web3) {
-      final privateKey = Web3Helper.generateKey();
-      _instance = WalletContext(web3, privateKey);
+    final privateKey = Web3Helper.generateKey();
+    _instance = WalletContext(web3, privateKey);
   }
 
   // 从keystore本地恢复
@@ -72,16 +72,16 @@ class WalletContext {
   }
 
   Future<String> getWalletAddress() async {
-    Map params = { 'key': account.address.hex };
+    Map params = {'key': account.address.hex};
     final response = await Request.getWalletAddress(params);
-    final body = jsonDecode(response.body);
+    final body = response.data!;
     return body['data']['wallet_address'];
   }
 
   Future<String> getWalletAddressByEmail(String email) async {
-    Map params = { 'email': email };
+    Map params = {'email': email};
     final response = await Request.getWalletAddress(params);
-    final body = jsonDecode(response.body);
+    final body = response.data!;
     return body['data']['wallet_address'];
   }
 
@@ -148,10 +148,16 @@ class WalletContext {
   // 激活钱包
   Future<void> activateWallet() async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
-    final activateOp = EIP4337Lib.activateWalletOp(Goerli.entryPointAddress,
-        Goerli.paymasterAddress, account.address, Goerli.wethAddress,
-        currentFee, Goerli.priorityFee, BigInt.zero);
-    await _executeOperation(activateOp);
+    final activateOp = EIP4337Lib.activateWalletOp(
+      Goerli.entryPointAddress,
+      Goerli.paymasterAddress,
+      account.address,
+      Goerli.wethAddress,
+      currentFee,
+      Goerli.priorityFee,
+      BigInt.zero,
+    );
+    return _executeOperation(activateOp);
   }
 
   // 执行和sendOp
@@ -159,23 +165,23 @@ class WalletContext {
     final requestId = op.requestId(Goerli.entryPointAddress, Goerli.chainId);
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
-
-    print(op);
-    try {
-      final entryPointContract = DeployedContract(EntryPoint().ABI, Goerli.entryPointAddress);
-      final simulateValidation = entryPointContract.function("simulateValidation");
-      final response = await web3.call(
-          sender: Goerli.zeroAddress,
-          contract: entryPointContract,
-          function: simulateValidation, params: [
-        op.toTuple()
-      ]);
-      print('simulateValidation $response');
-      await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
-      // add tx to localstorage
-    } catch (e) {
-      throw(Exception("simulateValidation error"));
-    }
+    LogUtil.d(op);
+    final entryPointContract = DeployedContract(
+      EntryPoint().ABI,
+      Goerli.entryPointAddress,
+    );
+    final simulateValidation = entryPointContract.function(
+      "simulateValidation",
+    );
+    final response = await web3.call(
+      sender: Goerli.zeroAddress,
+      contract: entryPointContract,
+      function: simulateValidation,
+      params: [op.toTuple()],
+    );
+    LogUtil.d('simulateValidation $response');
+    await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+    // add tx to localstorage
   }
 
   // 发送eth
@@ -192,7 +198,7 @@ class WalletContext {
       to,
       amount,
     );
-    await _executeOperation(op);
+    return _executeOperation(op);
   }
 
   // 发送erc20
@@ -204,40 +210,81 @@ class WalletContext {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final contract = DeployedContract(ERC20ABI, tokenAddress);
-    final op = await ERC20(web3, contract).transfer(walletAddress!, nonce, Goerli.entryPointAddress,
-        Goerli.paymasterAddress, currentFee, Goerli.priorityFee, to, amount);
-    await _executeOperation(op);
+    final op = await ERC20(web3, contract).transfer(
+      walletAddress!,
+      nonce,
+      Goerli.entryPointAddress,
+      Goerli.paymasterAddress,
+      currentFee,
+      Goerli.priorityFee,
+      to,
+      amount,
+    );
+    return _executeOperation(op);
   }
 
   Future<void> addGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
-    final op = await Guardian.walletContract(web3, walletAddress!).grantGuardianRequest(nonce, guardianAddress,
-        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
-    await _executeOperation(op);
+    final op = await Guardian.walletContract(
+      web3,
+      walletAddress!,
+    ).grantGuardianRequest(
+      nonce,
+      guardianAddress,
+      Goerli.entryPointAddress,
+      Goerli.paymasterAddress,
+      currentFee,
+      Goerli.priorityFee,
+    );
+    return _executeOperation(op);
   }
 
   Future<void> removeGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
-    final op = await Guardian.walletContract(web3, walletAddress!).revokeGuardianRequest(nonce, guardianAddress,
-        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
-    await _executeOperation(op);
+    final op = await Guardian.walletContract(
+      web3,
+      walletAddress!,
+    ).revokeGuardianRequest(
+      nonce,
+      guardianAddress,
+      Goerli.entryPointAddress,
+      Goerli.paymasterAddress,
+      currentFee,
+      Goerli.priorityFee,
+    );
+    return _executeOperation(op);
   }
 
   Future<UserOperation> transferOwner(EthereumAddress newOwner) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
-    final op = await Guardian.walletContract(web3, walletAddress!).transferOwner(nonce, newOwner,
-        Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
+    final op = await Guardian.walletContract(
+      web3,
+      walletAddress!,
+    ).transferOwner(
+      nonce,
+      newOwner,
+      Goerli.entryPointAddress,
+      Goerli.paymasterAddress,
+      currentFee,
+      Goerli.priorityFee,
+    );
     return op;
   }
-  // getRecoverId
 
-  Future<void> recoverWallet(EthereumAddress newOwner, List<Uint8List> signatures) async {
+  // getRecoverId
+  Future<void> recoverWallet(
+    EthereumAddress newOwner,
+    List<Uint8List> signatures,
+  ) async {
     final recoveryOp = await transferOwner(newOwner);
-    final requestId = recoveryOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
-    final signPack = await packGuardiansSignByRequestId(requestId, signatures); ///
+    final requestId = recoveryOp.requestId(
+      Goerli.entryPointAddress,
+      Goerli.chainId,
+    );
+    final signPack = await packGuardiansSignByRequestId(requestId, signatures);
     recoveryOp.signature = signPack;
   }
 }
