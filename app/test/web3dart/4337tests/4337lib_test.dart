@@ -166,7 +166,7 @@ void main() async {
     final amount = EtherAmount.fromUnitAndValue(EtherUnit.finney, 1).getInWei;
     LogUtil.d("sendERC20 $toAddress, $amount", tag: _tag);
     // await ctx.sendERC20(wethContractAddress, toAddress, amount);
-    await ctx.sendETH(toAddress, amount);
+    // await ctx.sendETH(toAddress, amount);
   }
 
   /// ########### guardian

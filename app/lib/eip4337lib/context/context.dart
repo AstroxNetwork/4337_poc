@@ -214,7 +214,7 @@ class WalletContext {
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).grantGuardianRequest(nonce, guardianAddress,
         Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
-    _executeOperation(op);
+    await _executeOperation(op);
   }
 
   Future<void> removeGuardian(EthereumAddress guardianAddress) async {
@@ -222,7 +222,7 @@ class WalletContext {
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(web3, walletAddress!).revokeGuardianRequest(nonce, guardianAddress,
         Goerli.entryPointAddress, Goerli.paymasterAddress, currentFee, Goerli.priorityFee);
-    _executeOperation(op);
+    await _executeOperation(op);
   }
 
   Future<UserOperation> transferOwner(EthereumAddress newOwner) async {
