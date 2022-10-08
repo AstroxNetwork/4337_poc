@@ -9,11 +9,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmailController extends BaseGetController {
-  final emailTEC = TextEditingController(text: 'web2@alexv525.com');
-  final verifyTEC = TextEditingController(text: '888888');
+  final emailTEC = TextEditingController();
+  final verifyTEC = TextEditingController();
   final verifyFocusNode = FocusNode();
   final RxInt countdown = 60.obs;
-  final RxBool isVerification = true.obs;
+  final RxBool isVerification = false.obs;
   Timer? timer;
 
   @override
