@@ -48,7 +48,7 @@ class Send {
     LogUtil.d('sendOp $res0', tag: tag);
     if (res0['code'] != 0) {
       LogUtil.w('sendOp return $res0', tag: tag);
-      throw Exception('activateOp failed');
+      throw Exception('sendOpWait failed');
     }
     final requestId = res0['requestId'];
     for (int i = 0; i < 60; i++) {
@@ -78,12 +78,12 @@ class Send {
         }
       } else if (res['code'] == 4) {
         LogUtil.d('failed $res', tag: tag);
-        throw Exception('activateOp failed');
+        break;
       } else if (res['code'] == 5) {
         LogUtil.d('notfound', tag: tag);
-        throw Exception('activateOp failed');
+        break;
       }
     }
-    throw Exception('activateOp failed');
+    throw Exception('sendOpWait $requestId failed');
   }
 }
