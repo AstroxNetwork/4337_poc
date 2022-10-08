@@ -23,6 +23,7 @@ abstract class _KeyDerivator {
   Uint8List deriveKey(Uint8List password);
 
   String get name;
+
   Map<String, dynamic> encode();
 }
 
@@ -228,7 +229,8 @@ class Wallet {
     final derivedMac = _generateMac(derivedKey, encryptedPrivateKey);
     if (derivedMac != crypto['mac']) {
       throw ArgumentError(
-          'Could not unlock wallet file. You either supplied the wrong password or the file is corrupted');
+        'Could not unlock wallet file. You either supplied the wrong password or the file is corrupted',
+      );
     }
 
     // We only support this mode at the moment

@@ -5,7 +5,6 @@ import 'dart:typed_data';
 import 'package:agent_dart/utils/string.dart';
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/ui/routes/routes.dart';
-import 'package:app/app/util/toast_util.dart';
 import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
@@ -33,12 +32,6 @@ class TransactionController extends BaseGetController {
   void onClose() {
     _timer.cancel();
     super.onClose();
-  }
-
-  void _setCheckTimer() {
-    _timer = Timer.periodic(const Duration(seconds: 5), (timer) {
-      _checkRecoveryRecords();
-    });
   }
 
   Future<void> _checkRecoveryRecords() async {
@@ -76,13 +69,11 @@ class TransactionController extends BaseGetController {
         EthereumAddress(Uint8List.fromList(hexToBytes(newAddress))),
         records.map((e) => e.toRecover()).toList(),
       );
-      Get.offAllNamed(Routes.signedPage);
     } catch (e, s) {
       LogUtil.e(e, stackTrace: s);
-      ToastUtil.show('Failed to finish recover.');
-      _setCheckTimer();
     }
     loadingStop();
+    Get.offAllNamed(Routes.signedPage);
   }
 }
 
