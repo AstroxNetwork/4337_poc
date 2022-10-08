@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:app/web3dart/crypto.dart';
@@ -63,25 +64,7 @@ class UserOperation {
     ];
   }
 
-  @override
-  String toString() {
-    return '''{
-    sender: $sender,
-    nonce: $nonce,
-    callGas: $callGas,
-    initCode: ${bytesToHex(initCode, include0x: true)},
-    callData: ${bytesToHex(callData, include0x: true)},
-    verificationGas: $verificationGas,
-    preVerificationGas: $preVerificationGas,
-    maxFeePerGas: $maxFeePerGas,
-    maxPriorityFeePerGas: $maxPriorityFeePerGas,
-    paymaster: $paymaster,
-    paymasterData: ${bytesToHex(paymasterData, include0x: true)},
-    signature: ${bytesToHex(signature, include0x: true)}
-    }''';
-  }
-
-  Map toMap() {
+  Map<String, Object?> toJson() {
     return {
       "sender": sender.hex,
       "nonce": nonce.toString(),
@@ -125,5 +108,10 @@ class UserOperation {
 
   void signWithSignature(EthereumAddress signAddress, Uint8List signature) {
     this.signature = signUserOpWithPersonalSign(signAddress, signature);
+  }
+
+  @override
+  String toString() {
+    return const JsonEncoder.withIndent('  ').convert(toJson());
   }
 }

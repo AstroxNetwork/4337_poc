@@ -15,7 +15,7 @@ class Send {
   );
 
   static Future<Map<String, dynamic>> sendOp(UserOperation op) async {
-    final body = jsonEncode(op.toMap());
+    final body = jsonEncode(op.toJson());
     final response = await _dio.put(bundlerUrl, data: body);
     return response.data;
   }
