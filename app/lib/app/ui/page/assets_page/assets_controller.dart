@@ -153,14 +153,16 @@ class AssetsController extends BaseGetController {
         );
       }
       if (sendCurrency.value.isNotEmpty) {
-        addActivity(ActivityModel(
-          date: DateTime.now(),
-          type: ActivityType.send,
-          address: toAddressStr,
-          count: amountDouble,
-          currency: sendCurrency.value,
-          txhash: txhash
-        ));
+        addActivity(
+          ActivityModel(
+            date: DateTime.now(),
+            type: ActivityType.send,
+            address: toAddressStr,
+            count: amountDouble,
+            currency: sendCurrency.value,
+            txhash: txhash,
+          ),
+        );
       }
       fetchBalance();
       Get.back();
@@ -185,15 +187,11 @@ class AssetsController extends BaseGetController {
     sendCurrency.value = value;
   }
 
-  Future<void> addActivity(ActivityModel model) {
-    return Future<void>(() {
-      var item = storage?.getItem(
-        Constant.KEY_ACTIVITIES,
-      ) as List<dynamic>?;
-      if (item == null) {
-        item = [];
-      }
-      return storage?.setItem(Constant.KEY_ACTIVITIES, [model.toJson(), ...item]);
-    });
+  Future<void> addActivity(ActivityModel model) async {
+    var item = storage?.getItem(
+      Constant.KEY_ACTIVITIES,
+    ) as List<dynamic>?;
+    item ??= [];
+    await storage?.setItem(Constant.KEY_ACTIVITIES, [model.toJson(), ...item]);
   }
 }

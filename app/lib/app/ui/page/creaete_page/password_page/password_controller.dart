@@ -31,29 +31,39 @@ class PasswordController extends BaseGetController {
   }
 
   Future<void> createAccount(String password) async {
+    final email = Get.arguments['email'];
+    if (email == null) {
+      ToastUtil.show('No email has been delivered.');
+      return;
+    }
+    final shouldUpdateAccount = Get.arguments['shouldUpdateAccount'] ?? true;
     loadingStart();
-    WalletContext.createAccount();
-    final walletJson = WalletContext.getInstance().toKeystore(password);
-    await sp.setString(WalletSp.WALLET_JSON, walletJson);
-    LogUtil.d("walletJson = $walletJson");
-    final address = WalletContext.getInstance().walletAddress.hexNo0x;
-    final params = {};
-    final email = Get.parameters['email'];
-    if (email != null) {
-      params['email'] = email;
-      params['wallet_address'] = address;
-      params['key'] = WalletContext.getInstance().getEoaAddress();
+    if (shouldUpdateAccount) {
+      WalletContext.createAccount();
+      final walletJson = WalletContext.getInstance().toKeystore(password);
+      await sp.setString(WalletSp.WALLET_JSON, walletJson);
+      LogUtil.d("walletJson = $walletJson");
+      final params = {
+        'email': email,
+        'wallet_address': WalletContext.getInstance().walletAddress.hexNo0x,
+        'key': WalletContext.getInstance().walletAddress.hex,
+      };
       await requestNetwork(
         Method.post,
         url: HttpApi.updateAccount,
         params: params,
         onSuccess: (data) {
-          loadingStop();
           sp.setString(WalletSp.EMAIL, email);
           Get.offAllNamed(Routes.homePage);
         },
-        onError: (_, __) => loadingStop(),
       );
+    } else {
+      final walletJson = WalletContext.getInstance().toKeystore(password);
+      await sp.setString(WalletSp.WALLET_JSON, walletJson);
+      LogUtil.d("walletJson = $walletJson");
+      sp.setString(WalletSp.EMAIL, email);
+      Get.offAllNamed(Routes.homePage);
     }
+    loadingStop();
   }
 }

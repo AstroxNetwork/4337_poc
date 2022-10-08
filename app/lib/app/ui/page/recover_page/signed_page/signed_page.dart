@@ -51,7 +51,13 @@ class SignedPage extends GetCommonView<SignedController> {
                   child: Button(
                     width: double.infinity,
                     height: 61,
-                    onPressed: () => Get.offNamed(Routes.passwordPage),
+                    onPressed: () => Get.offNamed(
+                      Routes.passwordPage,
+                      arguments: {
+                        'email': controller.email,
+                        'shouldUpdateAccount': false,
+                      },
+                    ),
                     data: 'Setup New Password',
                   ),
                 )

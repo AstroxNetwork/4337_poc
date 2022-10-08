@@ -28,7 +28,7 @@ class GuardiansController extends BaseGetController {
     fetchData();
   }
 
-  void fetchData() async {
+  Future<void> fetchData() async {
     try {
       await fetchGuardiansNameMapping();
       await fetchAddedGuardians();

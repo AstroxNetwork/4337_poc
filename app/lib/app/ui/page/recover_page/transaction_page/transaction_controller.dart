@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:agent_dart/utils/string.dart';
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/ui/routes/routes.dart';
+import 'package:app/app/wallet_sp.dart';
 import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
@@ -55,23 +56,17 @@ class TransactionController extends BaseGetController {
       data['requirements'] as Map<String, dynamic>,
     );
     if (requirements.hasPassed) {
-      final List<Map<String, dynamic>> recordsData = data['recoveryRecords']
-              ['recovery_records']
-          .cast<Map<String, dynamic>>();
-      final List<_Record> records = recordsData
-          .map(_Record.fromJson)
-          .where((e) => e.signature != null)
-          .toList();
-      if (records.length < requirements.min) {
+      final validRecords = records.where((e) => e.signature != null).toList();
+      if (validRecords.length < requirements.min) {
         return;
       }
-      records.sort((a, b) {
+      validRecords.sort((a, b) {
         final aBn = BigInt.parse(a.address);
         final bBn = BigInt.parse(b.address);
         return aBn.compareTo(bBn);
       });
       _timer.cancel();
-      _finishRecover(records);
+      _finishRecover(validRecords);
     }
   }
 
@@ -85,8 +80,15 @@ class TransactionController extends BaseGetController {
     } catch (e, s) {
       LogUtil.e(e, stackTrace: s);
     }
+    sp.setString(
+      WalletSp.WALLET_ADDRESS,
+      WalletContext.getInstance().walletAddress.hex,
+    );
     loadingStop();
-    Get.offAllNamed(Routes.signedPage);
+    Get.offAllNamed(
+      Routes.signedPage,
+      arguments: {'email': _arguments['email']},
+    );
   }
 }
 

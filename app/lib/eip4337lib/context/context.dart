@@ -21,7 +21,8 @@ class WalletContext {
   final Web3Client web3;
   final EthPrivateKey account; // 本地账户
 
-  late EthereumAddress walletAddress = EthereumAddress.fromHex(
+  EthereumAddress get walletAddress => _walletAddress;
+  late EthereumAddress _walletAddress = EthereumAddress.fromHex(
     generateWalletAddress(account.address, BigInt.zero),
   );
 
@@ -35,15 +36,17 @@ class WalletContext {
   }
 
   // 创建本地账户
-  static void createAccount([Web3Client? web3]) {
+  static WalletContext createAccount([Web3Client? web3]) {
     final privateKey = Web3Helper.generateKey();
     _instance = WalletContext(web3 ?? Web3Helper.client, privateKey);
+    return _instance!;
   }
 
   // 从keystore本地恢复
-  static void recoverKeystore(Web3Client web3, String json, String password) {
+  static WalletContext recoverKeystore(Web3Client web3, String json, String password) {
     final privateKey = Web3Helper.recoverWallet(json, password);
     _instance = WalletContext(web3, privateKey);
+    return _instance!;
   }
 
   // 替换本地账户
@@ -58,9 +61,10 @@ class WalletContext {
   // }
 
   // 从私钥恢复本地
-  static void recoverPrivateKey(Web3Client web3, String priKey) {
+  static WalletContext recoverPrivateKey(Web3Client web3, String priKey) {
     final privateKey = Web3Helper.recoverKeys(priKey);
     _instance = WalletContext(web3, privateKey);
+    return _instance!;
   }
 
   // 本地账户生成keystore，本地保存
@@ -80,7 +84,7 @@ class WalletContext {
     return body['data']['wallet_address'];
   }
 
-  Future<String> getWalletAddressByEmail(String email) async {
+  static Future<String> getWalletAddressByEmail(String email) async {
     Map params = {'email': email};
     final response = await Request.getWalletAddress(params);
     final body = response.data!;
@@ -90,7 +94,7 @@ class WalletContext {
   // 生成钱包地址，记录在context
   void setWalletAddress(String wallet) {
     //final wallet = generateWalletAddress(account.address, BigInt.zero);
-    walletAddress = EthereumAddress.fromHex(wallet);
+    _walletAddress = EthereumAddress.fromHex(wallet);
   }
 
   // // 生成钱包地址，记录在context
@@ -99,7 +103,10 @@ class WalletContext {
   //   walletAddress = EthereumAddress.fromHex(wallet);
   // }
 
-  String generateWalletAddress(EthereumAddress ownerAddress, BigInt salt) {
+  static String generateWalletAddress(
+    EthereumAddress ownerAddress,
+    BigInt salt,
+  ) {
     final walletAddress = EIP4337Lib.calculateWalletAddress(
       Goerli.entryPointAddress,
       ownerAddress,
