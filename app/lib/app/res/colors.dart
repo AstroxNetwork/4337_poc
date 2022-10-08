@@ -26,4 +26,5 @@ class ColorStyle {
   static const color_D8D8D8_62 = Color(0x9ED8D8D8);
   static const color_8F8F8F = Color(0xFF8F8F8F);
   static const color_DA8700_80 = Color(0xCCDA8700);
+  static const color_54A000 = Color(0xFF54A000);
 }

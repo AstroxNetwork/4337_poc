@@ -33,15 +33,17 @@ class TransactionItem extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(model, style: const TextStyle(fontSize: 16)),
-            const Padding(
-              padding: EdgeInsets.only(top: 4),
+            Padding(
+              padding: const EdgeInsets.only(top: 4),
               child: SizedBox(
                 width: 70,
                 child: Text(
-                  'waiting',
+                  isWaiting ? 'waiting' : 'signed',
                   style: TextStyle(
                     fontSize: 16,
-                    color: ColorStyle.color_FFAB21,
+                    color: isWaiting
+                        ? ColorStyle.color_FFAB21
+                        : ColorStyle.color_54A000,
                   ),
                 ),
               ),

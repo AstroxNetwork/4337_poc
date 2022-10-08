@@ -15,8 +15,8 @@ class TransactionPage extends GetCommonView<TransactionController> {
       child: ListView.builder(
         itemCount: controller.guardians.length,
         itemBuilder: (_, index) => TransactionItem(
-          model: controller.guardians[index],
-          isWaiting: true,
+          model: controller.guardians.keys.elementAt(index),
+          isWaiting: !controller.guardians.values.elementAt(index),
         ),
       ),
     );
@@ -25,8 +25,7 @@ class TransactionPage extends GetCommonView<TransactionController> {
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      // onWillPop: () async => false,
-      onWillPop: () async => true,
+      onWillPop: () async => false,
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         body: SafeArea(

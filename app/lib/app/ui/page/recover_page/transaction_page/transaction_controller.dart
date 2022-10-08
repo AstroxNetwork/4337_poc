@@ -15,7 +15,10 @@ class TransactionController extends BaseGetController {
   final Map<String, dynamic> _arguments = Get.arguments;
 
   late final String newAddress = _arguments['new_key'];
-  late final List<String> guardians = _arguments['selected'];
+  late final Map<String, bool> guardians = Map.fromIterable(
+    _arguments['selected'] as List<String>,
+    value: (_) => false,
+  );
 
   late Timer _timer;
 
@@ -38,6 +41,16 @@ class TransactionController extends BaseGetController {
     final result = await Request.fetchRecover({'new_key': newAddress});
     LogUtil.d(const JsonEncoder.withIndent('  ').convert(result.data!));
     final Map<String, dynamic> data = result.data!['data']!;
+    final List<Map<String, dynamic>> recordsData = data['recoveryRecords']
+            ['recovery_records']
+        .cast<Map<String, dynamic>>();
+    final records = recordsData.map(_Record.fromJson).toList();
+    for (final record in records) {
+      if (record.signature != null && guardians[record.address] == false) {
+        guardians[record.address] = true;
+        update();
+      }
+    }
     final requirements = _Requirements.fromJson(
       data['requirements'] as Map<String, dynamic>,
     );
