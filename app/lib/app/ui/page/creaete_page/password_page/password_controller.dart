@@ -10,7 +10,6 @@ import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class PasswordController extends BaseGetController {
   final passwordController = TextEditingController();
@@ -35,10 +34,7 @@ class PasswordController extends BaseGetController {
     loadingStart();
     WalletContext.createAccount();
     final walletJson = WalletContext.getInstance().toKeystore(password);
-    await Get.find<SharedPreferences>().setString(
-      WalletSp.WALLET_JSON,
-      walletJson,
-    );
+    await sp.setString(WalletSp.WALLET_JSON, walletJson);
     LogUtil.d("walletJson = $walletJson");
     final address = WalletContext.getInstance().walletAddress.hexNo0x;
     final params = {};
@@ -53,7 +49,7 @@ class PasswordController extends BaseGetController {
         params: params,
         onSuccess: (data) {
           loadingStop();
-          Get.find<SharedPreferences>().setString(WalletSp.EMAIL, email);
+          sp.setString(WalletSp.EMAIL, email);
           Get.offAllNamed(Routes.homePage);
         },
         onError: (_, __) => loadingStop(),

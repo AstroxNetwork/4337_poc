@@ -8,13 +8,11 @@ import 'package:app/eip4337lib/utils/helper.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginController extends BaseGetController {
   TextEditingController passwordController = TextEditingController(text: '');
 
   void onLogin() {
-    final sp = Get.find<SharedPreferences>();
     final email = sp.getString(WalletSp.EMAIL);
     final walletJson = sp.getString(WalletSp.WALLET_JSON);
     if (email == null ||

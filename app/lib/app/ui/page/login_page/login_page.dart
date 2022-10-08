@@ -17,7 +17,6 @@ import 'package:app/net/http_api.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class LoginPage extends GetCommonView<LoginController> {
   const LoginPage({super.key});
@@ -137,10 +136,7 @@ class LoginPage extends GetCommonView<LoginController> {
         if (res != null) {
           // cache authorization
           if (res[Constant.jwtToken] != null) {
-            Get.find<SharedPreferences>().setString(
-              Constant.accessToken,
-              res[Constant.jwtToken],
-            );
+            sp.setString(Constant.accessToken, res[Constant.jwtToken]);
             Get.toNamed(
               Routes.passwordPage,
               parameters: {'email': email},

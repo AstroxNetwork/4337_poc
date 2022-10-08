@@ -1,6 +1,8 @@
-import 'package:app/app/base/get/getx_controller_inject.dart';
-import 'package:get/get.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'getx_controller_inject.dart';
 
 abstract class GetCommonView<T extends BaseGetController>
     extends StatefulWidget {
@@ -11,6 +13,8 @@ abstract class GetCommonView<T extends BaseGetController>
   T get controller => GetInstance().find<T>(tag: tag);
 
   Object? get updateId => null;
+
+  SharedPreferences get sp => Get.find<SharedPreferences>();
 
   @protected
   Widget build(BuildContext context);

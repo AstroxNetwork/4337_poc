@@ -2,13 +2,13 @@ import 'package:app/app/http/request_repository.dart';
 import 'package:app/app/ui/widget/loading_widget.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/eip4337lib/context/context.dart';
-import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/ExceptionHandle.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/foundation.dart';
 import 'package:get/get.dart';
 import 'package:localstorage/localstorage.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 /// 基类 Controller
 class BaseGetController extends GetxController {
@@ -16,6 +16,7 @@ class BaseGetController extends GetxController {
   late final CancelToken _cancelToken = CancelToken();
   late RequestRepository request = Get.find<RequestRepository>();
 
+  SharedPreferences get sp => Get.find<SharedPreferences>();
   LocalStorage? storage;
 
   /// 初始化 [GetxController]，例如一些成员属性的初始化

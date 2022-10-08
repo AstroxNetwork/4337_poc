@@ -11,7 +11,6 @@ import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:app/app/ui/widget/trademark_widget.dart';
-import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -131,16 +130,12 @@ class AssetsPage extends GetCommonView<AssetsController> {
           return ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
-            itemBuilder: (_, index) {
-              LogUtil.d('yjk assets');
-              return AssetItem(
-                icon: controller.assets[index].icon,
-                count:
-                    controller.balanceMap[controller.assets[index].address] ??
-                        '0.0',
-                symbol: controller.assets[index].symbol,
-              );
-            },
+            itemBuilder: (_, index) => AssetItem(
+              icon: controller.assets[index].icon,
+              count: controller.balanceMap[controller.assets[index].address] ??
+                  '0.0',
+              symbol: controller.assets[index].symbol,
+            ),
             itemCount: controller.assets.length,
           );
         }),
