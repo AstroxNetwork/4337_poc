@@ -11,7 +11,9 @@ import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:get/get.dart';
 
 class RecoverController extends BaseGetController {
-  final Map<String, dynamic> _arguments = Get.arguments;
+  final Map<String, dynamic> _arguments =
+      Map<String, dynamic>.from(Get.arguments);
+
   late final String _email = _arguments['email'], _code = _arguments['code'];
   late final List<String> allData = _arguments['guardians'];
   final List<String> selectedData = [];

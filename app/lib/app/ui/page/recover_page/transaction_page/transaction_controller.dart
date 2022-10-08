@@ -13,7 +13,8 @@ import 'package:app/web3dart/credentials.dart';
 import 'package:get/get.dart';
 
 class TransactionController extends BaseGetController {
-  final Map<String, dynamic> _arguments = Get.arguments;
+  final Map<String, dynamic> _arguments =
+      Map<String, dynamic>.from(Get.arguments);
 
   late final String newAddress = _arguments['new_key'];
   late final Map<String, bool> guardians = Map.fromIterable(

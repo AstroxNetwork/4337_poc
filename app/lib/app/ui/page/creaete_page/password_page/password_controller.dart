@@ -31,12 +31,13 @@ class PasswordController extends BaseGetController {
   }
 
   Future<void> createAccount(String password) async {
-    final email = Get.arguments['email'];
+    final Map arguments = Map.from(Get.arguments ?? {});
+    final email = arguments['email'];
     if (email == null) {
       ToastUtil.show('No email has been delivered.');
       return;
     }
-    final shouldUpdateAccount = Get.arguments['shouldUpdateAccount'] ?? true;
+    final shouldUpdateAccount = arguments['shouldUpdateAccount'] ?? true;
     loadingStart();
     if (shouldUpdateAccount) {
       WalletContext.createAccount();
