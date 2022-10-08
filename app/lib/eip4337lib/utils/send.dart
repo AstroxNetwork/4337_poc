@@ -45,10 +45,10 @@ class Send {
   ) async {
     const String tag = 'sendOpWait';
     final res0 = await sendOp(op);
-    LogUtil.d('sendOp $res0', tag: tag);
+    LogUtil.d('[sendOpWait] $res0', tag: tag);
     if (res0['code'] != 0) {
-      LogUtil.w('sendOp return $res0', tag: tag);
-      throw Exception('sendOpWait failed');
+      LogUtil.e('[sendOpWait] return $res0', tag: tag);
+      throw Exception('[sendOpWait] failed ($res0)');
     }
     final requestId = res0['requestId'];
     for (int i = 0; i < 30; i++) {
@@ -60,30 +60,30 @@ class Send {
         throw Exception('Another OP participating.');
       }
       if (res['code'] == 0) {
-        LogUtil.d('pending...', tag: tag);
+        LogUtil.d('[sendOpWait] pending...', tag: tag);
       } else if (res['code'] == 2) {
-        LogUtil.d('processing...', tag: tag);
+        LogUtil.d('[sendOpWait] processing...', tag: tag);
       } else if (res['code'] == 3) {
         final hash = res["txHash"];
         for (int i = 0; i < 30; i++) {
           await Future.delayed(const Duration(seconds: 1));
           final receipt = await web3.getTransactionReceipt(hash);
           if (receipt?.status == true) {
-            LogUtil.d('tx: $hash has been confirmed', tag: tag);
+            LogUtil.d('[sendOpWait] TX ($hash) has been confirmed', tag: tag);
             return hash;
           } else {
-            LogUtil.d('tx receipt: $receipt', tag: tag);
+            LogUtil.d('[sendOpWait] TX receipt: $receipt', tag: tag);
             // throw(Exception('transaction failed'));
           }
         }
       } else if (res['code'] == 4) {
-        LogUtil.d('failed $res', tag: tag);
+        LogUtil.e('[sendOpWait] failed ($res)', tag: tag);
         break;
       } else if (res['code'] == 5) {
-        LogUtil.d('notfound', tag: tag);
+        LogUtil.e('[sendOpWait] not found ($res)', tag: tag);
         break;
       }
     }
-    throw Exception('sendOpWait $requestId failed');
+    throw Exception('[sendOpWait] $requestId failed: ($res0)');
   }
 }
