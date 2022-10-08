@@ -146,7 +146,7 @@ class WalletContext {
   }
 
   // 激活钱包
-  Future<void> activateWallet() async {
+  Future<String> activateWallet() async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final activateOp = EIP4337Lib.activateWalletOp(
       Goerli.entryPointAddress,
@@ -161,7 +161,7 @@ class WalletContext {
   }
 
   // 执行和sendOp
-  Future<void> _executeOperation(UserOperation op) async {
+  Future<String> _executeOperation(UserOperation op) async {
     final requestId = op.requestId(Goerli.entryPointAddress, Goerli.chainId);
     final signature = await account.signPersonalMessage(requestId);
     op.signWithSignature(account.address, signature);
@@ -180,12 +180,12 @@ class WalletContext {
       params: [op.toTuple()],
     );
     LogUtil.d('simulateValidation $response');
-    await Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
+    return Send.sendOpWait(web3, op, Goerli.entryPointAddress, Goerli.chainId);
     // add tx to localstorage
   }
 
   // 发送eth
-  Future<void> sendETH(EthereumAddress to, BigInt amount) async {
+  Future<String> sendETH(EthereumAddress to, BigInt amount) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await ETH(web3).transfer(
@@ -202,7 +202,7 @@ class WalletContext {
   }
 
   // 发送erc20
-  Future<void> sendERC20(
+  Future<String> sendERC20(
     EthereumAddress tokenAddress,
     EthereumAddress to,
     BigInt amount,
@@ -223,7 +223,7 @@ class WalletContext {
     return _executeOperation(op);
   }
 
-  Future<void> addGuardian(EthereumAddress guardianAddress) async {
+  Future<String> addGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(
@@ -240,7 +240,7 @@ class WalletContext {
     return _executeOperation(op);
   }
 
-  Future<void> removeGuardian(EthereumAddress guardianAddress) async {
+  Future<String> removeGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
     final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
     final op = await Guardian.walletContract(
