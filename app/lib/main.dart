@@ -5,6 +5,7 @@ import 'package:app/app/ui/page/login_page/login_binding.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/injection.dart';
 import 'package:app/app/util/platform_util.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
@@ -30,7 +31,9 @@ void main() {
       }
       runApp(const MyApp());
     },
-    (Object e, StackTrace s) {},
+    (Object e, StackTrace s) {
+      LogUtil.d('Uncaught exceptions: $e', stackTrace: s);
+    },
   );
 }
 
