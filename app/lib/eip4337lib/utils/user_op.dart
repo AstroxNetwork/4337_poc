@@ -5,7 +5,6 @@ import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/credentials.dart';
-import 'package:app/web3dart/crypto/formatting.dart';
 import 'package:app/web3dart/utils/length_tracking_byte_sink.dart';
 
 import '../entity/user_operation.dart';
@@ -111,17 +110,15 @@ Future<Uint8List> signUserOp(UserOperation op, EthereumAddress entryPoint,
   ]);
 }
 
-Uint8List uint8ListFromList(List<int> data) {
-  if (data is Uint8List) return data;
-
-  return Uint8List.fromList(data);
-}
-
-Future<Uint8List> packGuardiansSignByRequestId(Uint8List requestId, List<Uint8List> signatures, [String? walletAddress]) async{
+Future<Uint8List> packGuardiansSignByRequestId(
+  Uint8List requestId,
+  List<Uint8List> signatures, [
+  String? walletAddress,
+]) async {
   // msg
-  final prefix = '\u0019Ethereum Signed Message:\n32';
+  const prefix = '\u0019Ethereum Signed Message:\n32';
   final prefixBytes = ascii.encode(prefix);
-  final msg = uint8ListFromList(prefixBytes + requestId);
+  final msg = Uint8List.fromList(prefixBytes + requestId);
 
   // recover
   // var signerSet = Set();

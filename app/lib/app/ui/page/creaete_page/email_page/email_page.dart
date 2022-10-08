@@ -34,7 +34,7 @@ class EmailPage extends GetCommonView<EmailController> {
             width: 322,
             height: 55,
             hintText: 'code',
-            controller: controller.verifyController,
+            controller: controller.verifyTEC,
             focusNode: controller.verifyFocusNode,
           ),
         ),
@@ -117,7 +117,7 @@ class EmailPage extends GetCommonView<EmailController> {
                       Padding(
                         padding: const EdgeInsets.only(left: 4, top: 9),
                         child: Edit(
-                          controller: controller.emailController,
+                          controller: controller.emailTEC,
                           width: 322,
                           height: 55,
                           hintText: 'info@xxx.com',

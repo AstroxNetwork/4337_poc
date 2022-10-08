@@ -9,8 +9,8 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class EmailController extends BaseGetController {
-  final emailController = TextEditingController();
-  final verifyController = TextEditingController();
+  final emailTEC = TextEditingController();
+  final verifyTEC = TextEditingController();
   final verifyFocusNode = FocusNode();
   final RxInt countdown = 60.obs;
   final RxBool isVerification = false.obs;
@@ -23,7 +23,7 @@ class EmailController extends BaseGetController {
   }
 
   Future<void> sendVerification() async {
-    final email = emailController.text;
+    final email = emailTEC.text;
     if (!EmailValidator.validate(email)) {
       ToastUtil.show('Not a valid email address');
       return;

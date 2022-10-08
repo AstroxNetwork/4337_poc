@@ -34,7 +34,7 @@ class PasswordController extends BaseGetController {
 
   Future<void> createAccount(String password) async {
     loadingStart();
-    WalletContext.createAccount(Web3Helper.client);
+    WalletContext.createAccount();
     final walletJson = WalletContext.getInstance().toKeystore(password);
     await Get.find<SharedPreferences>().setString(
       WalletSp.WALLET_JSON,
