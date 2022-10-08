@@ -275,7 +275,7 @@ class WalletContext {
   }
 
   // getRecoverId
-  Future<void> recoverWallet(
+  Future<String> recoverWallet(
     EthereumAddress newOwner,
     List<Uint8List> signatures,
   ) async {
@@ -301,12 +301,11 @@ class WalletContext {
       params: [recoveryOp.toTuple()],
     );
     LogUtil.d('simulateValidation $response');
-    await Send.sendOpWait(
+    return Send.sendOpWait(
       web3,
       recoveryOp,
       Goerli.entryPointAddress,
       Goerli.chainId,
     );
-    // add tx to localstorage
   }
 }

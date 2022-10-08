@@ -1,13 +1,9 @@
 import 'package:app/eip4337lib/contracts/IContract.dart';
 import 'package:app/eip4337lib/contracts/simpleWallet.dart';
-import 'package:app/eip4337lib/utils/user_op.dart';
-import 'package:app/web3dart/contracts.dart';
-import 'package:app/web3dart/credentials.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/web3dart.dart';
 
 import 'dart:typed_data';
-import 'define/address.dart';
 import 'entity/user_operation.dart';
 
 final Create2Factory =
@@ -96,7 +92,9 @@ class EIP4337Lib {
   }
 
   static Future<BigInt> getNonce(
-      EthereumAddress walletAddress, Web3Client web3) async {
+    EthereumAddress walletAddress,
+    Web3Client web3,
+  ) async {
     final code = await web3.getCode(walletAddress);
     var nonce = BigInt.zero;
     if (code.isNotEmpty) {
