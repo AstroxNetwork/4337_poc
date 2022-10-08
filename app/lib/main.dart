@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/ui/page/login_page/login_binding.dart';
 import 'package:app/app/ui/routes/routes.dart';
@@ -8,20 +10,28 @@ import 'package:flutter/services.dart';
 import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:get/get_navigation/src/root/get_material_app.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await Injection.init();
-  if (PlatformUtil.isAndroid) {
-    SystemChrome.setSystemUIOverlayStyle(
-      const SystemUiOverlayStyle(
-        statusBarColor: Colors.transparent,
-        statusBarBrightness: Brightness.dark,
-        statusBarIconBrightness: Brightness.dark,
-        systemNavigationBarIconBrightness: Brightness.dark,
-      ),
-    );
-  }
-  runApp(const MyApp());
+void main() {
+  runZonedGuarded<void>(
+    () async {
+      WidgetsFlutterBinding.ensureInitialized();
+      await Injection.init();
+      SmartDialog.config.loading = SmartConfigLoading(
+        awaitOverType: SmartAwaitOverType.dialogAppear,
+      );
+      if (PlatformUtil.isAndroid) {
+        SystemChrome.setSystemUIOverlayStyle(
+          const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarBrightness: Brightness.dark,
+            statusBarIconBrightness: Brightness.dark,
+            systemNavigationBarIconBrightness: Brightness.dark,
+          ),
+        );
+      }
+      runApp(const MyApp());
+    },
+    (Object e, StackTrace s) {},
+  );
 }
 
 class MyApp extends StatefulWidget {
