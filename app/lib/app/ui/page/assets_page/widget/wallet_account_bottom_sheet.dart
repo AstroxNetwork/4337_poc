@@ -94,6 +94,9 @@ class WalletAccountBottomSheet extends GetCommonView<AssetsController> {
   }
 
   onLogOut() {
-    Get.offAllNamed(Routes.loginPage);
+    Get.offAllNamed(
+      Routes.loginPage,
+      arguments: {'showPasswordsImmediately': false},
+    );
   }
 }

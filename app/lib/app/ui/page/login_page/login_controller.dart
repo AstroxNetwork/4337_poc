@@ -10,7 +10,19 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class LoginController extends BaseGetController {
+  final bool showPasswordsImmediately =
+      Get.arguments?['showPasswordsImmediately'] ?? true;
   TextEditingController passwordController = TextEditingController(text: '');
+
+  @override
+  void onInit() {
+    super.onInit();
+    if (showPasswordsImmediately && sp.getString(WalletSp.EMAIL) != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        onLogin();
+      });
+    }
+  }
 
   void onLogin() {
     final email = sp.getString(WalletSp.EMAIL);
@@ -35,6 +47,9 @@ class LoginController extends BaseGetController {
     try {
       WalletContext.recoverKeystore(Web3Helper.client, walletJson, password);
       Get.offAllNamed(Routes.homePage);
+    } on ArgumentError catch (e, s) {
+      LogUtil.w(e, stackTrace: s);
+      ToastUtil.show(e.message.toString());
     } catch (e) {
       LogUtil.d('err = $e');
       ToastUtil.show(e.toString());
