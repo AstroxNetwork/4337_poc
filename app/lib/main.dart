@@ -29,6 +29,7 @@ void main() {
           ),
         );
       }
+      _hideKeyboard();
       runApp(const MyApp());
     },
     (Object e, StackTrace s) {
@@ -57,9 +58,7 @@ class _MyAppState extends State<MyApp> {
       scrollBehavior: const _ScrollBehavior(),
       builder: FlutterSmartDialog.init(
         builder: (_, Widget? child) => GestureDetector(
-          onTap: () => SystemChannels.textInput
-              .invokeMethod('TextInput.hide')
-              .catchError((_) {}),
+          onTap: _hideKeyboard,
           child: child,
         ),
       ),
@@ -78,4 +77,8 @@ class _ScrollBehavior extends MaterialScrollBehavior {
   ) {
     return child;
   }
+}
+
+void _hideKeyboard() {
+  SystemChannels.textInput.invokeMethod('TextInput.hide').catchError((_) {});
 }
