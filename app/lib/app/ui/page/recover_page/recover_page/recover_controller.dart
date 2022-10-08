@@ -32,7 +32,8 @@ class RecoverController extends BaseGetController {
       ToastUtil.show('Select more guardians before send request.');
       return;
     }
-    final selected = selectedData.toList();
+    final selected = selectedData.toList()
+      ..sort((a, b) => BigInt.parse(a).compareTo(BigInt.parse(b)));
     loadingStart();
     try {
       final newOwner = WalletContext.getInstance().account.address;

@@ -73,7 +73,7 @@ class Routes {
     ),
     GetPage(
       name: signedPage,
-      page: () => SignedPage(),
+      page: () => const SignedPage(),
       binding: SignedBinding(),
     ),
     GetPage(

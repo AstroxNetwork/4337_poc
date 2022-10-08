@@ -36,7 +36,6 @@ class LoginController extends BaseGetController {
     loadingStart();
     try {
       WalletContext.recoverKeystore(Web3Helper.client, walletJson, password);
-      WalletContext.getInstance().setWalletAddressAutomatic();
       Get.offAllNamed(Routes.homePage);
     } catch (e) {
       LogUtil.d('err = $e');

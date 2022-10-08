@@ -1,5 +1,4 @@
 import 'dart:async';
-import 'dart:typed_data';
 
 import 'package:app/eip4337lib/EIP4337Lib.dart';
 import 'package:app/eip4337lib/backend/request.dart';
@@ -21,7 +20,10 @@ class WalletContext {
 
   final Web3Client web3;
   final EthPrivateKey account; // 本地账户
-  EthereumAddress? walletAddress;
+
+  late EthereumAddress walletAddress = EthereumAddress.fromHex(
+    generateWalletAddress(account.address, BigInt.zero),
+  );
 
   static WalletContext? _instance; // 记录本地账户
 
@@ -91,11 +93,11 @@ class WalletContext {
     walletAddress = EthereumAddress.fromHex(wallet);
   }
 
-  // 生成钱包地址，记录在context
-  void setWalletAddressAutomatic() {
-    final wallet = generateWalletAddress(account.address, BigInt.zero);
-    walletAddress = EthereumAddress.fromHex(wallet);
-  }
+  // // 生成钱包地址，记录在context
+  // void setWalletAddressAutomatic() {
+  //   final wallet = generateWalletAddress(account.address, BigInt.zero);
+  //   walletAddress = EthereumAddress.fromHex(wallet);
+  // }
 
   String generateWalletAddress(EthereumAddress ownerAddress, BigInt salt) {
     final walletAddress = EIP4337Lib.calculateWalletAddress(
@@ -110,7 +112,7 @@ class WalletContext {
 
   // 取得eth余额
   Future<double> getEthBalance() async {
-    final amount = await web3.getBalance(walletAddress!);
+    final amount = await web3.getBalance(walletAddress);
     return amount.getValueInUnit(EtherUnit.ether);
   }
 
@@ -140,7 +142,7 @@ class WalletContext {
 
   // walletaddress是否init
   Future<bool> isWalletContract() async {
-    final res = await web3.getCode(walletAddress!);
+    final res = await web3.getCode(walletAddress);
     return res.isNotEmpty;
     // return res.isNotEmpty ? "contract" : "eoa";
   }
@@ -187,9 +189,9 @@ class WalletContext {
   // 发送eth
   Future<String> sendETH(EthereumAddress to, BigInt amount) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
-    final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
+    final nonce = await EIP4337Lib.getNonce(walletAddress, web3);
     final op = await ETH(web3).transfer(
-      walletAddress!,
+      walletAddress,
       nonce,
       Goerli.entryPointAddress,
       Goerli.paymasterAddress,
@@ -208,10 +210,10 @@ class WalletContext {
     BigInt amount,
   ) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
-    final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
+    final nonce = await EIP4337Lib.getNonce(walletAddress, web3);
     final contract = DeployedContract(ERC20ABI, tokenAddress);
     final op = await ERC20(web3, contract).transfer(
-      walletAddress!,
+      walletAddress,
       nonce,
       Goerli.entryPointAddress,
       Goerli.paymasterAddress,
@@ -225,10 +227,10 @@ class WalletContext {
 
   Future<String> addGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
-    final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
+    final nonce = await EIP4337Lib.getNonce(walletAddress, web3);
     final op = await Guardian.walletContract(
       web3,
-      walletAddress!,
+      walletAddress,
     ).grantGuardianRequest(
       nonce,
       guardianAddress,
@@ -242,10 +244,10 @@ class WalletContext {
 
   Future<String> removeGuardian(EthereumAddress guardianAddress) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
-    final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
+    final nonce = await EIP4337Lib.getNonce(walletAddress, web3);
     final op = await Guardian.walletContract(
       web3,
-      walletAddress!,
+      walletAddress,
     ).revokeGuardianRequest(
       nonce,
       guardianAddress,
@@ -259,10 +261,10 @@ class WalletContext {
 
   Future<UserOperation> transferOwner(EthereumAddress newOwner) async {
     final currentFee = getGasPriceBI() * Goerli.multiplier;
-    final nonce = await EIP4337Lib.getNonce(walletAddress!, web3);
+    final nonce = await EIP4337Lib.getNonce(walletAddress, web3);
     final op = await Guardian.walletContract(
       web3,
-      walletAddress!,
+      walletAddress,
     ).transferOwner(
       nonce,
       newOwner,

@@ -24,8 +24,8 @@ class BaseGetController extends GetxController {
   void onInit() {
     super.onInit();
     try {
-      var hex = WalletContext.getInstance().walletAddress?.hex;
-      if (hex != null && hex.isNotEmpty) {
+      var hex = WalletContext.getInstance().walletAddress.hex;
+      if (hex.isNotEmpty) {
         storage = LocalStorage(hex);
       }
     } catch (err) {}

@@ -13,9 +13,9 @@ class TransactionPage extends GetCommonView<TransactionController> {
     return Padding(
       padding: const EdgeInsets.only(top: 20),
       child: ListView.builder(
-        itemCount: controller.guardians.entries.length,
+        itemCount: controller.guardians.length,
         itemBuilder: (_, index) => TransactionItem(
-          model: controller.guardians.keys.elementAt(index),
+          model: controller.guardians[index],
           isWaiting: true,
         ),
       ),

@@ -66,7 +66,7 @@ class GuardiansController extends BaseGetController {
 
     final params = {};
     params['wallet_address'] =
-        WalletContext.getInstance().walletAddress?.hexNo0x;
+        WalletContext.getInstance().walletAddress.hexNo0x;
     params['guardian'] = address;
     loadingStart();
     try {
@@ -110,7 +110,7 @@ class GuardiansController extends BaseGetController {
   Future fetchGuardians() async {
     var params = {};
     params['wallet_address'] =
-        WalletContext.getInstance().walletAddress?.hexNo0x;
+        WalletContext.getInstance().walletAddress.hexNo0x;
     requestNetwork<List<dynamic>>(
       Method.post,
       url: HttpApi.getAccountGuardian,
@@ -188,7 +188,7 @@ class GuardiansController extends BaseGetController {
     addedGuardian.removeWhere((element) => element.address == address);
     var params = {};
     params['wallet_address'] =
-        WalletContext.getInstance().walletAddress?.hexNo0x;
+        WalletContext.getInstance().walletAddress.hexNo0x;
     params['guardian'] = address;
     loadingStart();
     try {

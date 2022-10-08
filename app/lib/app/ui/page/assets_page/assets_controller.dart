@@ -50,7 +50,7 @@ class AssetsController extends BaseGetController {
     userModel = UserModel(
       name: 'Soul Wallet',
       avatar: '',
-      address: WalletContext.getInstance().walletAddress?.hex ?? '',
+      address: WalletContext.getInstance().walletAddress.hex,
     );
     generateJazzIcon();
     fetchBalance();
@@ -120,7 +120,7 @@ class AssetsController extends BaseGetController {
   void generateJazzIcon() async {
     Future(() {
       jazziconData.value = Jazzicon.getJazziconData(60,
-          address: WalletContext.getInstance().walletAddress?.hex);
+          address: WalletContext.getInstance().walletAddress.hex);
     });
   }
 

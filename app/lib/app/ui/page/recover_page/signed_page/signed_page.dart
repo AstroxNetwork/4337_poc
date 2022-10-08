@@ -5,10 +5,11 @@ import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
 import 'package:get/get.dart';
 
 class SignedPage extends GetCommonView<SignedController> {
+  const SignedPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -23,7 +24,7 @@ class SignedPage extends GetCommonView<SignedController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Align(
+                const Align(
                   alignment: Alignment.topCenter,
                   child: TopBar(),
                 ),
@@ -50,7 +51,7 @@ class SignedPage extends GetCommonView<SignedController> {
                   child: Button(
                     width: double.infinity,
                     height: 61,
-                    onPressed: () => Get.toNamed(Routes.passwordPage),
+                    onPressed: () => Get.offNamed(Routes.passwordPage),
                     data: 'Setup New Password',
                   ),
                 )

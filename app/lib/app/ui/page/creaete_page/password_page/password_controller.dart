@@ -5,7 +5,6 @@ import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/app/wallet_sp.dart';
 import 'package:app/eip4337lib/context/context.dart';
-import 'package:app/eip4337lib/utils/helper.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
@@ -41,8 +40,7 @@ class PasswordController extends BaseGetController {
       walletJson,
     );
     LogUtil.d("walletJson = $walletJson");
-    WalletContext.getInstance().setWalletAddressAutomatic();
-    final address = WalletContext.getInstance().walletAddress?.hexNo0x;
+    final address = WalletContext.getInstance().walletAddress.hexNo0x;
     final params = {};
     final email = Get.parameters['email'];
     if (email != null) {
