@@ -2,15 +2,12 @@ import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';
 import 'package:app/app/ui/page/recover_page/recover_page/widget/recover_item.dart';
-import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 
 class RecoverPage extends GetCommonView<RecoverController> {
-  RecoverPage({super.key});
+  const RecoverPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +23,9 @@ class RecoverPage extends GetCommonView<RecoverController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
+                const Align(
                   alignment: Alignment.topCenter,
-                  child: TopBar(
-                    needBack: true,
-                  ),
+                  child: TopBar(needBack: true),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -40,7 +35,8 @@ class RecoverPage extends GetCommonView<RecoverController> {
                         const Padding(
                           padding: EdgeInsets.only(top: 25),
                           child: Text(
-                            'Request more than 50% of the Guardians to Sign Transaction',
+                            'Request more than 50% of the Guardians to '
+                            'Sign Transaction',
                             style: TextStyle(
                               fontSize: 28,
                               fontWeight: FontWeight.w500,
@@ -50,7 +46,8 @@ class RecoverPage extends GetCommonView<RecoverController> {
                         const Padding(
                           padding: EdgeInsets.only(top: 9),
                           child: Text(
-                            'Once the guardian signs the transaction, the wallet will recover immediately.',
+                            'Once the guardian signs the transaction, '
+                            'the wallet will recover immediately.',
                             style: TextStyle(
                               fontSize: 18,
                               color: ColorStyle.color_black_60,
@@ -60,19 +57,18 @@ class RecoverPage extends GetCommonView<RecoverController> {
                         ListView.separated(
                           shrinkWrap: true,
                           physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (_, index) {
-                            return RecoverItem(
-                              model: controller.allData[index],
-                            );
-                          },
+                          itemBuilder: (_, index) => RecoverItem(
+                            model: controller.allData[index],
+                          ),
                           itemCount: controller.allData.length,
                           separatorBuilder: (_, index) {
-                            return index != controller.allData.length
-                                ? const Divider(
-                                    height: 1,
-                                    color: ColorStyle.color_80979797,
-                                  )
-                                : Container();
+                            if (controller.allData.length == index) {
+                              return const SizedBox.shrink();
+                            }
+                            return const Divider(
+                              height: 1,
+                              color: ColorStyle.color_80979797,
+                            );
                           },
                         ),
                       ],
@@ -95,7 +91,7 @@ class RecoverPage extends GetCommonView<RecoverController> {
                               ),
                             ),
                             TextSpan(
-                              text: ' ${controller.selectedData.length} ',
+                              text: ' ${controller.requiredGuardians} ',
                               style: const TextStyle(
                                 fontSize: 18,
                                 color: ColorStyle.color_black_60,
@@ -117,10 +113,7 @@ class RecoverPage extends GetCommonView<RecoverController> {
                         child: Button(
                           width: double.infinity,
                           height: 61,
-                          onPressed: () => Get.toNamed(
-                            Routes.transactionPage,
-                            arguments: controller.selectedData,
-                          ),
+                          onPressed: () => controller.startTransaction(),
                           data: 'Send Request',
                         ),
                       ),

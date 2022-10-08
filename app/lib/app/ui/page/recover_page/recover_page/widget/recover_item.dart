@@ -1,5 +1,4 @@
 import 'package:app/app/base/get/get_common_view.dart';
-import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';
 import 'package:app/app/ui/widget/address_text.dart';
@@ -8,9 +7,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class RecoverItem extends GetCommonView<RecoverController> {
-  GuardianModel model;
+  const RecoverItem({super.key, required this.model});
 
-  RecoverItem({super.key, required this.model});
+  final String model;
 
   @override
   Widget build(BuildContext context) {
@@ -21,36 +20,19 @@ class RecoverItem extends GetCommonView<RecoverController> {
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 3, top: 20, bottom: 20),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    model.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      color: ColorStyle.color_black_80,
-                      fontWeight: FontWeight.w700,
-                    ),
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.only(left: 3, top: 20, bottom: 20),
+                child: AddressText(
+                  model,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    color: ColorStyle.color_black_80,
+                    fontWeight: FontWeight.w700,
                   ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 4),
-                    child: SizedBox(
-                      width: 70,
-                      child: AddressText(
-                        model.address,
-                        style: const TextStyle(
-                          fontSize: 12,
-                          color: ColorStyle.color_black_40,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
+                ),
               ),
             ),
-            const Spacer(),
             CostomCheckBox(
               size: 25,
               isChecked: controller.selectedData.contains(model),

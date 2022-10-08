@@ -61,16 +61,16 @@ class GuardiansController extends BaseGetController {
     );
     isAdding = true;
     guardianNameMapping[address] = name;
-    LogUtil.d('setItem guardianNameMapping = ${guardianNameMapping}');
+    LogUtil.d('setItem guardianNameMapping = $guardianNameMapping');
     await storage?.setItem(Constant.KEY_GUARDIAN_NAME_MAP, guardianNameMapping);
 
-    var params = Map();
+    final params = {};
     params['wallet_address'] =
         WalletContext.getInstance().walletAddress?.hexNo0x;
     params['guardian'] = address;
     loadingStart();
     try {
-      var ethereumAddress = EthereumAddress.fromHex(address);
+      final ethereumAddress = EthereumAddress.fromHex(address);
       await WalletContext.getInstance().addGuardian(ethereumAddress);
       await requestNetwork<Object?>(
         Method.post,
@@ -124,13 +124,13 @@ class GuardiansController extends BaseGetController {
           }
         });
         realGuardians.clear();
-        guardians.forEach((element) {
+        for (var element in guardians) {
           var guardianModel = GuardianModel(
             name: guardianNameMapping[element] ?? '',
             address: element,
           );
           realGuardians.add(guardianModel);
-        });
+        }
         addedGuardian.removeWhere(
           (element) => guardians.contains(element.address),
         );
@@ -144,30 +144,30 @@ class GuardiansController extends BaseGetController {
   }
 
   Future fetchAddedGuardians() async {
-    return Future(() {
-      var item = storage?.getItem(
-        Constant.KEY_ADDED_GUARDIANS,
-      ) as List<dynamic>?;
-      LogUtil.d('fetchAddedGuardians $item');
-      addedGuardian.clear();
-      if (item != null) {
-        item.forEach((element) {
-          addedGuardian.add(GuardianModel.fromJson(element));
-        });
+    final item = storage?.getItem(
+      Constant.KEY_ADDED_GUARDIANS,
+    ) as List<dynamic>?;
+    LogUtil.d('fetchAddedGuardians $item');
+    addedGuardian.clear();
+    if (item != null) {
+      for (var element in item) {
+        addedGuardian.add(GuardianModel.fromJson(element));
       }
-      datas.addAll(addedGuardian);
-    });
+    }
+    datas.addAll(addedGuardian);
   }
 
   Future fetchGuardiansNameMapping() async {
     return Future(() {
-      var item = storage?.getItem(
+      final item = storage?.getItem(
         Constant.KEY_GUARDIAN_NAME_MAP,
       ) as Map<String, dynamic>?;
       LogUtil.d('fetchGuardiansNameMapping $item');
-      item?.forEach((key, value) {
-        guardianNameMapping[key] = value;
-      });
+      if (item != null) {
+        item.forEach((key, value) {
+          guardianNameMapping[key] = value;
+        });
+      }
     });
   }
 
@@ -175,7 +175,7 @@ class GuardiansController extends BaseGetController {
     LogUtil.d('GuardiansItem onItemClick ${model.toJson()}');
     Get.toNamed(Routes.guardianPage, arguments: model)?.then((value) {
       if (value is String && value.isNotEmpty) {
-        removeGuardian(value as String);
+        removeGuardian(value);
         fetchData();
       }
     });

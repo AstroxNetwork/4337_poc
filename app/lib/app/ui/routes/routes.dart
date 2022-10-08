@@ -1,27 +1,29 @@
-import 'package:app/app/ui/page/creaete_page/password_page/password_binding.dart';
-import 'package:app/app/ui/page/creaete_page/password_page/password_page.dart';
-import 'package:app/app/ui/page/guardian_page/guardian_binding.dart';
-import 'package:app/app/ui/page/guardian_page/guardian_page.dart';
-import 'package:app/app/ui/page/help_page/help_binding.dart';
-import 'package:app/app/ui/page/help_page/help_page.dart';
-import 'package:app/app/ui/page/home_page/home_binding.dart';
-import 'package:app/app/ui/page/home_page/home_page.dart';
-import 'package:app/app/ui/page/login_page/login_binding.dart';
-import 'package:app/app/ui/page/login_page/login_page.dart';
-import 'package:app/app/ui/page/recover_page/recover_page/recover_binding.dart';
-import 'package:app/app/ui/page/recover_page/recover_page/recover_page.dart';
-import 'package:app/app/ui/page/recover_page/signed_page/signed_binding.dart';
-import 'package:app/app/ui/page/recover_page/signed_page/signed_page.dart';
-import 'package:app/app/ui/page/recover_page/transaction_page/transaction_binding.dart';
-import 'package:app/app/ui/page/recover_page/transaction_page/transaction_page.dart';
-import 'package:app/app/ui/page/scan_page/scan_page.dart';
 import 'package:get/get_navigation/src/routes/get_route.dart';
 
+import '../page/creaete_page/password_page/password_binding.dart';
+import '../page/creaete_page/password_page/password_page.dart';
 import '../page/debug_page/debug_binding.dart';
 import '../page/debug_page/debug_page.dart';
+import '../page/guardian_page/guardian_binding.dart';
+import '../page/guardian_page/guardian_page.dart';
+import '../page/help_page/help_binding.dart';
+import '../page/help_page/help_page.dart';
+import '../page/home_page/home_binding.dart';
+import '../page/home_page/home_page.dart';
+import '../page/login_page/login_binding.dart';
+import '../page/login_page/login_page.dart';
+import '../page/recover_page/recover_page/recover_binding.dart';
+import '../page/recover_page/recover_page/recover_page.dart';
+import '../page/recover_page/signed_page/signed_binding.dart';
+import '../page/recover_page/signed_page/signed_page.dart';
+import '../page/recover_page/transaction_page/transaction_binding.dart';
+import '../page/recover_page/transaction_page/transaction_page.dart';
 import '../page/scan_page/scan_binding.dart';
+import '../page/scan_page/scan_page.dart';
 
-abstract class Routes {
+class Routes {
+  const Routes._();
+
   static const String debugPage = '/debug';
   static const String loginPage = '/login';
   static const String passwordPage = '/password';
@@ -40,9 +42,10 @@ abstract class Routes {
       binding: DebugBinding(),
     ),
     GetPage(
-        name: loginPage,
-        page: () => const LoginPage(),
-        binding: LoginBinding()),
+      name: loginPage,
+      page: () => const LoginPage(),
+      binding: LoginBinding(),
+    ),
     GetPage(
       name: passwordPage,
       page: () => const PasswordPage(),
@@ -60,12 +63,12 @@ abstract class Routes {
     ),
     GetPage(
       name: recoverPage,
-      page: () => RecoverPage(),
+      page: () => const RecoverPage(),
       binding: RecoverBinding(),
     ),
     GetPage(
       name: transactionPage,
-      page: () => TransactionPage(),
+      page: () => const TransactionPage(),
       binding: TransactionBinding(),
     ),
     GetPage(

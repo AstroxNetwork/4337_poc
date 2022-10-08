@@ -1,7 +1,7 @@
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/model/data_model.dart';
 import 'package:app/app/res/colors.dart';
-import 'package:app/app/ui/page/recover_page/recover_controller.dart';
+import 'package:app/app/ui/page/recover_page/recover_page/recover_controller.dart';
 import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/costom_checkbox.dart';
 import 'package:flutter/cupertino.dart';

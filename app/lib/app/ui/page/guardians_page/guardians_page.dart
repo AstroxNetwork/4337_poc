@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class GuardiansPage extends GetCommonView<GuardiansController> {
-  GuardiansPage({super.key});
+  const GuardiansPage({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -26,11 +26,9 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Align(
+                const Align(
                   alignment: Alignment.topCenter,
-                  child: TopBar(
-                    needInfo: true,
-                  ),
+                  child: TopBar(needInfo: true),
                 ),
                 Expanded(
                   child: SingleChildScrollView(
@@ -62,13 +60,12 @@ class GuardiansPage extends GetCommonView<GuardiansController> {
                             shrinkWrap: true,
                             physics: const NeverScrollableScrollPhysics(),
                             itemBuilder: (_, index) {
+                              final model = controller.datas[index];
                               return GuardiansItem(
-                                model: controller.datas[index],
-                                isAdded: controller
-                                    .isAdded(controller.datas[index].address),
-                                onItemClick: (model) {
-                                  controller.onGuardianItemClick(model);
-                                },
+                                model: model,
+                                isAdded: controller.isAdded(model.address),
+                                onItemClick: () =>
+                                    controller.onGuardianItemClick(model),
                               );
                             },
                             itemCount: controller.datas.length,
