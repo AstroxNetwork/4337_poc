@@ -15,4 +15,5 @@ class Constant {
   // localstorage key
   static final String KEY_ADDED_GUARDIANS = 'added_guardians';
   static final String KEY_GUARDIAN_NAME_MAP = 'guardian_name_map';
+  static final String KEY_ACTIVITIES = 'trade_activities';
 }

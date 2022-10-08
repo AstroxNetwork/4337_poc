@@ -8,6 +8,7 @@ import 'package:app/app/ui/page/assets_page/widget/activate_wallet_bottom_sheet.
 import 'package:app/app/ui/page/assets_page/widget/receiving_tokens_bottom_sheet.dart';
 import 'package:app/app/ui/page/assets_page/widget/without_wallet_dialog.dart';
 import 'package:app/app/util/toast_util.dart';
+import 'package:app/constant.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/define/address.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
@@ -137,18 +138,29 @@ class AssetsController extends BaseGetController {
     loadingStart();
     try {
       final toAddress = EthereumAddress.fromHex(toAddressStr);
-      var amountStr = tokenStr;
-      final amount = BigInt.from(double.parse(amountStr) * pow(10, 18));
+      var amountDouble = double.parse(tokenStr);
+      final amount = BigInt.from(amountDouble * pow(10, 18));
+      String txhash = '';
       LogUtil.d('sendTokens $sendCurrency $toAddress, $amount');
       if (sendCurrency.value == 'ETH') {
-        await WalletContext.getInstance().sendETH(toAddress, amount);
+        txhash = await WalletContext.getInstance().sendETH(toAddress, amount);
       } else if (sendCurrency.value == 'WETH') {
         final tokenAddress = Goerli.wethAddress;
-        await WalletContext.getInstance().sendERC20(
+        txhash = await WalletContext.getInstance().sendERC20(
           tokenAddress,
           toAddress,
           amount,
         );
+      }
+      if (sendCurrency.value.isNotEmpty) {
+        addActivity(ActivityModel(
+          date: DateTime.now(),
+          type: ActivityType.send,
+          address: toAddressStr,
+          count: amountDouble,
+          currency: sendCurrency.value,
+          txhash: txhash
+        ));
       }
       fetchBalance();
       Get.back();
@@ -171,5 +183,17 @@ class AssetsController extends BaseGetController {
 
   void changeCurrency(String value) {
     sendCurrency.value = value;
+  }
+
+  Future<void> addActivity(ActivityModel model) {
+    return Future<void>(() {
+      var item = storage?.getItem(
+        Constant.KEY_ACTIVITIES,
+      ) as List<dynamic>?;
+      if (item == null) {
+        item = [];
+      }
+      return storage?.setItem(Constant.KEY_ACTIVITIES, [model.toJson(), ...item]);
+    });
   }
 }

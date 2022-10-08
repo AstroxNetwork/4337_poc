@@ -28,9 +28,7 @@ class BaseGetController extends GetxController {
       if (hex != null && hex.isNotEmpty) {
         storage = LocalStorage(hex);
       }
-    } catch (err) {
-      LogUtil.e(err);
-    }
+    } catch (err) {}
 
     _isLoading.listen((isLoading) {
       if (isLoading) {
@@ -109,13 +107,6 @@ class BaseGetController extends GetxController {
         _onError(code, msg, onError);
       },
     );
-    // return HttpUtils.instance.requestPost<T>(url, params: params, onSuccess: (T? res) {
-    //   loadingStop();
-    //   onSuccess?.call(res);
-    // }, onError: (int code, String msg) {
-    //   loadingStop();
-    //   onError?.call(code, msg);
-    // });
   }
 
   void _onError(int code, String msg, NetErrorCallback? onError) {
@@ -126,34 +117,5 @@ class BaseGetController extends GetxController {
     if (onError != null) {
       onError(code, msg);
     }
-  }
-
-  void requestPost<T>(
-    String url, {
-    NetSuccessCallback<T?>? onSuccess,
-    NetErrorCallback? onError,
-    Object? params,
-  }) {
-    loadingStart();
-    DioUtils.instance.requestNetwork(
-      Method.post,
-      url,
-      params: params,
-      onSuccess: (T? res) {
-        loadingStop();
-        onSuccess?.call(res);
-      },
-      onError: (int code, String msg) {
-        loadingStop();
-        onError?.call(code, msg);
-      },
-    );
-    // HttpUtils.instance.requestPost<T>(url, params: params, onSuccess: (T? res) {
-    //   loadingStop();
-    //   onSuccess?.call(res);
-    // }, onError: (int code, String msg) {
-    //   loadingStop();
-    //   onError?.call(code, msg);
-    // });
   }
 }

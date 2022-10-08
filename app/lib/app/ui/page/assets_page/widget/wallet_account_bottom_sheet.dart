@@ -94,7 +94,6 @@ class WalletAccountBottomSheet extends GetCommonView<AssetsController> {
   }
 
   onLogOut() {
-    // todo: 退出账号
     Get.offAllNamed(Routes.loginPage);
   }
 }

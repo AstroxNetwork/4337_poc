@@ -10,6 +10,7 @@ class ActivityModel extends DataModel {
     required this.address,
     required this.count,
     required this.currency,
+    required this.txhash,
   });
 
   factory ActivityModel.fromJson(Map<String, dynamic> json) =>
@@ -20,6 +21,7 @@ class ActivityModel extends DataModel {
   final String address;
   final double count;
   final String currency;
+  final String txhash;
 
   @override
   Map<String, dynamic> toJson() => _$ActivityModelToJson(this);

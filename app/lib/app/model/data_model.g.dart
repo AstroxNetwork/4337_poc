@@ -13,6 +13,7 @@ ActivityModel _$ActivityModelFromJson(Map<String, dynamic> json) =>
       address: json['address'] as String,
       count: (json['count'] as num).toDouble(),
       currency: json['currency'] as String,
+      txhash: json['txhash'] as String,
     );
 
 Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
@@ -22,6 +23,7 @@ Map<String, dynamic> _$ActivityModelToJson(ActivityModel instance) =>
       'address': instance.address,
       'count': instance.count,
       'currency': instance.currency,
+      'txhash': instance.txhash,
     };
 
 const _$ActivityTypeEnumMap = {
