@@ -1,6 +1,9 @@
+import 'dart:math' as math;
+
 import 'package:agent_dart/utils/number.dart';
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/ui/routes/routes.dart';
+import 'package:app/app/util/toast_util.dart';
 import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/define/address.dart';
@@ -13,7 +16,7 @@ class RecoverController extends BaseGetController {
   late final List<String> allData = _arguments['guardians'];
   final List<String> selectedData = [];
 
-  int get requiredGuardians => (allData.length / 2).ceil();
+  int get requiredGuardians => math.max(2, (allData.length / 2).ceil());
 
   void toggleCheck(String model) {
     if (selectedData.contains(model)) {
@@ -25,6 +28,10 @@ class RecoverController extends BaseGetController {
   }
 
   Future<void> startTransaction() async {
+    if (selectedData.length < requiredGuardians) {
+      ToastUtil.show('Select more guardians before send request.');
+      return;
+    }
     final selected = selectedData.toList();
     loadingStart();
     try {
@@ -53,7 +60,8 @@ class RecoverController extends BaseGetController {
             'selected': selected,
           },
         );
-        return;
+      } else {
+        LogUtil.w(result.data);
       }
     } catch (e, s) {
       LogUtil.e(e, stackTrace: s);
