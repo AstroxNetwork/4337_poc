@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:app/app/base/get/get_common_view.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/res/r.dart';
@@ -13,11 +11,10 @@ import 'package:app/app/ui/widget/trademark_widget.dart';
 import 'package:app/app/util/email_validator.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/constant.dart';
-import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
-import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -33,21 +30,7 @@ class LoginPage extends GetCommonView<LoginController> {
         children: [
           const SizedBox(height: 120),
           GestureDetector(
-            onTap: () => controller.jumpDebugPage(),
-            onLongPress: () => Get.toNamed(
-              Routes.transactionPage,
-              arguments: {
-                'email': 'web2@alexv525.com',
-                'code': '888888',
-                'new_key': '0xbaf8653f1a89abd5d0bac763099cfde0a991410b',
-                'request_id':
-                    '0xd6cc43163d734586a05c74cab7dee81811adb988f2281ce977e6b0a6a7caf5ef',
-                'selected': [
-                  '0x7AB74728edb19acE6347E8FE678138e383A664A2',
-                  '0xeC9a6761a181C942906919Cc73C38de96C6FdFBD',
-                ],
-              },
-            ),
+            onLongPress: kDebugMode ? () => controller.jumpDebugPage() : null,
             child: Image.asset(
               R.ASSETS_IMAGES_APP_ICON_BIG_PNG,
               width: 350,
