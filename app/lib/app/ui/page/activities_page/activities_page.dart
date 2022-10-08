@@ -21,23 +21,26 @@ class ActivitiesPage extends GetCommonView<ActivitiesController> {
         child: SizedBox(
           width: double.infinity,
           height: double.infinity,
-          child: (data.length == 0)
-              ? const Center(
-                  child: Text(
-                    'No data yet',
-                    style: TextStyle(
-                        fontSize: 12, color: ColorStyle.color_000000_50),
-                  ),
-                )
-              : Padding(
-                  padding: const EdgeInsets.only(left: 30, right: 30),
-                  child: Column(
-                    children: [
-                      const Align(
-                        alignment: Alignment.topCenter,
-                        child: TopBar(needInfo: true),
-                      ),
-                      Expanded(
+          child: Padding(
+            padding: const EdgeInsets.only(left: 30, right: 30),
+            child: Column(
+              children: [
+                const Align(
+                  alignment: Alignment.topCenter,
+                  child: TopBar(needInfo: true),
+                ),
+                (data.length == 0)
+                    ? Expanded(
+                        child: const Center(
+                          child: Text(
+                            'No data yet',
+                            style: TextStyle(
+                                fontSize: 18,
+                                color: ColorStyle.color_000000_50),
+                          ),
+                        ),
+                      )
+                    : Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
                           itemBuilder: (_, index) {
@@ -82,9 +85,9 @@ class ActivitiesPage extends GetCommonView<ActivitiesController> {
                           itemCount: data.length,
                         ),
                       ),
-                    ],
-                  ),
-                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

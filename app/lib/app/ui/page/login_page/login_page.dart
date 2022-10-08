@@ -7,6 +7,7 @@ import 'package:app/app/ui/page/creaete_page/email_page/email_page.dart';
 import 'package:app/app/ui/page/login_page/login_controller.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
+import 'package:app/app/ui/widget/trademark_widget.dart';
 import 'package:app/app/util/email_validator.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/constant.dart';
@@ -71,7 +72,9 @@ class LoginPage extends GetCommonView<LoginController> {
               ),
             ),
           ),
-          const SizedBox(height: 63),
+          const SizedBox(height: 50),
+          TradeMarkWidget(),
+          const SizedBox(height: 25),
         ],
       ),
     );

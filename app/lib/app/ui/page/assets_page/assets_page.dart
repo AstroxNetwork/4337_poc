@@ -10,6 +10,7 @@ import 'package:app/app/ui/page/assets_page/widget/wallet_account_bottom_sheet.d
 import 'package:app/app/ui/widget/address_text.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/ui/widget/topbar_widget.dart';
+import 'package:app/app/ui/widget/trademark_widget.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/jazzicon/jazzicon.dart';
 import 'package:flutter/material.dart';
@@ -27,7 +28,6 @@ class AssetsPage extends GetCommonView<AssetsController> {
           child: GestureDetector(
             onTap: () => onAvatarClick(),
             child: Obx(() {
-              LogUtil.d('yjk jazziconData');
               return controller.jazziconData.value == null
                   ? SizedBox.fromSize(size: const Size.square(60))
                   : Jazzicon.getIconWidget(controller.jazziconData.value!);
@@ -154,27 +154,36 @@ class AssetsPage extends GetCommonView<AssetsController> {
       resizeToAvoidBottomInset: false,
       body: SafeArea(
         maintainBottomViewPadding: true,
-        child: SizedBox.expand(
-          child: Column(
-            children: [
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: TopBar(needInfo: true, needScan: true),
-                ),
+        child: Stack(
+          children: [
+            SizedBox.expand(
+              child: Column(
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 30),
+                    child: Align(
+                      alignment: Alignment.topCenter,
+                      child: TopBar(needInfo: true, needScan: true),
+                    ),
+                  ),
+                  Expanded(
+                    child: RefreshIndicator(
+                      onRefresh: () => Future.wait([
+                        controller.fetchBalance(),
+                        controller.fetchWalletContract(),
+                      ]),
+                      child: _buildBody(context),
+                    ),
+                  )
+                ],
               ),
-              Expanded(
-                child: RefreshIndicator(
-                  onRefresh: () => Future.wait([
-                    controller.fetchBalance(),
-                    controller.fetchWalletContract(),
-                  ]),
-                  child: _buildBody(context),
-                ),
-              )
-            ],
-          ),
+            ),
+            Positioned(
+              bottom: 25,
+              width: MediaQuery.of(context).size.width,
+              child: TradeMarkWidget(),
+            ),
+          ],
         ),
       ),
     );

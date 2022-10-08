@@ -76,4 +76,7 @@ class R {
 
   static const String ASSETS_IMAGES_TRANSACTION_SIGNED_PNG =
       'assets/images/transaction_signed.png';
+
+  static const String ASSETS_ASTROX_LOGO_PNG =
+      'assets/images/astrox_logo.jpg';
 }

@@ -13,6 +13,7 @@ class ColorStyle {
   static const color_CCFF0000 = Color(0xCCFF0000);
 
   static const color_black_80 = Color(0xCC000000);
+  static const color_black_20 = Color(0x00000033);
   static const color_black_40 = Color(0x66000000);
   static const color_black_60 = Color(0x99000000);
   static const color_black_70 = Color(0xB3000000);
