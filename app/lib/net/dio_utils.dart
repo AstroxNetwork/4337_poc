@@ -124,25 +124,27 @@ class DioUtils {
     Map<String, dynamic>? queryParameters,
     CancelToken? cancelToken,
     Options? options,
-  }) {
-    return _request<T>(
-      method.value,
-      url,
-      data: params,
-      queryParameters: queryParameters,
-      options: options,
-      cancelToken: cancelToken,
-    ).then<void>((BaseEntity<T> result) {
+  }) async {
+    try {
+      final BaseEntity<T> result = await _request<T>(
+        method.value,
+        url,
+        data: params,
+        queryParameters: queryParameters,
+        options: options,
+        cancelToken: cancelToken,
+      );
       if (result.code == 200) {
         onSuccess?.call(result.data);
       } else {
         _onError(result.code, result.message, onError);
       }
-    }, onError: (dynamic e) {
+    } catch (e) {
       _cancelLogPrint(e, url);
       final NetError error = ExceptionHandle.handleException(e);
       _onError(error.code, error.msg, onError);
-    });
+      rethrow;
+    }
   }
 
   /// 统一处理(onSuccess返回T对象，onSuccessList返回 List<T>)
@@ -189,7 +191,6 @@ class DioUtils {
       code = ExceptionHandle.unknown_error;
       msg = '未知异常';
     }
-    LogUtil.e('接口请求异常： code: $code, mag: $msg', tag: _tag);
     onError?.call(code, msg);
   }
 }
