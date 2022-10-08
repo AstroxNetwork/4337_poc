@@ -1,7 +1,9 @@
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/define/address.dart';
+import 'package:app/eip4337lib/utils/guardian.dart';
 import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/eip4337lib/utils/send.dart';
+import 'package:app/eip4337lib/utils/user_op.dart';
 import 'package:app/web3dart/contracts.dart';
 import 'package:app/web3dart/crypto.dart';
 import 'package:app/web3dart/web3dart.dart';
@@ -12,11 +14,11 @@ import 'package:app/eip4337lib/utils/helper.dart';
 
 const SPONSER_KEY =
     "0xa6df89ed3e4f20e095f08730dd5435875ee6fa6e2b33bca5fb59f62afc06a56b";
-const USER_PRIVATE_KEY =
-    "0x0061673ca1536d71ea0f0b31640be07ce92613df645e05fff338edb560381da5";
+// const USER_PRIVATE_KEY =
+//     "0x0061673ca1536d71ea0f0b31640be07ce92613df645e05fff338edb560381da5";
 // const USER_PRIVATE_KEY =
 //     "0x13333840f99337428ffa54331d4854481ba8ea8fc1335f8775292b8958963763";
-const USER_PRIVATE_KEY_2 =
+const USER_PRIVATE_KEY =
     "0x214306b6552884da884b199938a86225a0221d5e775bd65dd528e229735ddf72";
 const PAYMASTER_PRIVATE_KEY =
     "0xa6df89ed3e4f20e095f08730dd5435875ee6fa6e2b33bca5fb59f62afc06a56b";
@@ -115,7 +117,7 @@ void main() async {
     Goerli.chainId,
   );
   LogUtil.d(
-    'requestId: ${bytesToHex(requestId)}, user: $userAddress',
+    'requestId: ${bytesToHex(requestId, include0x: true)}, user: $userAddress',
     tag: _tag,
   );
   final signature = await user.signPersonalMessage(requestId);
@@ -164,7 +166,8 @@ void main() async {
       '0x8af8c26D62954B5CA17B7EEA5231b0F9893aDD9f',
     );
     final amount = EtherAmount.fromUnitAndValue(EtherUnit.finney, 1).getInWei;
-    LogUtil.d("sendERC20 $toAddress, $amount", tag: _tag);
+
+    // LogUtil.d("sendERC20 $toAddress, $amount", tag: _tag);
     // await ctx.sendERC20(wethContractAddress, toAddress, amount);
     // await ctx.sendETH(toAddress, amount);
   }
@@ -173,27 +176,57 @@ void main() async {
   final guardian1 = Web3Helper.recoverKeys(
     "0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80",
   );
-  final guardian1Address = await guardian1.extractAddress();
+  final guardian1Address = guardian1.address;
   final guardian2 = Web3Helper.recoverKeys(
     "0x233bfc84b62f7abe72ba68f83849204c146a90fa675855644d6d5b9639e9f270",
   );
-  final guardian2Address = await guardian2.extractAddress();
+  final guardian2Address = guardian2.address;
   final guardian3 = Web3Helper.recoverKeys(
     "0x2ff7b5feddca0d5dfe64e75ee9ceb666daf2d94cbada23c78be1bec857d0b376",
   );
-  final guardian3Address = await guardian3.extractAddress();
+  final guardian3Address = guardian3.address;
+  print('guardian1 $guardian1Address}');
+  print('guardian2 $guardian2Address}');
+  print('guardian3 $guardian3Address}');
 
-  if (code.isNotEmpty) {
-    // add account and wallet
-    WalletContext.recoverPrivateKey(ethClient, USER_PRIVATE_KEY);
-    final ctx = WalletContext.getInstance();
-    ctx.setWalletAddress(simpleWallet);
+  /// ########### addgruadian
+  // if (code.isNotEmpty) {
+  //   // add account and wallet
+  //   WalletContext.recoverPrivateKey(ethClient, USER_PRIVATE_KEY);
+  //   final ctx = WalletContext.getInstance();
+  //   ctx.setWalletAddress(simpleWallet);
+  //
+  //   LogUtil.d("addGuardian $guardian1Address");
+  //   await ctx.addGuardian(guardian1Address);
+  // }
 
-    LogUtil.d("addGuardian $guardian1Address");
-    await ctx.addGuardian(guardian1Address);
-  }
+  final newOwner =  Web3Helper.recoverKeys(
+    "0x2a6313b0912b6e723a63a3be68a7d62128b05e0bdd613237889ece19d4ac220a",
+  );
+  print('newOwner ${newOwner.address}');
 
   final nonce = await EIP4337Lib.getNonce(simpleWalletAddress, ethClient);
-  LogUtil.d(nonce);
-  // print(requestId);
+  print(nonce);
+
+  final recoverOp = await Guardian.walletContract(ethClient, simpleWalletAddress)
+      .transferOwner(nonce, newOwner.address, entryPointAddress, Goerli.paymasterAddress,
+      BigInt.from(3000000000), BigInt.from(2000000000));
+  print(recoverOp);
+
+  final recoverId = recoverOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
+  print(bytesToHex(recoverId, include0x: true));
+
+  final sign1 = await guardian1.signPersonalMessage(recoverId);
+  final sign2 = await guardian2.signPersonalMessage(recoverId);
+  print('guardian1 ${guardian1.address} sign1 ${bytesToHex(sign1, include0x: true)}');
+  print('guardian2 ${guardian2.address} sign2 ${bytesToHex(sign2, include0x: true)}');
+
+  final signerSigs = [
+    [guardian2.address, sign2],
+    [guardian1.address, sign1]
+  ];
+
+  final signPack = await packGuardiansSignByRequestId(requestId, signerSigs);
+  print(bytesToHex(signPack));
+
 }

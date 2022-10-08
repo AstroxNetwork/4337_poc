@@ -82,7 +82,6 @@ Uint8List signUserOpWithPersonalSign(
 /// TODO
 Future<String> _signRequestId(Uint8List message, String privateKey) async {
   Credentials cred = Web3Helper.recoverKeys(privateKey);
-  // _messagePrefix = '\u0019Ethereum Signed Message:\n'
   var signed = await cred.signPersonalMessage(message);
   return String.fromCharCodes(signed);
 }
@@ -110,39 +109,46 @@ Future<Uint8List> signUserOp(UserOperation op, EthereumAddress entryPoint,
   ]);
 }
 
-Future<Uint8List> packGuardiansSignByRequestId(
-  Uint8List requestId,
-  List<Uint8List> signatures, [
-  String? walletAddress,
-]) async {
-  // msg
-  const prefix = '\u0019Ethereum Signed Message:\n32';
-  final prefixBytes = ascii.encode(prefix);
-  final msg = Uint8List.fromList(prefixBytes + requestId);
 
-  // recover
-  // var signerSet = Set();
-  // for (final signature in signatures) {
-  //   final signer = recoverAddress(msg, signature);
-  //   if (signerSet.contains(signer)) {
-  //     signerSet.add({signer, signature});
-  //   }
-  // }
+Uint8List uint8ListFromList(List<int> data) {
+  if (data is Uint8List) return data;
+
+  return Uint8List.fromList(data);
+}
+
+Future<Uint8List> packGuardiansSignByRequestId(Uint8List requestId, List<dynamic> signerSigs, [String? walletAddress]) async{
+  // no msg for recover address
+  // final prefix = '\u0019Ethereum Signed Message:\n32';
+  // final prefixBytes = ascii.encode(prefix);
+  // final msg = uint8ListFromList(prefixBytes + requestId);
 
   // check
   // if (walletAddress != null) {
   //   final web3 = Web3Helper.client;
+  //   for (final ss as List<dynamic> in signerSigs) {
+  //
+  //   }
   // }
 
-  // encode
-  // const enc = defaultAbiCoder.encode(['uint8', 'tuple(address signer,bytes signature)[]'],
-  // [
-  // SignatureMode.guardians,
-  // signList
-  // ]
-  // );
-  // return enc;
-  return hexToBytes('0x');
+  // sort
+  for (final ss in signerSigs) {
+    final singer = ss[0] as EthereumAddress;
+    print(singer);
+  }
+
+  const tuple = TupleType([
+    UintType(length: 8),
+    DynamicLengthArray(
+        type: TupleType([
+          AddressType(),
+          DynamicBytes(),
+        ]))
+  ]);
+
+  return tupleEncode(tuple, [
+    BigInt.one,
+    signerSigs
+  ]);
 }
 
 String payMasterSignHash(UserOperation op) {

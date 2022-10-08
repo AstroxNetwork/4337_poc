@@ -86,9 +86,9 @@ class UserOperation {
     EthereumAddress entryPointAddress,
   ) async {
     try {
-      verificationGas = BigInt.from(150000);
+      verificationGas = BigInt.from(153600);
       if (initCode.isNotEmpty) {
-        verificationGas += BigInt.from(3200 + 200 * initCode.length);
+        verificationGas += BigInt.from(400 * initCode.length);
       }
       callGas = await web3.estimateGas(
         sender: entryPointAddress,

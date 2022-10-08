@@ -274,17 +274,21 @@ class WalletContext {
     return op;
   }
 
-  // getRecoverId
+  // singerSigs = [
+  // [EthereumAddress, Uint8List],
+  // [EthereumAddress, Uint8List]
+  // ]
   Future<String> recoverWallet(
     EthereumAddress newOwner,
-    List<Uint8List> signatures,
+    List<dynamic> singerSigs,
   ) async {
     final recoveryOp = await transferOwner(newOwner);
     final requestId = recoveryOp.requestId(
       Goerli.entryPointAddress,
       Goerli.chainId,
     );
-    final signPack = await packGuardiansSignByRequestId(requestId, signatures);
+
+    final signPack = await packGuardiansSignByRequestId(requestId, singerSigs);
     recoveryOp.signature = signPack;
 
     final entryPointContract = DeployedContract(
