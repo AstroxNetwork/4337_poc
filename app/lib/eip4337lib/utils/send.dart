@@ -51,7 +51,7 @@ class Send {
       throw Exception('sendOpWait failed');
     }
     final requestId = res0['requestId'];
-    for (int i = 0; i < 60; i++) {
+    for (int i = 0; i < 30; i++) {
       await Future.delayed(const Duration(seconds: 1));
       final response = await getOpStateByRequestId(requestId);
       final res = response.data;
@@ -65,7 +65,7 @@ class Send {
         LogUtil.d('processing...', tag: tag);
       } else if (res['code'] == 3) {
         final hash = res["txHash"];
-        for (var i = 0; i < 60; i++) {
+        for (int i = 0; i < 30; i++) {
           await Future.delayed(const Duration(seconds: 1));
           final receipt = await web3.getTransactionReceipt(hash);
           if (receipt?.status == true) {

@@ -32,7 +32,7 @@ void main() {
       runApp(const MyApp());
     },
     (Object e, StackTrace s) {
-      LogUtil.d('Uncaught exceptions: $e', stackTrace: s);
+      LogUtil.e('Uncaught exceptions: $e', stackTrace: s);
     },
   );
 }

@@ -4,7 +4,6 @@ import 'package:app/app/res/r.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
 import 'package:app/app/util/platform_util.dart';
-import 'package:app/eip4337lib/utils/log_utils.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:permission_handler/permission_handler.dart';
