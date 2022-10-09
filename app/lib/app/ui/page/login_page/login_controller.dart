@@ -46,7 +46,7 @@ class LoginController extends BaseGetController {
     loadingStart();
     try {
       WalletContext.recoverKeystore(Web3Helper.client, walletJson, password);
-      final address = sp.getString(WalletSp.WALLET_ADDRESS);
+      final address = sp.getString('${WalletSp.WALLET_ADDRESS}#$email');
       if (address != null) {
         WalletContext.getInstance().setWalletAddress(address);
       }

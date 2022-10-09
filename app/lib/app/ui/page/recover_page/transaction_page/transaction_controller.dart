@@ -16,7 +16,8 @@ class TransactionController extends BaseGetController {
   final Map<String, dynamic> _arguments =
       Map<String, dynamic>.from(Get.arguments);
 
-  late final String newAddress = _arguments['new_key'];
+  late final String email = _arguments['email'],
+      newAddress = _arguments['new_key'];
   late final Map<String, bool> guardians = Map.fromIterable(
     _arguments['selected'] as List<String>,
     value: (_) => false,
@@ -43,6 +44,10 @@ class TransactionController extends BaseGetController {
     final result = await Request.fetchRecover({'new_key': newAddress});
     LogUtil.d(const JsonEncoder.withIndent('  ').convert(result.data!));
     final Map<String, dynamic> data = result.data!['data']!;
+    if (data['code'] != 200) {
+      Get.back();
+      return;
+    }
     final List<Map<String, dynamic>> recordsData = data['recoveryRecords']
             ['recovery_records']
         .cast<Map<String, dynamic>>();
@@ -82,7 +87,7 @@ class TransactionController extends BaseGetController {
       LogUtil.e(e, stackTrace: s);
     }
     sp.setString(
-      WalletSp.WALLET_ADDRESS,
+      '${WalletSp.WALLET_ADDRESS}#$email',
       WalletContext.getInstance().walletAddress.hex,
     );
     loadingStop();
