@@ -1,11 +1,14 @@
 import 'dart:async';
 
+import 'package:agent_dart/utils/number.dart';
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/ui/routes/routes.dart';
 import 'package:app/app/util/email_validator.dart';
 import 'package:app/app/util/toast_util.dart';
 import 'package:app/constant.dart';
+import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
+import 'package:app/eip4337lib/define/address.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
 import 'package:flutter/material.dart';
@@ -65,6 +68,24 @@ class EmailController extends BaseGetController {
     loadingStart();
     WalletContext.createAccount();
     final address = await WalletContext.getWalletAddressByEmail(email);
+    final newOwner = WalletContext.getInstance().account.address;
+    final recoveryOp = await WalletContext.getInstance().transferOwner(
+      newOwner,
+    );
+    final requestId = recoveryOp.requestId(
+      Goerli.entryPointAddress,
+      Goerli.chainId,
+    );
+    final result = await Request.addRecover({
+      'email': email,
+      'code': code,
+      'new_key': newOwner.hex,
+      'request_id': bytesToHex(requestId, include0x: true),
+    });
+    if (result.data?['code'] != 200) {
+      ToastUtil.show('${result.data?['msg']}');
+      return;
+    }
     await requestNetwork<List>(
       Method.post,
       url: HttpApi.getAccountGuardian,
@@ -77,6 +98,8 @@ class EmailController extends BaseGetController {
             arguments: {
               'email': email,
               'code': code,
+              'new_key': newOwner.hex,
+              'request_id': bytesToHex(requestId, include0x: true),
               'guardians': res.cast<String>(),
             },
           );
@@ -104,14 +127,10 @@ class EmailController extends BaseGetController {
       url: HttpApi.addAccount,
       params: {'email': email, 'code': code},
       onSuccess: (Map? res) {
-        if (res != null) {
-          // cache authorization
-          if (res[Constant.jwtToken] != null) {
-            sp.setString(Constant.accessToken, res[Constant.jwtToken]);
-            Get.toNamed(Routes.passwordPage, arguments: {'email': email});
-          } else {
-            ToastUtil.show('Token error');
-          }
+        if (res?[Constant.jwtToken] == null) {
+          ToastUtil.show('Token error');
+        } else {
+          Get.toNamed(Routes.passwordPage, arguments: {'email': email});
         }
       },
     );
