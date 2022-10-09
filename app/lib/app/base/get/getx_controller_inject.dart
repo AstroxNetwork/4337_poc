@@ -29,7 +29,7 @@ class BaseGetController extends GetxController {
       if (hex.isNotEmpty) {
         storage = LocalStorage(hex);
       }
-    } catch (err) {}
+    } catch (_) {}
 
     _isLoading.listen((isLoading) {
       if (isLoading) {

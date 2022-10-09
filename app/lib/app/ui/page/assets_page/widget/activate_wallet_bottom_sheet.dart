@@ -3,7 +3,6 @@ import 'package:app/app/info/app_theme.dart';
 import 'package:app/app/res/colors.dart';
 import 'package:app/app/ui/page/assets_page/assets_controller.dart';
 import 'package:app/app/ui/widget/button_widget.dart';
-import 'package:app/app/util/toast_util.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -42,7 +41,8 @@ class ActivateWalletBottomSheet extends GetCommonView<AssetsController> {
             const Padding(
               padding: EdgeInsets.only(top: 9),
               child: Text(
-                'Deploy wallet to unlock full feature, the process takes no more than 1 minute.',
+                'Deploy wallet to unlock full feature, '
+                'the process takes no more than 1 minute.',
                 style: TextStyle(
                   fontSize: 18,
                   color: ColorStyle.color_black_80,
@@ -74,7 +74,7 @@ class ActivateWalletBottomSheet extends GetCommonView<AssetsController> {
                       Padding(
                         padding: EdgeInsets.only(right: 20),
                         child: Text(
-                          '0.005 ETH',
+                          '0.03 WETH',
                           style: TextStyle(
                             fontSize: 18,
                             color: ColorStyle.color_black_80,

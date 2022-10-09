@@ -8,13 +8,7 @@ import 'package:app/app/ui/page/home_page/home_controller.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends GetCommonView<HomeController> {
-  HomePage({super.key});
-
-  final List<Widget> _pageList = [
-    const AssetsPage(),
-    ActivitiesPage(),
-    GuardiansPage(),
-  ];
+  const HomePage({super.key});
 
   BottomNavigationBarItem tab({
     required String label,
@@ -47,7 +41,7 @@ class HomePage extends GetCommonView<HomeController> {
     return Scaffold(
       body: IndexedStack(
         index: controller.tabIndex,
-        children: _pageList,
+        children: const [AssetsPage(), ActivitiesPage(), GuardiansPage()],
       ),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(

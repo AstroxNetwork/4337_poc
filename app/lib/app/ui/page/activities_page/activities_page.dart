@@ -8,12 +8,11 @@ import 'package:flutter/material.dart';
 import 'package:app/app/extension/datetime_extension.dart';
 
 class ActivitiesPage extends GetCommonView<ActivitiesController> {
-  ActivitiesPage({super.key});
+  const ActivitiesPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    late final List<ActivityModel> data = controller.datas;
-
+    final List<ActivityModel> data = controller.datas;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: SafeArea(
@@ -29,62 +28,60 @@ class ActivitiesPage extends GetCommonView<ActivitiesController> {
                   alignment: Alignment.topCenter,
                   child: TopBar(needInfo: true),
                 ),
-                (data.length == 0)
-                    ? Expanded(
-                        child: const Center(
-                          child: Text(
-                            'No data yet',
-                            style: TextStyle(
-                                fontSize: 18,
-                                color: ColorStyle.color_000000_50),
-                          ),
-                        ),
-                      )
-                    : Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemBuilder: (_, index) {
-                            bool isSameDate = true;
-                            if (index == 0) {
-                              isSameDate = false;
-                            } else {
-                              isSameDate = data[index]
-                                  .date
-                                  .isSameDay(data[index - 1].date);
-                            }
-                            if (index == 0 || !(isSameDate)) {
-                              return Column(
-                                children: [
-                                  Align(
-                                    alignment: Alignment.topLeft,
-                                    child: Padding(
-                                      padding: const EdgeInsets.only(
-                                        top: 20,
-                                        bottom: 9,
-                                      ),
-                                      child: Text(
-                                        data[index]
-                                                .date
-                                                .isSameDay(DateTime.now())
-                                            ? 'Today'
-                                            : data[index].date.getMonthAndDay(),
-                                        style: const TextStyle(
-                                          fontSize: 28,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  ActivitiesItem(model: data[index]),
-                                ],
-                              );
-                            } else {
-                              return ActivitiesItem(model: data[index]);
-                            }
-                          },
-                          itemCount: data.length,
+                if (data.isEmpty)
+                  const Expanded(
+                    child: Center(
+                      child: Text(
+                        'No data yet',
+                        style: TextStyle(
+                          fontSize: 18,
+                          color: ColorStyle.color_000000_50,
                         ),
                       ),
+                    ),
+                  )
+                else
+                  Expanded(
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      itemBuilder: (_, index) {
+                        final bool isSameDate;
+                        if (index == 0) {
+                          isSameDate = false;
+                        } else {
+                          isSameDate =
+                              data[index].date.isSameDay(data[index - 1].date);
+                        }
+                        if (index == 0 || !(isSameDate)) {
+                          return Column(
+                            children: [
+                              Align(
+                                alignment: Alignment.topLeft,
+                                child: Padding(
+                                  padding: const EdgeInsets.only(
+                                    top: 20,
+                                    bottom: 9,
+                                  ),
+                                  child: Text(
+                                    data[index].date.isSameDay(DateTime.now())
+                                        ? 'Today'
+                                        : data[index].date.getMonthAndDay(),
+                                    style: const TextStyle(
+                                      fontSize: 28,
+                                      fontWeight: FontWeight.w500,
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ActivitiesItem(model: data[index]),
+                            ],
+                          );
+                        }
+                        return ActivitiesItem(model: data[index]);
+                      },
+                      itemCount: data.length,
+                    ),
+                  ),
               ],
             ),
           ),
