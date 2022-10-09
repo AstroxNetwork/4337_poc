@@ -108,10 +108,7 @@ class EmailController extends BaseGetController {
           // cache authorization
           if (res[Constant.jwtToken] != null) {
             sp.setString(Constant.accessToken, res[Constant.jwtToken]);
-            Get.toNamed(
-              Routes.passwordPage,
-              parameters: {'email': email},
-            );
+            Get.toNamed(Routes.passwordPage, arguments: {'email': email});
           } else {
             ToastUtil.show('Token error');
           }
