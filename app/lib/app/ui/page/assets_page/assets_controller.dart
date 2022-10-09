@@ -93,7 +93,7 @@ class AssetsController extends BaseGetController {
 
   onActivateMyWallet() async {
     loadingStart();
-    var wEthBalance = await WalletContext.getInstance().getWEthBalance();
+    final wEthBalance = await WalletContext.getInstance().getWEthBalance();
     loadingStop();
     if (wEthBalance < 0.01) {
       Get.dialog(const WithoutWalletDialog());
@@ -106,12 +106,15 @@ class AssetsController extends BaseGetController {
           await WalletContext.getInstance().activateWallet();
           isContractWallet.value =
               await WalletContext.getInstance().isWalletContract();
-        } catch (err) {
-          if (err.toString().isNotEmpty) ToastUtil.show(err.toString());
+        } catch (e, s) {
+          LogUtil.e(e, stackTrace: s);
+          if (e.toString().isNotEmpty) {
+            ToastUtil.show(e.toString());
+          }
         }
+        loadingStop();
         if (isContractWallet.value) {
           Get.back();
-          loadingStop();
         }
       },
     ));
