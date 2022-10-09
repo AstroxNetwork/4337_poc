@@ -60,27 +60,30 @@ class Send {
         throw Exception('Another OP participating.');
       }
       if (res['code'] == 0) {
-        LogUtil.d('[sendOpWait] pending...', tag: tag);
+        LogUtil.d('[sendOpWait ($i)] pending...', tag: tag);
       } else if (res['code'] == 2) {
-        LogUtil.d('[sendOpWait] processing...', tag: tag);
+        LogUtil.d('[sendOpWait ($i)] processing...', tag: tag);
       } else if (res['code'] == 3) {
         final hash = res["txHash"];
-        for (int i = 0; i < 30; i++) {
+        for (int j = 0; j < 30; j++) {
           await Future.delayed(const Duration(seconds: 1));
           final receipt = await web3.getTransactionReceipt(hash);
           if (receipt?.status == true) {
-            LogUtil.d('[sendOpWait] TX ($hash) has been confirmed', tag: tag);
+            LogUtil.d(
+              '[sendOpWait ($i:$j)] TX ($hash) has been confirmed',
+              tag: tag,
+            );
             return hash;
           } else {
-            LogUtil.d('[sendOpWait] TX receipt: $receipt', tag: tag);
-            // throw(Exception('transaction failed'));
+            LogUtil.d('[sendOpWait ($i:$j)] TX receipt: $receipt', tag: tag);
           }
         }
+        break;
       } else if (res['code'] == 4) {
-        LogUtil.e('[sendOpWait] failed ($res)', tag: tag);
+        LogUtil.e('[sendOpWait ($i)] failed ($res)', tag: tag);
         break;
       } else if (res['code'] == 5) {
-        LogUtil.e('[sendOpWait] not found ($res)', tag: tag);
+        LogUtil.e('[sendOpWait ($i)] not found ($res)', tag: tag);
         break;
       }
     }
