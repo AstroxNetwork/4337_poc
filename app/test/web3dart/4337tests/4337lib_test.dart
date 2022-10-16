@@ -172,6 +172,8 @@ void main() async {
     // await ctx.sendETH(toAddress, amount);
   }
 
+
+
   /// ########### guardian
   final guardian1 = Web3Helper.recoverKeys(
     "0x42a1294da28d5cbac9be9e3e11ffcf854ec734799dc4f7cdf34a7edafaca8a80",
@@ -200,17 +202,43 @@ void main() async {
   //   await ctx.addGuardian(guardian1Address);
   // }
 
-  final newOwner =  Web3Helper.recoverKeys(
-    "0x2a6313b0912b6e723a63a3be68a7d62128b05e0bdd613237889ece19d4ac220a",
-  );
-  print('newOwner ${newOwner.address}');
+  // 0x4A4486568E3Ebb009c8fb9598A41D0718b517936
+  // {
+  //   sender: "0xbeB92Eee552C9E77e39F16fe9b1664CCdbf77d75",
+  // nonce: 3,
+  // initCode: "0x",
+  // callData:
+  // "0x4fb2e45d0000000000000000000000004a4486568e3ebb009c8fb9598a41d0718b517936",
+  // callGas: 94979,
+  // verificationGas: 153600,
+  // preVerificationGas: 21000,
+  // maxFeePerGas: 15000000000,
+  // maxPriorityFeePerGas: 10000000000,
+  // paymaster: "0x6cfE69b93B91dBfF4d2ea04fFd35dcc06490be4D",
+  // paymasterData: "0x",
+  // signature:
+  // "0x0000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000004000000000000000000000000000000000000000000000000000000000000000020000000000000000000000000000000000000000000000000000000000000040000000000000000000000000000000000000000000000000000000000000010000000000000000000000000044aa7e13893c929cbcf8f1966db7aa47ea80924a00000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000041a64c4813c209cad949368219b45fce676d65561e72e4c4834ce6b59a3fc9b25a4a911e3368eb190a315df0d543b2ed264a94a360417832dd3ac74e15d5442b221b00000000000000000000000000000000000000000000000000000000000000000000000000000000000000bc4b82a8cd2a803bfb8e457d8d681b78d3f8495700000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000041c5b87f56a12db7354d56d6bf8abc9f0f839bc95823b352a534550b2c10b6a0da50d78ab5ff9980aac6a6213c527173ed20834d500946ed0198d5f598bb9731a31c00000000000000000000000000000000000000000000000000000000000000",
+  // }
 
-  final nonce = await EIP4337Lib.getNonce(simpleWalletAddress, ethClient);
-  print(nonce);
+  final recoverWallet = EthereumAddress.fromHex("0xbeB92Eee552C9E77e39F16fe9b1664CCdbf77d75");
+  final newOwnerAddress = EthereumAddress.fromHex("0x4A4486568E3Ebb009c8fb9598A41D0718b517936");
+  final nonce = BigInt.from(3);
 
-  final recoverOp = await Guardian.walletContract(ethClient, simpleWalletAddress)
-      .transferOwner(nonce, newOwner.address, entryPointAddress, Goerli.paymasterAddress,
-      BigInt.from(3000000000), BigInt.from(2000000000));
+  // final newOwner =  Web3Helper.recoverKeys(
+  //   "0x37c6d0d3fb69cfbddb4302a981e54d1c708a4de3b5d61b4c4b30db799a3ff8c2",
+  // );
+  // print('newOwner ${newOwner.address}');
+  //
+  // final nonce = await EIP4337Lib.getNonce(simpleWalletAddress, ethClient);
+  // print(nonce);
+
+  // final recoverOp = await Guardian.walletContract(ethClient, simpleWalletAddress)
+  //     .transferOwner(nonce, newOwner.address, entryPointAddress, Goerli.paymasterAddress,
+  //     BigInt.from(3000000000), BigInt.from(2000000000));
+
+  final recoverOp = await Guardian.walletContract(ethClient, recoverWallet)
+      .transferOwner(nonce, newOwnerAddress, entryPointAddress, Goerli.paymasterAddress,
+      BigInt.from(15000000000), BigInt.from(10000000000));
   print(recoverOp);
 
   final recoverId = recoverOp.requestId(Goerli.entryPointAddress, Goerli.chainId);

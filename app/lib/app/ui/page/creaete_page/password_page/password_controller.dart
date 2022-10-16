@@ -37,6 +37,7 @@ class PasswordController extends BaseGetController {
       ToastUtil.show('No email has been delivered.');
       return;
     }
+
     final shouldUpdateAccount = arguments['shouldUpdateAccount'] ?? true;
     loadingStart();
     if (shouldUpdateAccount) {

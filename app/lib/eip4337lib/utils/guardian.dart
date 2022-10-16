@@ -31,13 +31,15 @@ class Guardian {
     userOperation.maxFeePerGas = maxFeePerGas;
     userOperation.maxPriorityFeePerGas = maxPriorityFeePerGas;
     userOperation.callData = callData;
-    final gasEstmated = await userOperation.estimateGas(
-      web3,
-      entryPointAddress,
-    );
-    if (!gasEstmated) {
-      throw Exception("gasEstmated error");
-    }
+    userOperation.verificationGas = BigInt.from(153600);
+    userOperation.callGas = BigInt.from(94979);
+    // final gasEstmated = await userOperation.estimateGas(
+    //   web3,
+    //   entryPointAddress,
+    // );
+    // if (!gasEstmated) {
+    //   throw Exception("gasEstmated error");
+    // }
     return userOperation;
   }
 

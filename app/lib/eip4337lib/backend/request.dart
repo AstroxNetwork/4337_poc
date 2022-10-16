@@ -9,20 +9,20 @@ class Request {
   const Request._();
 
   /// Params: email
-  static Future<JsonResponse> addAccount(Object params) {
-    return _dio.post('$_backendURL/add-account', data: params);
+  static Future<JsonResponse> verifyEmail(Object params) {
+    return _dio.post('$_backendURL/verify-email', data: params);
   }
 
   /// Params: email, code
   /// Return: jwtToken
-  static Future<JsonResponse> updateAccount(Object params) {
-    return _dio.post('$_backendURL/update-account', data: params);
+  static Future<JsonResponse> addAccount(Object params) {
+    return _dio.post('$_backendURL/add-account', data: params);
   }
 
   /// 初始化 account
   /// Params: email, key(eoa地址), wallet_address
-  static Future<JsonResponse> verifyEmail(Object params) {
-    return _dio.post('$_backendURL/verify-email', data: params);
+  static Future<JsonResponse> updateAccount(Object params) {
+    return _dio.post('$_backendURL/update-account', data: params);
   }
 
   /// 开始recover

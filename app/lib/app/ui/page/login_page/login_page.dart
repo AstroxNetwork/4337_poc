@@ -45,7 +45,7 @@ class LoginPage extends GetCommonView<LoginController> {
               Button(
                 width: 210,
                 height: 61,
-                onPressed: () => onCreate(),
+                onPressed: () => goCreate(),
                 data: 'Create New Wallet',
               ),
             ],
@@ -54,7 +54,7 @@ class LoginPage extends GetCommonView<LoginController> {
             height: 40,
           ),
           GestureDetector(
-            onTap: () => onRecover(),
+            onTap: () => goRecover(),
             child: const Text(
               'Recover A Wallet',
               style: TextStyle(
@@ -72,14 +72,14 @@ class LoginPage extends GetCommonView<LoginController> {
     );
   }
 
-  void onRecover() {
+  void goRecover() {
     Get.to(
       () => EmailPage(onConfirm: (c) => c.recoverByEmail()),
       binding: EmailBinding(),
     );
   }
 
-  void onCreate() {
+  void goCreate() {
     Get.to(
       () => EmailPage(onConfirm: (c) => c.loginByEmail()),
       binding: EmailBinding(),
