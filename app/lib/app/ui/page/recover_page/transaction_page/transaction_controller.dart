@@ -46,6 +46,7 @@ class TransactionController extends BaseGetController {
     LogUtil.d(const JsonEncoder.withIndent('  ').convert(result.data!));
     final Map<String, dynamic> data = result.data!['data']!;
     if (data['code'] != 200) {
+      LogUtil.e(data);
       Get.back();
       return;
     }
