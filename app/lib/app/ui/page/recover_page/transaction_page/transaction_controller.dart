@@ -5,6 +5,7 @@ import 'dart:typed_data';
 import 'package:agent_dart/utils/string.dart';
 import 'package:app/app/base/get/getx_controller_inject.dart';
 import 'package:app/app/ui/routes/routes.dart';
+import 'package:app/app/util/toast_util.dart';
 import 'package:app/app/wallet_sp.dart';
 import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
@@ -79,22 +80,24 @@ class TransactionController extends BaseGetController {
   Future<void> _finishRecover(List<_Record> records) async {
     loadingStart();
     try {
-      await WalletContext.getInstance().recoverWallet(
+      final newWalletAddress = await WalletContext.getInstance().recoverWallet(
         EthereumAddress(Uint8List.fromList(hexToBytes(newAddress))),
         records.map((e) => e.toRecover()).toList(),
       );
+      LogUtil.d('Setting new address: $newWalletAddress');
+      sp.setString(
+        '${WalletSp.WALLET_ADDRESS}#$email',
+        WalletContext.getInstance().walletAddress.hex,
+      );
+      Get.offAllNamed(
+        Routes.signedPage,
+        arguments: {'email': _arguments['email']},
+      );
     } catch (e, s) {
       LogUtil.e(e, stackTrace: s);
+      ToastUtil.show('$e');
     }
-    sp.setString(
-      '${WalletSp.WALLET_ADDRESS}#$email',
-      WalletContext.getInstance().walletAddress.hex,
-    );
     loadingStop();
-    Get.offAllNamed(
-      Routes.signedPage,
-      arguments: {'email': _arguments['email']},
-    );
   }
 }
 
