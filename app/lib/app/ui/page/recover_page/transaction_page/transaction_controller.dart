@@ -82,7 +82,7 @@ class TransactionController extends BaseGetController {
     loadingStart();
     try {
       final newWalletAddress = await WalletContext.getInstance().recoverWallet(
-        EthereumAddress(Uint8List.fromList(hexToBytes(newAddress))),
+        EthereumAddress.fromHex(newAddress),
         records.map((e) => e.toRecover()).toList(),
       );
       LogUtil.d('Setting new address: $newWalletAddress');

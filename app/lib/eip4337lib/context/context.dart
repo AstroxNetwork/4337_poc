@@ -304,16 +304,17 @@ class WalletContext {
       EntryPoint().ABI,
       Goerli.entryPointAddress,
     );
-    final simulateValidation = entryPointContract.function(
-      "simulateValidation",
-    );
-    final response = await web3.call(
-      sender: Goerli.zeroAddress,
-      contract: entryPointContract,
-      function: simulateValidation,
-      params: [recoveryOp.toTuple()],
-    );
-    LogUtil.d('simulateValidation $response');
+    LogUtil.d(recoveryOp);
+    // final simulateValidation = entryPointContract.function(
+    //   "simulateValidation",
+    // );
+    // final response = await web3.call(
+    //   sender: Goerli.zeroAddress,
+    //   contract: entryPointContract,
+    //   function: simulateValidation,
+    //   params: [recoveryOp.toTuple()],
+    // );
+    // LogUtil.d('simulateValidation $response');
     return Send.sendOpWait(
       web3,
       recoveryOp,

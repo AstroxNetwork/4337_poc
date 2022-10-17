@@ -9,6 +9,7 @@ import 'package:app/constant.dart';
 import 'package:app/eip4337lib/backend/request.dart';
 import 'package:app/eip4337lib/context/context.dart';
 import 'package:app/eip4337lib/define/address.dart';
+import 'package:app/eip4337lib/utils/log_util.dart';
 import 'package:app/net/dio_utils.dart';
 import 'package:app/net/http_api.dart';
 import 'package:flutter/material.dart';
@@ -69,6 +70,7 @@ class EmailController extends BaseGetController {
     WalletContext.createAccount();
     final address = await WalletContext.getWalletAddressByEmail(email);
     final newOwner = WalletContext.getInstance().account.address;
+    WalletContext.getInstance().setWalletAddress(address);
     final recoveryOp = await WalletContext.getInstance().transferOwner(
       newOwner,
     );
@@ -76,6 +78,8 @@ class EmailController extends BaseGetController {
       Goerli.entryPointAddress,
       Goerli.chainId,
     );
+    LogUtil.d(recoveryOp);
+    LogUtil.d('newOwner ${newOwner.hex}, requestId ${bytesToHex(requestId, include0x: true)}');
     final result = await Request.addRecover({
       'email': email,
       'code': code,
