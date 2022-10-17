@@ -44,12 +44,12 @@ class TransactionController extends BaseGetController {
   Future<void> _checkRecoveryRecords() async {
     final result = await Request.fetchRecover({'new_key': newAddress});
     LogUtil.d(const JsonEncoder.withIndent('  ').convert(result.data!));
-    final Map<String, dynamic> data = result.data!['data']!;
-    if (data['code'] != 200) {
-      LogUtil.e(data);
+    if (result.data?['code'] != 200) {
+      LogUtil.e(result.data);
       Get.back();
       return;
     }
+    final Map<String, dynamic> data = result.data!['data']!;
     final List<Map<String, dynamic>> recordsData = data['recoveryRecords']
             ['recovery_records']
         .cast<Map<String, dynamic>>();
