@@ -88,7 +88,6 @@ class EmailController extends BaseGetController {
     });
     if (result.data?['code'] != 200) {
       ToastUtil.show('${result.data?['msg']}');
-      return;
     }
     await requestNetwork<List>(
       Method.post,

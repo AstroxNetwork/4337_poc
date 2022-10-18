@@ -243,8 +243,8 @@ void main() async {
   // 0x44Aa7e13893c929Cbcf8f1966Db7aa47eA80924A
   // 0xc3597245657ee3d7ad4440b76f59b8bde36fce29896c3b08549e7ba4e98257741169cd7d8ec206081b3187425760c95f49f4c4ae44b5a8a047d25ff45271d3491b
 
-  final recoverWallet = EthereumAddress.fromHex("0x26aefa70921946c9353ff80737fbcbe97e17df74");
-  final newOwnerAddress = EthereumAddress.fromHex("0xc324629acd5938bf4201cf3062dd696aeb2b071b");
+  final recoverWallet = EthereumAddress.fromHex("0x2cb50700b295358a35e58d10e07f453987ee5eb3");
+  final newOwnerAddress = EthereumAddress.fromHex("0x45bc317d9965c3a727331f02bcb0170f9dcfdd2e");
   final nonce = BigInt.from(2);
 
   // final newOwner =  Web3Helper.recoverKeys(
@@ -261,16 +261,16 @@ void main() async {
 
   final recoverOp = await Guardian.walletContract(ethClient, recoverWallet)
       .transferOwner(nonce, newOwnerAddress, entryPointAddress, Goerli.paymasterAddress,
-      BigInt.from(15000000000), BigInt.from(10000000000));
+      BigInt.from(100000000000), BigInt.from(10000000000));
   print(recoverOp);
 
   final recoverId = recoverOp.requestId(Goerli.entryPointAddress, Goerli.chainId);
   print(bytesToHex(recoverId, include0x: true));
 
-  // final sign1 = await guardian1.signPersonalMessage(recoverId);
-  // final sign2 = await guardian2.signPersonalMessage(recoverId);
-  final sign1 = hexToBytes("0x0ca30c68bb2b21bb5cb9577dfd532fedd12d142bb714f52f7842de6ab6c74cea0d735a4963fc70fe4ba6d9d7e3c27ece875b2a7230b3752652aa3ad9797958291b");
-  final sign2 = hexToBytes("0xc3597245657ee3d7ad4440b76f59b8bde36fce29896c3b08549e7ba4e98257741169cd7d8ec206081b3187425760c95f49f4c4ae44b5a8a047d25ff45271d3491b");
+  final sign1 = await guardian1.signPersonalMessage(recoverId);
+  final sign2 = await guardian2.signPersonalMessage(recoverId);
+  // final sign1 = hexToBytes("0x0ca30c68bb2b21bb5cb9577dfd532fedd12d142bb714f52f7842de6ab6c74cea0d735a4963fc70fe4ba6d9d7e3c27ece875b2a7230b3752652aa3ad9797958291b");
+  // final sign2 = hexToBytes("0xc3597245657ee3d7ad4440b76f59b8bde36fce29896c3b08549e7ba4e98257741169cd7d8ec206081b3187425760c95f49f4c4ae44b5a8a047d25ff45271d3491b");
   print('guardian1 ${guardian1.address} sign1 ${bytesToHex(sign1, include0x: true)}');
   print('guardian2 ${guardian2.address} sign2 ${bytesToHex(sign2, include0x: true)}');
 

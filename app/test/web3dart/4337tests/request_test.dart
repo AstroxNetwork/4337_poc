@@ -8,8 +8,7 @@ import 'package:app/eip4337lib/utils/helper.dart';
 import 'package:web3dart/web3dart.dart';
 
 void main() async {
-  var params = Map();
-  params['email'] = 'skyhighfeng@gmail.com';
+  Map params = {'email': 'sky@ccc.com'};
   // final response = await Request.verifyEmail(params);
   final response = await Request.getWalletAddress(params);
   // params['code'] = '888888';

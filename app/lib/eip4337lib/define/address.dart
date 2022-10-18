@@ -21,6 +21,6 @@ class Goerli {
 
   static final zeroAddress =
       EthereumAddress.fromHex("0x0000000000000000000000000000000000000000");
-  static final multiplier = BigInt.from(10);
+  static final multiplier = BigInt.from(20);
   static final priorityFee = BigInt.from(10).pow(10);
 }
