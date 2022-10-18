@@ -47,8 +47,8 @@ class PasswordController extends BaseGetController {
       LogUtil.d("walletJson = $walletJson");
       final params = {
         'email': email,
-        'wallet_address': WalletContext.getInstance().walletAddress.hexNo0x,
-        'key': WalletContext.getInstance().walletAddress.hex,
+        'wallet_address': WalletContext.getInstance().walletAddress.hex,
+        'key': WalletContext.getInstance().account.address.hex,
       };
       await requestNetwork(
         Method.post,

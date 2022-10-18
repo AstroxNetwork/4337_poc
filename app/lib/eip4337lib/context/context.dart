@@ -38,6 +38,7 @@ class WalletContext {
   // 创建本地账户
   static WalletContext createAccount([Web3Client? web3]) {
     final privateKey = Web3Helper.generateKey();
+    LogUtil.d('generate ${privateKey.address.hex}');
     _instance = WalletContext(web3 ?? Web3Helper.client, privateKey);
     return _instance!;
   }
@@ -45,6 +46,7 @@ class WalletContext {
   // 从keystore本地恢复
   static WalletContext recoverKeystore(Web3Client web3, String json, String password) {
     final privateKey = Web3Helper.recoverWallet(json, password);
+    LogUtil.d('recover ${privateKey.address.hex}');
     _instance = WalletContext(web3, privateKey);
     return _instance!;
   }
@@ -305,16 +307,16 @@ class WalletContext {
       Goerli.entryPointAddress,
     );
     LogUtil.d(recoveryOp);
-    // final simulateValidation = entryPointContract.function(
-    //   "simulateValidation",
-    // );
-    // final response = await web3.call(
-    //   sender: Goerli.zeroAddress,
-    //   contract: entryPointContract,
-    //   function: simulateValidation,
-    //   params: [recoveryOp.toTuple()],
-    // );
-    // LogUtil.d('simulateValidation $response');
+    final simulateValidation = entryPointContract.function(
+      "simulateValidation",
+    );
+    final response = await web3.call(
+      sender: Goerli.zeroAddress,
+      contract: entryPointContract,
+      function: simulateValidation,
+      params: [recoveryOp.toTuple()],
+    );
+    LogUtil.d('simulateValidation $response');
     return Send.sendOpWait(
       web3,
       recoveryOp,
